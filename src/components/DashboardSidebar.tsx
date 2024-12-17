@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 interface DashboardSidebarProps {
   userName?: string;
   onClose?: () => void;
+  onShowSavedThreads?: (show: boolean) => void;
 }
 
-export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) => {
+export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: DashboardSidebarProps) => {
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -21,6 +22,7 @@ export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) =
       label: "Home",
       icon: <Home className="h-5 w-5" />,
       onClick: () => {
+        onShowSavedThreads?.(false);
         navigate('/dashboard');
         onClose?.();
       }
@@ -29,7 +31,7 @@ export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) =
       label: "Saved Threads",
       icon: <List className="h-5 w-5" />,
       onClick: () => {
-        navigate('/dashboard/saved');
+        onShowSavedThreads?.(true);
         onClose?.();
       }
     },

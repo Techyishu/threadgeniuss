@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 const DashboardPage = () => {
   const [userName, setUserName] = useState<string>("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showSavedThreads, setShowSavedThreads] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -35,7 +36,11 @@ const DashboardPage = () => {
             side="left" 
             className="w-[240px] p-0 border-cyber-blue/20 bg-cyber-dark text-white"
           >
-            <DashboardSidebar userName={userName} onClose={() => setIsSidebarOpen(false)} />
+            <DashboardSidebar 
+              userName={userName} 
+              onClose={() => setIsSidebarOpen(false)} 
+              onShowSavedThreads={setShowSavedThreads}
+            />
           </SheetContent>
         </Sheet>
 
@@ -51,13 +56,17 @@ const DashboardPage = () => {
               side="left" 
               className="w-[240px] p-0 border-cyber-blue/20 bg-cyber-dark text-white"
             >
-              <DashboardSidebar userName={userName} onClose={() => setIsSidebarOpen(false)} />
+              <DashboardSidebar 
+                userName={userName} 
+                onClose={() => setIsSidebarOpen(false)} 
+                onShowSavedThreads={setShowSavedThreads}
+              />
             </SheetContent>
           </Sheet>
         </div>
 
         <main className="flex-1">
-          <Dashboard />
+          <Dashboard showSavedThreads={showSavedThreads} />
         </main>
       </div>
     </SidebarProvider>

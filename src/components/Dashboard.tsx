@@ -4,9 +4,12 @@ import { ThreadGenerator } from "./dashboard/ThreadGenerator";
 import { ThreadPreview } from "./dashboard/ThreadPreview";
 import { SavedThreads } from "./dashboard/SavedThreads";
 
-export const Dashboard = () => {
+interface DashboardProps {
+  showSavedThreads?: boolean;
+}
+
+export const Dashboard = ({ showSavedThreads = false }: DashboardProps) => {
   const [generatedThread, setGeneratedThread] = useState<string | null>(null);
-  const [showSavedThreads, setShowSavedThreads] = useState(false);
 
   return (
     <div className="min-h-screen bg-cyber-dark p-4 sm:p-6 md:p-8">
