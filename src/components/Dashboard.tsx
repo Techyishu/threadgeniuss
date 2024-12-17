@@ -14,8 +14,18 @@ export const Dashboard = () => {
   const { toast } = useToast();
 
   const isValidYoutubeUrl = (url: string) => {
-    const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})$/;
-    return pattern.test(url);
+    // Support various YouTube URL formats
+    const patterns = [
+      // Standard watch URLs
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})(&.*)?$/,
+      // Shortened youtu.be URLs
+      /^(https?:\/\/)?(www\.)?(youtu\.be\/)([a-zA-Z0-9_-]{11})(\?.*)?$/,
+      // Embed URLs
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})(\?.*)?$/,
+      // Mobile app URLs
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/v\/)([a-zA-Z0-9_-]{11})(\?.*)?$/,
+    ];
+    return patterns.some(pattern => pattern.test(url));
   };
 
   const handleGenerate = async () => {
@@ -25,7 +35,7 @@ export const Dashboard = () => {
       }
 
       if (!isValidYoutubeUrl(youtubeLink)) {
-        throw new Error('Please enter a valid YouTube URL (e.g., https://youtube.com/watch?v=xxxxx)');
+        throw new Error('Please enter a valid YouTube URL (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)');
       }
 
       setIsGenerating(true);
@@ -84,7 +94,7 @@ export const Dashboard = () => {
           <div className="space-y-4">
             <Input
               type="url"
-              placeholder="Paste YouTube URL here (e.g., https://youtube.com/watch?v=xxxxx)"
+              placeholder="Paste YouTube URL here (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)"
               value={youtubeLink}
               onChange={(e) => setYoutubeLink(e.target.value)}
               className="bg-cyber-dark/60 border-cyber-purple/30 text-white placeholder:text-gray-500 h-12"
