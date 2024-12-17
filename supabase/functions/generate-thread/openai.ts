@@ -36,7 +36,6 @@ export async function generateThread(transcript: string, title: string) {
     - Include exactly two line breaks between tweets
     - Start each tweet with its number (1/5, 2/5, etc.)
     - Keep the content engaging and valuable
-    - Use line breaks within tweets for better readability
     
     Title: ${title}
     Transcript: ${transcript}
