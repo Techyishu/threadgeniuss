@@ -11,7 +11,7 @@ export const Hero = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-6xl md:text-7xl font-bold mb-6">
-            Create <span className="bg-cyber-blue text-white px-2">viral threads</span>
+            Create <span className="bg-cyber-purple text-white px-2">viral threads</span>
             <br /> effortlessly
           </h1>
           <p className="text-gray-300 text-lg md:text-xl mb-12 max-w-2xl mx-auto">
