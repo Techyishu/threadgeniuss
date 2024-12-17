@@ -46,7 +46,7 @@ export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) =
                     onClose?.();
                   }} 
                   tooltip="Home"
-                  className="text-white hover:bg-cyber-blue/20"
+                  className="text-white hover:bg-cyber-blue/20 w-full flex items-center gap-2 px-4 py-2"
                 >
                   <Home className="w-4 h-4" />
                   <span>Home</span>
@@ -56,7 +56,7 @@ export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) =
                 <SidebarMenuButton 
                   onClick={onClose} 
                   tooltip="Saved Threads"
-                  className="text-white hover:bg-cyber-blue/20"
+                  className="text-white hover:bg-cyber-blue/20 w-full flex items-center gap-2 px-4 py-2"
                 >
                   <List className="w-4 h-4" />
                   <span>Saved Threads</span>
@@ -74,7 +74,7 @@ export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) =
                 <SidebarMenuButton 
                   onClick={onClose} 
                   tooltip="Profile"
-                  className="text-white hover:bg-cyber-blue/20"
+                  className="text-white hover:bg-cyber-blue/20 w-full flex items-center gap-2 px-4 py-2"
                 >
                   <User className="w-4 h-4" />
                   <span>{userName || 'Profile'}</span>
@@ -87,7 +87,7 @@ export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) =
                     onClose?.();
                   }} 
                   tooltip="Sign Out"
-                  className="text-white hover:bg-cyber-blue/20"
+                  className="text-white hover:bg-cyber-blue/20 w-full flex items-center gap-2 px-4 py-2"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Sign Out</span>
