@@ -21,7 +21,7 @@ export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) =
       label: "Home",
       icon: <Home className="h-5 w-5" />,
       onClick: () => {
-        navigate('/');
+        navigate('/dashboard');
         onClose?.();
       }
     },
@@ -29,6 +29,7 @@ export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) =
       label: "Saved Threads",
       icon: <List className="h-5 w-5" />,
       onClick: () => {
+        navigate('/dashboard/saved');
         onClose?.();
       }
     },
