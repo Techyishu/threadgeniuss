@@ -5,13 +5,24 @@ export async function generateThread(transcript: string, title: string) {
   }
 
   const prompt = `
-    Based on the following YouTube video transcript and title, create an engaging Twitter thread.
-    Format it as a numbered list where each item represents one tweet.
-    Keep each tweet within 280 characters.
-    Make it informative and engaging.
+    You are an expert social media content creator specializing in creating viral Twitter threads.
+    Based on the following YouTube video title and transcript, create an engaging Twitter thread with EXACTLY 5 tweets.
+    
+    Follow these guidelines:
+    1. Start with a hook that grabs attention and promises value
+    2. Each tweet should be self-contained but flow naturally to the next
+    3. Use emojis strategically to add visual interest 🎯
+    4. Include specific, actionable insights
+    5. End with a strong call-to-action
+    6. Keep each tweet under 280 characters
+    7. Number each tweet (1/5, 2/5, etc.)
+    8. Use line breaks strategically for readability
     
     Title: ${title}
     Transcript: ${transcript}
+    
+    Format the thread as a numbered list, with each number representing one tweet.
+    Make sure to create EXACTLY 5 tweets, no more, no less.
   `;
 
   try {
@@ -22,8 +33,15 @@ export async function generateThread(transcript: string, title: string) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [{ role: 'user', content: prompt }],
+        model: 'gpt-4o',
+        messages: [
+          { 
+            role: 'system', 
+            content: 'You are an expert social media manager known for creating viral Twitter threads that provide value while maintaining engagement.'
+          },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.7,
       }),
     });
 
