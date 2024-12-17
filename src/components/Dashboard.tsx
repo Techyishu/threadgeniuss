@@ -18,31 +18,29 @@ export const Dashboard = () => {
       setIsGenerating(true);
       setProgress(10);
 
-      const response = await fetch('/api/generate-thread', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-        },
-        body: JSON.stringify({ youtubeUrl: youtubeLink })
+      const { data, error } = await supabase.functions.invoke('generate-thread', {
+        body: { youtubeUrl: youtubeLink }
       });
 
-      setProgress(50);
-
-      if (!response.ok) {
-        const error = await response.json();
+      if (error) {
         throw new Error(error.message || 'Failed to generate thread');
       }
 
-      const { thread } = await response.json();
+      setProgress(50);
+
+      if (!data || !data.thread) {
+        throw new Error('Invalid response from server');
+      }
+
       setProgress(100);
-      setGeneratedThread(thread.content);
+      setGeneratedThread(data.thread.content);
 
       toast({
         title: "Thread generated successfully!",
         description: "Your thread is ready to be shared.",
       });
     } catch (error) {
+      console.error('Error generating thread:', error);
       toast({
         title: "Error",
         description: error.message,
@@ -50,6 +48,7 @@ export const Dashboard = () => {
       });
     } finally {
       setIsGenerating(false);
+      setProgress(0);
     }
   };
 
