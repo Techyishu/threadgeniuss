@@ -64,10 +64,10 @@ async function getYouTubeTranscript(videoUrl: string, apiKey: string) {
 }
 
 async function generateThread(transcript: string, title: string) {
-  const configuration = new Configuration({
-    apiKey: Deno.env.get('OPENAI_API_KEY'),
-  });
-  const openai = new OpenAIApi(configuration);
+  const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+  if (!openAIApiKey) {
+    throw new Error('OpenAI API key not configured');
+  }
 
   const prompt = `
     Based on the following YouTube video transcript and title, create an engaging Twitter thread.
@@ -80,12 +80,26 @@ async function generateThread(transcript: string, title: string) {
   `;
 
   try {
-    const completion = await openai.createChatCompletion({
-      model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+      }),
     });
 
-    return completion.data.choices[0]?.message?.content;
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('OpenAI API error:', error);
+      throw new Error(`OpenAI API error: ${error.error?.message || 'Unknown error'}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0]?.message?.content;
   } catch (error) {
     console.error('Error generating thread with OpenAI:', error);
     throw new Error(`Failed to generate thread: ${error.message}`);
