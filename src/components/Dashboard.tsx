@@ -3,24 +3,54 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Share2, Save } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 export const Dashboard = () => {
   const [youtubeLink, setYoutubeLink] = useState("");
   const [progress, setProgress] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedThread, setGeneratedThread] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  const handleGenerate = () => {
-    setIsGenerating(true);
-    // Simulate progress
-    let currentProgress = 0;
-    const interval = setInterval(() => {
-      currentProgress += 10;
-      setProgress(currentProgress);
-      if (currentProgress >= 100) {
-        clearInterval(interval);
-        setIsGenerating(false);
+  const handleGenerate = async () => {
+    try {
+      setIsGenerating(true);
+      setProgress(10);
+
+      const response = await fetch('/api/generate-thread', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        },
+        body: JSON.stringify({ youtubeUrl: youtubeLink })
+      });
+
+      setProgress(50);
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to generate thread');
       }
-    }, 500);
+
+      const { thread } = await response.json();
+      setProgress(100);
+      setGeneratedThread(thread.content);
+
+      toast({
+        title: "Thread generated successfully!",
+        description: "Your thread is ready to be shared.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -90,9 +120,15 @@ export const Dashboard = () => {
           </div>
           
           <div className="min-h-[200px] bg-cyber-dark/40 rounded-lg border border-dashed border-gray-700 p-4">
-            <p className="text-gray-500 text-center text-sm sm:text-base">
-              Generated thread will appear here...
-            </p>
+            {generatedThread ? (
+              <div className="text-white whitespace-pre-line">
+                {generatedThread}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-center text-sm sm:text-base">
+                Generated thread will appear here...
+              </p>
+            )}
           </div>
         </div>
       </div>
