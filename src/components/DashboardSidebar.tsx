@@ -2,16 +2,6 @@ import { Home, List, User, LogOut, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
 
 interface DashboardSidebarProps {
   userName?: string;
@@ -26,77 +16,62 @@ export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) =
     navigate('/');
   };
 
+  const menuItems = [
+    {
+      label: "Home",
+      icon: <Home className="h-5 w-5" />,
+      onClick: () => {
+        navigate('/');
+        onClose?.();
+      }
+    },
+    {
+      label: "Saved Threads",
+      icon: <List className="h-5 w-5" />,
+      onClick: () => {
+        onClose?.();
+      }
+    },
+    {
+      label: userName || "Profile",
+      icon: <User className="h-5 w-5" />,
+      onClick: () => {
+        onClose?.();
+      }
+    },
+    {
+      label: "Sign Out",
+      icon: <LogOut className="h-5 w-5" />,
+      onClick: () => {
+        handleSignOut();
+        onClose?.();
+      }
+    }
+  ];
+
   return (
-    <Sidebar className="h-full bg-cyber-dark">
+    <div className="flex h-full flex-col bg-cyber-dark text-white">
       <div className="flex justify-between items-center p-4 border-b border-cyber-blue/20">
         <h2 className="text-lg font-semibold text-cyber-blue">Menu</h2>
         <Button variant="ghost" size="icon" onClick={onClose} className="text-cyber-blue">
           <X className="h-5 w-5" />
         </Button>
       </div>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-cyber-blue">Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  onClick={() => {
-                    navigate('/');
-                    onClose?.();
-                  }} 
-                  tooltip="Home"
-                  className="text-white hover:bg-cyber-blue/20 w-full flex items-center gap-2 px-4 py-2"
-                >
-                  <Home className="w-4 h-4" />
-                  <span>Home</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  onClick={onClose} 
-                  tooltip="Saved Threads"
-                  className="text-white hover:bg-cyber-blue/20 w-full flex items-center gap-2 px-4 py-2"
-                >
-                  <List className="w-4 h-4" />
-                  <span>Saved Threads</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-cyber-blue">Account</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  onClick={onClose} 
-                  tooltip="Profile"
-                  className="text-white hover:bg-cyber-blue/20 w-full flex items-center gap-2 px-4 py-2"
-                >
-                  <User className="w-4 h-4" />
-                  <span>{userName || 'Profile'}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  onClick={() => {
-                    handleSignOut();
-                    onClose?.();
-                  }} 
-                  tooltip="Sign Out"
-                  className="text-white hover:bg-cyber-blue/20 w-full flex items-center gap-2 px-4 py-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Sign Out</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+      <nav className="flex-1 overflow-y-auto p-4">
+        <div className="space-y-2">
+          {menuItems.map((item, index) => (
+            <button
+              key={index}
+              onClick={item.onClick}
+              className="w-full flex items-center gap-3 px-4 py-3 text-left text-sm transition-colors hover:bg-cyber-blue/20 rounded-md"
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
+    </div>
   );
 };
