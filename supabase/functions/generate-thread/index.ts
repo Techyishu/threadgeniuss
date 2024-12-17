@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { Configuration, OpenAIApi } from 'https://esm.sh/openai@3.3.0'
+import { createClient } from 'https://esm.sh/@supabase_supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -87,7 +86,7 @@ async function generateThread(transcript: string, title: string) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4',
         messages: [{ role: 'user', content: prompt }],
       }),
     });
@@ -113,6 +112,33 @@ serve(async (req) => {
   }
 
   try {
+    // Get the JWT token from the Authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('Missing Authorization header');
+    }
+
+    // Create Supabase client with auth context
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: authHeader },
+        },
+      }
+    );
+
+    // Get the authenticated user
+    const {
+      data: { user },
+      error: userError,
+    } = await supabaseClient.auth.getUser();
+
+    if (userError || !user) {
+      throw new Error('Unauthorized');
+    }
+
     // Parse request body
     const { youtubeUrl } = await req.json();
     console.log('Received YouTube URL:', youtubeUrl);
@@ -146,18 +172,7 @@ serve(async (req) => {
     const thread = await generateThread(transcript, title);
     console.log('Successfully generated thread');
 
-    // Create Supabase client
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
-        },
-      }
-    );
-
-    // Save thread to database
+    // Save thread to database with user_id
     const { data, error } = await supabaseClient
       .from('threads')
       .insert([
@@ -165,7 +180,8 @@ serve(async (req) => {
           youtube_url: youtubeUrl,
           content: thread,
           title,
-          status: 'completed'
+          status: 'completed',
+          user_id: user.id  // Set the user_id to the authenticated user's ID
         }
       ])
       .select()
