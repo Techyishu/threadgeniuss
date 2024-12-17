@@ -1,17 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Share2, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { useNavigate } from "react-router-dom";
 
 export const Dashboard = () => {
   const [youtubeLink, setYoutubeLink] = useState("");
   const [progress, setProgress] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedThread, setGeneratedThread] = useState<string | null>(null);
+  const [session, setSession] = useState(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const isValidYoutubeUrl = (url: string) => {
     // Support various YouTube URL formats
@@ -41,6 +62,11 @@ export const Dashboard = () => {
       setIsGenerating(true);
       setProgress(10);
       console.log('Generating thread for URL:', youtubeLink);
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('Please sign in to generate threads');
+      }
 
       const { data, error } = await supabase.functions.invoke('generate-thread', {
         body: { youtubeUrl: youtubeLink }
@@ -78,15 +104,40 @@ export const Dashboard = () => {
     }
   };
 
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-cyber-dark p-4 sm:p-6 md:p-8">
+        <div className="max-w-md mx-auto bg-white/5 p-6 rounded-lg backdrop-blur-sm">
+          <h2 className="text-2xl font-bold text-white mb-6 text-center">Sign In</h2>
+          <Auth
+            supabaseClient={supabase}
+            appearance={{ theme: ThemeSupa }}
+            theme="dark"
+            providers={[]}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-cyber-dark p-4 sm:p-6 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
-        {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-            Thread Generator
-          </h1>
-          <p className="text-gray-400 text-sm sm:text-base">Transform YouTube content into engaging threads</p>
+        {/* Header with Sign Out */}
+        <div className="flex justify-between items-center">
+          <div className="text-center flex-1">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+              Thread Generator
+            </h1>
+            <p className="text-gray-400 text-sm sm:text-base">Transform YouTube content into engaging threads</p>
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => supabase.auth.signOut()}
+            className="border-cyber-purple/30 hover:border-cyber-purple text-cyber-purple"
+          >
+            Sign Out
+          </Button>
         </div>
 
         {/* Input Section */}
