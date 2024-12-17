@@ -27,7 +27,7 @@ export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) =
   };
 
   return (
-    <Sidebar>
+    <Sidebar className="h-full bg-cyber-dark">
       <div className="flex justify-between items-center p-4 border-b border-cyber-blue/20">
         <h2 className="text-lg font-semibold text-cyber-blue">Menu</h2>
         <Button variant="ghost" size="icon" onClick={onClose} className="text-cyber-blue">
@@ -36,20 +36,28 @@ export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) =
       </div>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-cyber-blue">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => {
-                  navigate('/');
-                  onClose?.();
-                }} tooltip="Home">
+                <SidebarMenuButton 
+                  onClick={() => {
+                    navigate('/');
+                    onClose?.();
+                  }} 
+                  tooltip="Home"
+                  className="text-white hover:bg-cyber-blue/20"
+                >
                   <Home className="w-4 h-4" />
                   <span>Home</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={onClose} tooltip="Saved Threads">
+                <SidebarMenuButton 
+                  onClick={onClose} 
+                  tooltip="Saved Threads"
+                  className="text-white hover:bg-cyber-blue/20"
+                >
                   <List className="w-4 h-4" />
                   <span>Saved Threads</span>
                 </SidebarMenuButton>
@@ -59,20 +67,28 @@ export const DashboardSidebar = ({ userName, onClose }: DashboardSidebarProps) =
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Account</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-cyber-blue">Account</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={onClose} tooltip="Profile">
+                <SidebarMenuButton 
+                  onClick={onClose} 
+                  tooltip="Profile"
+                  className="text-white hover:bg-cyber-blue/20"
+                >
                   <User className="w-4 h-4" />
                   <span>{userName || 'Profile'}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => {
-                  handleSignOut();
-                  onClose?.();
-                }} tooltip="Sign Out">
+                <SidebarMenuButton 
+                  onClick={() => {
+                    handleSignOut();
+                    onClose?.();
+                  }} 
+                  tooltip="Sign Out"
+                  className="text-white hover:bg-cyber-blue/20"
+                >
                   <LogOut className="w-4 h-4" />
                   <span>Sign Out</span>
                 </SidebarMenuButton>

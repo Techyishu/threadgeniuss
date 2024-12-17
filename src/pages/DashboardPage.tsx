@@ -33,7 +33,7 @@ const DashboardPage = () => {
           </SheetTrigger>
           <SheetContent 
             side="left" 
-            className="w-[240px] p-0 border-cyber-blue/20"
+            className="w-[240px] p-0 border-cyber-blue/20 bg-cyber-dark"
           >
             <DashboardSidebar userName={userName} onClose={() => setIsSidebarOpen(false)} />
           </SheetContent>
@@ -49,7 +49,7 @@ const DashboardPage = () => {
             </SheetTrigger>
             <SheetContent 
               side="left" 
-              className="w-[240px] p-0 border-cyber-blue/20"
+              className="w-[240px] p-0 border-cyber-blue/20 bg-cyber-dark"
             >
               <DashboardSidebar userName={userName} onClose={() => setIsSidebarOpen(false)} />
             </SheetContent>
