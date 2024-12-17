@@ -28,7 +28,7 @@ export const Hero = () => {
             <Button
               size="lg"
               variant="outline"
-              className="border-gray-600 text-white hover:bg-gray-800"
+              className="bg-gray-800/80 border-cyber-blue text-white hover:bg-gray-700 hover:border-cyber-purple transition-all duration-300"
             >
               View Pricing
             </Button>
