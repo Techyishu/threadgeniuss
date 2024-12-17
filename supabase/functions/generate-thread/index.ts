@@ -8,15 +8,10 @@ const corsHeaders = {
 }
 
 function extractVideoId(url: string): string | null {
-  // Support various YouTube URL formats
   const patterns = [
-    // Standard watch URLs
     /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})(?:&.*)?$/,
-    // Shortened youtu.be URLs
     /^(?:https?:\/\/)?(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]{11})(?:\?.*)?$/,
-    // Embed URLs
     /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([a-zA-Z0-9_-]{11})(?:\?.*)?$/,
-    // Mobile app URLs
     /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/v\/([a-zA-Z0-9_-]{11})(?:\?.*)?$/,
   ];
 
@@ -37,30 +32,35 @@ async function getYouTubeTranscript(videoUrl: string, apiKey: string) {
 
   console.log('Extracted video ID:', videoId);
 
-  // First, get video details
-  const detailsResponse = await fetch(
-    `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`
-  );
-  const details = await detailsResponse.json();
-  console.log('Video details response:', details);
+  try {
+    // First, get video details
+    const detailsResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`
+    );
+    const details = await detailsResponse.json();
+    console.log('Video details response:', details);
 
-  if (!details.items?.[0]) {
-    throw new Error('Video not found');
+    if (!details.items?.[0]) {
+      throw new Error('Video not found');
+    }
+
+    const title = details.items[0]?.snippet?.title;
+
+    // Then get captions
+    const captionsResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/captions?part=snippet&videoId=${videoId}&key=${apiKey}`
+    );
+    const captions = await captionsResponse.json();
+    console.log('Captions response:', captions);
+    
+    return {
+      title,
+      transcript: captions.items?.[0]?.snippet?.text || 'No transcript available'
+    };
+  } catch (error) {
+    console.error('Error fetching YouTube data:', error);
+    throw new Error(`Failed to fetch YouTube data: ${error.message}`);
   }
-
-  const title = details.items[0]?.snippet?.title;
-
-  // Then get captions
-  const captionsResponse = await fetch(
-    `https://www.googleapis.com/youtube/v3/captions?part=snippet&videoId=${videoId}&key=${apiKey}`
-  );
-  const captions = await captionsResponse.json();
-  console.log('Captions response:', captions);
-  
-  return {
-    title,
-    transcript: captions.items?.[0]?.snippet?.text || 'No transcript available'
-  };
 }
 
 async function generateThread(transcript: string, title: string) {
@@ -79,12 +79,17 @@ async function generateThread(transcript: string, title: string) {
     Transcript: ${transcript}
   `;
 
-  const completion = await openai.createChatCompletion({
-    model: "gpt-4",
-    messages: [{ role: "user", content: prompt }],
-  });
+  try {
+    const completion = await openai.createChatCompletion({
+      model: "gpt-4",
+      messages: [{ role: "user", content: prompt }],
+    });
 
-  return completion.data.choices[0]?.message?.content;
+    return completion.data.choices[0]?.message?.content;
+  } catch (error) {
+    console.error('Error generating thread with OpenAI:', error);
+    throw new Error(`Failed to generate thread: ${error.message}`);
+  }
 }
 
 serve(async (req) => {
@@ -94,16 +99,29 @@ serve(async (req) => {
   }
 
   try {
+    // Parse request body
     const { youtubeUrl } = await req.json();
     console.log('Received YouTube URL:', youtubeUrl);
 
     if (!youtubeUrl) {
-      throw new Error('YouTube URL is required');
+      return new Response(
+        JSON.stringify({ error: 'YouTube URL is required' }),
+        { 
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     const youtubeApiKey = Deno.env.get('YOUTUBE_API_KEY');
     if (!youtubeApiKey) {
-      throw new Error('YouTube API key not configured');
+      return new Response(
+        JSON.stringify({ error: 'YouTube API key not configured' }),
+        { 
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     // Get video transcript and title
@@ -139,7 +157,10 @@ serve(async (req) => {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error saving thread to database:', error);
+      throw error;
+    }
 
     return new Response(
       JSON.stringify({ thread: data }),
@@ -154,7 +175,7 @@ serve(async (req) => {
       JSON.stringify({ error: error.message }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
+        status: error.status || 400,
       },
     );
   }
