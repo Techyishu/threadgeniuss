@@ -2,7 +2,7 @@ import { Copy, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ThreadPreviewProps {
   generatedThread: string | null;
@@ -16,6 +16,12 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
     // Split thread into tweets based on newlines or character limit
     return thread.split('\n\n').filter(tweet => tweet.trim().length > 0);
   };
+
+  useEffect(() => {
+    if (generatedThread) {
+      setTweets(splitIntoTweets(generatedThread));
+    }
+  }, [generatedThread]);
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -66,13 +72,6 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
       });
     }
   };
-
-  // Split thread into tweets when generatedThread changes
-  useState(() => {
-    if (generatedThread) {
-      setTweets(splitIntoTweets(generatedThread));
-    }
-  }, [generatedThread]);
 
   return (
     <div className="bg-cyber-dark/80 p-4 sm:p-6 rounded-lg border border-cyber-purple/20">
