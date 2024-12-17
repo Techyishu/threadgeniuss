@@ -20,13 +20,13 @@ const features = [
 
 export const Features = () => {
   return (
-    <section className="py-20 bg-cyber-dark">
-      <div className="container mx-auto px-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-clip-text text-transparent bg-glow-gradient">
+    <section className="py-12 sm:py-20 bg-cyber-dark">
+      <div className="container mx-auto px-4 sm:px-6">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 bg-clip-text text-transparent bg-glow-gradient">
           Powerful Features for Content Creators
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {features.map((feature, index) => (
             <div
               key={index}
@@ -37,8 +37,8 @@ export const Features = () => {
                 <div className="w-12 h-12 rounded-full bg-cyber-blue/10 flex items-center justify-center mb-4 text-cyber-blue group-hover:text-cyber-purple transition-colors duration-300">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-white">{feature.title}</h3>
-                <p className="text-gray-400">{feature.description}</p>
+                <h3 className="text-lg sm:text-xl font-semibold mb-2 text-white">{feature.title}</h3>
+                <p className="text-sm sm:text-base text-gray-400">{feature.description}</p>
               </div>
             </div>
           ))}

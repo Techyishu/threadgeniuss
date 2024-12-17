@@ -24,18 +24,18 @@ export const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cyber-dark p-4 md:p-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen bg-cyber-dark p-4 sm:p-6 md:p-8">
+      <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
             Thread Generator
           </h1>
-          <p className="text-gray-400">Transform YouTube content into engaging threads</p>
+          <p className="text-gray-400 text-sm sm:text-base">Transform YouTube content into engaging threads</p>
         </div>
 
         {/* Input Section */}
-        <div className="bg-gradient-to-r from-cyber-dark to-cyber-dark/50 p-6 rounded-lg border border-cyber-purple/20 backdrop-blur-sm">
+        <div className="bg-gradient-to-r from-cyber-dark to-cyber-dark/50 p-4 sm:p-6 rounded-lg border border-cyber-purple/20 backdrop-blur-sm">
           <div className="space-y-4">
             <Input
               type="url"
@@ -56,7 +56,7 @@ export const Dashboard = () => {
           {/* Progress Indicator */}
           {isGenerating && (
             <div className="mt-6 space-y-2">
-              <div className="flex justify-between text-sm text-gray-400">
+              <div className="flex justify-between text-xs sm:text-sm text-gray-400">
                 <span>Generating thread...</span>
                 <span>{progress}%</span>
               </div>
@@ -66,14 +66,14 @@ export const Dashboard = () => {
         </div>
 
         {/* Preview Section */}
-        <div className="bg-cyber-dark/80 p-6 rounded-lg border border-cyber-purple/20">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-white">Preview</h2>
-            <div className="flex gap-2">
+        <div className="bg-cyber-dark/80 p-4 sm:p-6 rounded-lg border border-cyber-purple/20">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
+            <h2 className="text-lg sm:text-xl font-semibold text-white">Preview</h2>
+            <div className="flex gap-2 w-full sm:w-auto">
               <Button
                 variant="outline"
                 size="sm"
-                className="border-cyber-purple/30 hover:border-cyber-purple text-cyber-purple"
+                className="flex-1 sm:flex-none border-cyber-purple/30 hover:border-cyber-purple text-cyber-purple"
               >
                 <Save className="w-4 h-4 mr-2" />
                 Save Draft
@@ -81,7 +81,7 @@ export const Dashboard = () => {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-cyber-blue/30 hover:border-cyber-blue text-cyber-blue"
+                className="flex-1 sm:flex-none border-cyber-blue/30 hover:border-cyber-blue text-cyber-blue"
               >
                 <Share2 className="w-4 h-4 mr-2" />
                 Share
@@ -90,7 +90,7 @@ export const Dashboard = () => {
           </div>
           
           <div className="min-h-[200px] bg-cyber-dark/40 rounded-lg border border-dashed border-gray-700 p-4">
-            <p className="text-gray-500 text-center">
+            <p className="text-gray-500 text-center text-sm sm:text-base">
               Generated thread will appear here...
             </p>
           </div>
