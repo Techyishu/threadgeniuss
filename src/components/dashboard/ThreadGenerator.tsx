@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -11,7 +10,6 @@ interface ThreadGeneratorProps {
 
 export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => {
   const [youtubeLink, setYoutubeLink] = useState("");
-  const [progress, setProgress] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
@@ -36,7 +34,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       }
 
       setIsGenerating(true);
-      setProgress(10);
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -51,13 +48,10 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error(error.message || 'Failed to generate thread');
       }
 
-      setProgress(50);
-
       if (!data || !data.thread) {
         throw new Error('Invalid response from server');
       }
 
-      setProgress(100);
       onThreadGenerated(data.thread.content);
 
       toast({
@@ -74,7 +68,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       onThreadGenerated(null);
     } finally {
       setIsGenerating(false);
-      setProgress(0);
     }
   };
 
@@ -96,16 +89,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           {isGenerating ? 'Generating...' : 'Generate Thread'}
         </Button>
       </div>
-
-      {isGenerating && (
-        <div className="mt-6 space-y-2">
-          <div className="flex justify-between text-xs sm:text-sm text-gray-400">
-            <span>Generating thread...</span>
-            <span>{progress}%</span>
-          </div>
-          <Progress value={progress} className="h-2" />
-        </div>
-      )}
     </div>
   );
 };

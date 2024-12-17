@@ -1,6 +1,5 @@
-import { Copy, Save } from "lucide-react";
+import { Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useState, useEffect } from "react";
 
@@ -38,78 +37,19 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
     }
   };
 
-  const saveDraft = async () => {
-    try {
-      if (!generatedThread) {
-        toast({
-          title: "Error",
-          description: "No thread to save",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Get the current user
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Error",
-          description: "You must be logged in to save threads",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from('threads')
-        .insert({
-          content: generatedThread,
-          status: 'draft',
-          youtube_url: '', // This should be passed from the parent component
-          user_id: user.id // Add the user_id here
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Thread saved as draft",
-      });
-    } catch (err) {
-      console.error('Error saving draft:', err);
-      toast({
-        title: "Error",
-        description: "Failed to save draft",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="bg-cyber-dark/80 p-4 sm:p-6 rounded-lg border border-cyber-purple/20">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
         <h2 className="text-lg sm:text-xl font-semibold text-white">Preview</h2>
-        <div className="flex gap-2 w-full sm:w-auto">
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1 sm:flex-none border-cyber-purple/30 hover:border-cyber-purple text-cyber-purple"
-            onClick={saveDraft}
-          >
-            <Save className="w-4 h-4 mr-2" />
-            Save
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1 sm:flex-none border-cyber-blue/30 hover:border-cyber-blue text-cyber-blue"
-            onClick={() => generatedThread && copyToClipboard(generatedThread)}
-          >
-            <Copy className="w-4 h-4 mr-2" />
-            Copy All
-          </Button>
-        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex-1 sm:flex-none border-cyber-blue/30 hover:border-cyber-blue text-cyber-blue"
+          onClick={() => generatedThread && copyToClipboard(generatedThread)}
+        >
+          <Copy className="w-4 h-4 mr-2" />
+          Copy All
+        </Button>
       </div>
       
       <div className="space-y-4">
