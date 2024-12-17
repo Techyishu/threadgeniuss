@@ -12,16 +12,15 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
   const { toast } = useToast();
   const [tweets, setTweets] = useState<string[]>([]);
 
-  const splitIntoTweets = (thread: string) => {
-    // Split thread into tweets based on newlines or character limit
-    return thread.split('\n\n').filter(tweet => tweet.trim().length > 0);
-  };
-
   useEffect(() => {
     if (generatedThread) {
       setTweets(splitIntoTweets(generatedThread));
     }
   }, [generatedThread]);
+
+  const splitIntoTweets = (thread: string) => {
+    return thread.split('\n\n').filter(tweet => tweet.trim().length > 0);
+  };
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -99,7 +98,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
             onClick={saveDraft}
           >
             <Save className="w-4 h-4 mr-2" />
-            Save Draft
+            Save
           </Button>
           <Button
             variant="outline"
