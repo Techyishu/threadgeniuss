@@ -50,12 +50,25 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
         return;
       }
 
+      // Get the current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to save threads",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from('threads')
         .insert({
           content: generatedThread,
           status: 'draft',
           youtube_url: '', // This should be passed from the parent component
+          user_id: user.id // Add the user_id here
         });
 
       if (error) throw error;
@@ -65,6 +78,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
         description: "Thread saved as draft",
       });
     } catch (err) {
+      console.error('Error saving draft:', err);
       toast({
         title: "Error",
         description: "Failed to save draft",
