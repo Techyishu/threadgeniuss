@@ -15,14 +15,31 @@ export async function generateThread(transcript: string, title: string) {
     4. Include specific, actionable insights
     5. End with a strong call-to-action
     6. Keep each tweet under 280 characters
-    7. Number each tweet (1/5, 2/5, etc.)
-    8. Use line breaks strategically for readability
+    7. Format each tweet exactly like this:
+
+    1/5
+    [First tweet content]
+
+    2/5
+    [Second tweet content]
+
+    3/5
+    [Third tweet content]
+
+    4/5
+    [Fourth tweet content]
+
+    5/5
+    [Final tweet content with call-to-action]
+
+    Make sure to:
+    - Include exactly two line breaks between tweets
+    - Start each tweet with its number (1/5, 2/5, etc.)
+    - Keep the content engaging and valuable
+    - Use line breaks within tweets for better readability
     
     Title: ${title}
     Transcript: ${transcript}
-    
-    Format the thread as a numbered list, with each number representing one tweet.
-    Make sure to create EXACTLY 5 tweets, no more, no less.
   `;
 
   try {
