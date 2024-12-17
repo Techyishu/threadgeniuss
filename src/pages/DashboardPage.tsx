@@ -31,7 +31,10 @@ const DashboardPage = () => {
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[240px] bg-cyber-dark border-cyber-blue/20 p-0">
+          <SheetContent 
+            side="left" 
+            className="w-[240px] bg-cyber-dark border-cyber-blue/20 p-0 backdrop-blur-none"
+          >
             <DashboardSidebar userName={userName} onClose={() => setIsSidebarOpen(false)} />
           </SheetContent>
         </Sheet>
@@ -44,7 +47,10 @@ const DashboardPage = () => {
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[240px] bg-cyber-dark border-cyber-blue/20 p-0">
+            <SheetContent 
+              side="left" 
+              className="w-[240px] bg-cyber-dark border-cyber-blue/20 p-0 backdrop-blur-none"
+            >
               <DashboardSidebar userName={userName} onClose={() => setIsSidebarOpen(false)} />
             </SheetContent>
           </Sheet>
