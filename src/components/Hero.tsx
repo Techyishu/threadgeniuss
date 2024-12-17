@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-cyber-dark px-4 sm:px-6">
       {/* Animated background */}
@@ -22,6 +25,7 @@ export const Hero = () => {
             <Button
               size="lg"
               className="w-full sm:w-auto bg-[#2563EB] hover:bg-[#1d4ed8] transition-all duration-300"
+              onClick={() => navigate('/dashboard')}
             >
               Start Creating <ArrowRight className="ml-2" />
             </Button>
