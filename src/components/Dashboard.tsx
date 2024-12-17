@@ -13,14 +13,30 @@ export const Dashboard = () => {
   const [generatedThread, setGeneratedThread] = useState<string | null>(null);
   const { toast } = useToast();
 
+  const isValidYoutubeUrl = (url: string) => {
+    const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})$/;
+    return pattern.test(url);
+  };
+
   const handleGenerate = async () => {
     try {
+      if (!youtubeLink) {
+        throw new Error('Please enter a YouTube URL');
+      }
+
+      if (!isValidYoutubeUrl(youtubeLink)) {
+        throw new Error('Please enter a valid YouTube URL (e.g., https://youtube.com/watch?v=xxxxx)');
+      }
+
       setIsGenerating(true);
       setProgress(10);
+      console.log('Generating thread for URL:', youtubeLink);
 
       const { data, error } = await supabase.functions.invoke('generate-thread', {
         body: { youtubeUrl: youtubeLink }
       });
+
+      console.log('Response from edge function:', { data, error });
 
       if (error) {
         throw new Error(error.message || 'Failed to generate thread');
@@ -43,7 +59,7 @@ export const Dashboard = () => {
       console.error('Error generating thread:', error);
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || 'An unexpected error occurred',
         variant: "destructive",
       });
     } finally {
@@ -68,7 +84,7 @@ export const Dashboard = () => {
           <div className="space-y-4">
             <Input
               type="url"
-              placeholder="Paste YouTube URL here..."
+              placeholder="Paste YouTube URL here (e.g., https://youtube.com/watch?v=xxxxx)"
               value={youtubeLink}
               onChange={(e) => setYoutubeLink(e.target.value)}
               className="bg-cyber-dark/60 border-cyber-purple/30 text-white placeholder:text-gray-500 h-12"
@@ -78,7 +94,7 @@ export const Dashboard = () => {
               disabled={!youtubeLink || isGenerating}
               className="w-full bg-gradient-to-r from-cyber-purple to-cyber-blue hover:opacity-90 transition-opacity h-12 text-white font-medium"
             >
-              Generate Thread
+              {isGenerating ? 'Generating...' : 'Generate Thread'}
             </Button>
           </div>
 
