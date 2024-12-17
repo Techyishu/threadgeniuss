@@ -14,8 +14,8 @@ export const Hero = () => {
       <div className="container mx-auto relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-            Create <span className="bg-cyber-purple text-white px-2">viral threads</span>
-            <br className="hidden sm:block" /> effortlessly
+            <span className="text-[#8B5CF6]">Thread</span>{" "}
+            <span className="text-[#D6BCFA]">Genius</span>
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-8 sm:mb-12 max-w-2xl mx-auto px-4">
             Transform any YouTube video into engaging Twitter threads in seconds.
@@ -33,6 +33,7 @@ export const Hero = () => {
               size="lg"
               variant="outline"
               className="w-full sm:w-auto bg-gray-800/80 border-cyber-blue text-white hover:bg-gray-700 hover:border-cyber-purple transition-all duration-300"
+              onClick={() => navigate('/pricing')}
             >
               View Pricing
             </Button>
