@@ -1,19 +1,18 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "./integrations/supabase/client";
+import { Session } from "@supabase/supabase-js";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index";
 import DashboardPage from "./pages/DashboardPage";
 import { AuthPage } from "./components/AuthPage";
-import PricingPage from "./pages/PricingPage";
 
 const queryClient = new QueryClient();
 
-const App = () => {
-  const [session, setSession] = useState(null);
+function App() {
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -32,15 +31,13 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route
               path="/auth"
               element={
-                session ? <Navigate to="/dashboard" replace /> : <AuthPage />
+                !session ? <AuthPage /> : <Navigate to="/dashboard" replace />
               }
             />
             <Route
@@ -49,17 +46,12 @@ const App = () => {
                 session ? <DashboardPage /> : <Navigate to="/auth" replace />
               }
             />
-            <Route
-              path="/pricing"
-              element={
-                session ? <PricingPage /> : <Navigate to="/auth" replace />
-              }
-            />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
+      <Toaster />
     </QueryClientProvider>
   );
-};
+}
 
 export default App;

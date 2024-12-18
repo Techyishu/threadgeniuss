@@ -15,8 +15,7 @@ export const PricingPlans = () => {
   };
 
   return (
-    <div id="pricing-plans" className="w-full space-y-6">
-      <h2 className="text-2xl font-bold text-[#1A1F2C]">Choose Your Plan</h2>
+    <div className="w-full space-y-6">
       <div className="grid gap-6 md:grid-cols-2">
         {/* Free Plan */}
         <Card className="border-cyber-blue/20">
