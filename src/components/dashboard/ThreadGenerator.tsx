@@ -1,15 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { ProFeatures } from "./ProFeatures";
+import { useProStatus } from "@/hooks/useProStatus";
 
 interface ThreadGeneratorProps {
   onThreadGenerated: (thread: string | null) => void;
@@ -20,32 +15,8 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
   const [isGenerating, setIsGenerating] = useState(false);
   const [tone, setTone] = useState("professional");
   const [threadSize, setThreadSize] = useState("medium");
-  const [isPro, setIsPro] = useState(false);
+  const { isPro } = useProStatus();
   const { toast } = useToast();
-
-  // Fetch user's pro status
-  const fetchProStatus = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data } = await supabase
-        .from('profiles')
-        .select('is_pro')
-        .eq('id', user.id)
-        .single();
-
-      if (data) {
-        setIsPro(data.is_pro);
-      }
-    } catch (error) {
-      console.error('Error fetching pro status:', error);
-    }
-  };
-
-  useState(() => {
-    fetchProStatus();
-  }, []);
 
   const isValidYoutubeUrl = (url: string) => {
     const patterns = [
@@ -105,7 +76,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
 
       setIsGenerating(true);
 
-      // Check both rate limit and threads limit
       await checkRateLimit();
       await checkThreadsLimit();
 
@@ -161,36 +131,12 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         />
         
         {isPro && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm text-gray-300">Tone</label>
-              <Select value={tone} onValueChange={setTone}>
-                <SelectTrigger className="bg-cyber-dark/60 border-cyber-purple/30 text-white">
-                  <SelectValue placeholder="Select tone" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="professional">Professional</SelectItem>
-                  <SelectItem value="casual">Casual</SelectItem>
-                  <SelectItem value="humorous">Humorous</SelectItem>
-                  <SelectItem value="educational">Educational</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm text-gray-300">Thread Size</label>
-              <Select value={threadSize} onValueChange={setThreadSize}>
-                <SelectTrigger className="bg-cyber-dark/60 border-cyber-purple/30 text-white">
-                  <SelectValue placeholder="Select size" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="short">Short (3 tweets)</SelectItem>
-                  <SelectItem value="medium">Medium (5 tweets)</SelectItem>
-                  <SelectItem value="long">Long (7 tweets)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          <ProFeatures 
+            tone={tone}
+            setTone={setTone}
+            threadSize={threadSize}
+            setThreadSize={setThreadSize}
+          />
         )}
 
         <Button
