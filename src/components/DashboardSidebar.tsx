@@ -105,7 +105,10 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: Dash
             <p className="text-xl font-bold text-cyber-blue">{threadsCount}</p>
           </div>
 
-          <UpgradeDialog open={dialogOpen} onOpenChange={setDialogOpen} isPro={isPro} onUpgrade={fetchUserData} />
+          <div className="px-4 py-2 text-center">
+            <h3 className="text-cyber-blue font-semibold mb-1">Pro Features Coming Soon</h3>
+            <p className="text-sm text-gray-400">Contact me for pro features</p>
+          </div>
         </div>
       </nav>
     </div>
