@@ -20,12 +20,15 @@ export const UpgradeDialog = () => {
     "Custom thread templates",
   ];
 
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+  };
+
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+    <Drawer open={isOpen} onOpenChange={handleOpenChange}>
       <DrawerTrigger asChild>
         <Button 
           className="w-full flex items-center gap-2 bg-gradient-to-r from-cyber-purple to-cyber-blue hover:opacity-90 transition-opacity"
-          onClick={() => setIsOpen(true)}
         >
           <Crown className="h-5 w-5" />
           Upgrade to Pro
