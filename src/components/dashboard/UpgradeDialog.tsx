@@ -121,7 +121,9 @@ export const UpgradeDialog = () => {
           }}
         >
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-white">Choose Your Plan</DialogTitle>
+            <DialogTitle asChild>
+              <h2 className="text-2xl font-bold text-white">Choose Your Plan</h2>
+            </DialogTitle>
             <DialogDescription>
               Select the plan that best fits your needs
             </DialogDescription>
