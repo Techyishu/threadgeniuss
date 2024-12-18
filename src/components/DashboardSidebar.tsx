@@ -111,7 +111,7 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: Dash
             <p className="text-xl font-bold text-cyber-blue">{threadsCount}</p>
           </div>
 
-          <Dialog open={isUpgradeOpen} onOpenChange={setIsUpgradeOpen}>
+          <Dialog>
             <DialogTrigger asChild>
               <button
                 className="w-full flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-cyber-purple to-cyber-blue rounded-md text-white font-medium hover:opacity-90 transition-opacity"
