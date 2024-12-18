@@ -25,12 +25,12 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
 
   const checkRateLimit = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke('rate-limiter');
+      const { error } = await supabase.functions.invoke('rate-limiter');
       if (error) throw error;
-      return data;
+      return true;
     } catch (error) {
       if (error.message === 'Rate limit exceeded') {
-        throw new Error('You have reached your request limit. Please try again later or upgrade to Pro.');
+        throw new Error('Too many requests. Please try again later.');
       }
       throw error;
     }

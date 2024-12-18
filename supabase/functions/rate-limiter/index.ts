@@ -11,8 +11,8 @@ interface RateLimitConfig {
 }
 
 const defaultConfig: RateLimitConfig = {
-  maxRequests: 100,    // 100 requests
-  windowMs: 900000,    // per 15 minutes
+  maxRequests: 10,     // 10 requests
+  windowMs: 60000,     // per 1 minute
 }
 
 Deno.serve(async (req) => {
@@ -50,7 +50,7 @@ Deno.serve(async (req) => {
 
     // Adjust rate limits based on user type
     const config: RateLimitConfig = profile?.is_pro
-      ? { ...defaultConfig, maxRequests: 1000 } // Pro users get more requests
+      ? { ...defaultConfig, maxRequests: 50 } // Pro users get 50 requests per minute
       : defaultConfig
 
     // Check current request count
@@ -78,11 +78,9 @@ Deno.serve(async (req) => {
         }
       ])
 
+    // We no longer return the remaining requests count to hide it from users
     return new Response(
-      JSON.stringify({
-        remaining: config.maxRequests - count - 1,
-        reset: new Date(now + config.windowMs).toISOString()
-      }),
+      JSON.stringify({ success: true }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
