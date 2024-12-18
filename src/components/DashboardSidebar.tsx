@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { SidebarMenuItem } from "./dashboard/SidebarMenuItem";
+import { useToast } from "@/components/ui/use-toast";
 
 interface DashboardSidebarProps {
   userName?: string;
@@ -13,7 +14,8 @@ interface DashboardSidebarProps {
 export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: DashboardSidebarProps) => {
   const navigate = useNavigate();
   const [threadsCount, setThreadsCount] = useState<number>(5);
-  const [isPro, setIsPro] = useState(false);
+  const [isPro] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchUserData();
@@ -22,26 +24,42 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: Dash
   const fetchUserData = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('threads_count, is_pro')
-          .eq('id', user.id)
-          .single();
-        
-        if (data) {
-          setThreadsCount(data.threads_count);
-          setIsPro(data.is_pro);
-        }
+      if (!user) throw new Error('No user found');
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('threads_count, is_pro')
+        .eq('id', user.id)
+        .single();
+      
+      if (error) throw error;
+      
+      if (data) {
+        setThreadsCount(data.threads_count);
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to fetch user data. Please try again.",
+      });
     }
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate('/');
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+      });
+    }
   };
 
   const menuItems = [
