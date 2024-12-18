@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, User } from "lucide-react";
 
 interface SidebarMenuItemProps {
   icon: LucideIcon;
