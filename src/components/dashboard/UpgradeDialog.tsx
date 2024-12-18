@@ -66,7 +66,7 @@ const PlanCard = ({
 };
 
 export const UpgradeDialog = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -94,19 +94,20 @@ export const UpgradeDialog = () => {
       });
     } finally {
       setLoading(false);
+      setOpen(false);
     }
   };
 
   return (
     <>
       <Button
-        onClick={() => setIsOpen(true)}
+        onClick={() => setOpen(true)}
         className="w-full bg-cyber-purple hover:bg-cyber-purple/90"
       >
         Upgrade to Pro
       </Button>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[900px] bg-cyber-dark border border-cyber-blue/20">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-white">Choose Your Plan</DialogTitle>
@@ -127,7 +128,7 @@ export const UpgradeDialog = () => {
               ]}
               isPro={false}
               isCurrentPlan={true}
-              onSelect={() => setIsOpen(false)}
+              onSelect={() => setOpen(false)}
             />
             <PlanCard
               title="Pro"
