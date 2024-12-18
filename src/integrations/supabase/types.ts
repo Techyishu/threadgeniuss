@@ -27,6 +27,24 @@ export type Database = {
         }
         Relationships: []
       }
+      request_logs: {
+        Row: {
+          id: string
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       threads: {
         Row: {
           content: string
@@ -62,7 +80,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_request_count: {
+        Args: {
+          user_id: string
+          window_start: string
+        }
+        Returns: {
+          count: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

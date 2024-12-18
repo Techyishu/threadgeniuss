@@ -23,6 +23,19 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
     return patterns.some(pattern => pattern.test(url));
   };
 
+  const checkRateLimit = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('rate-limiter');
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      if (error.message === 'Rate limit exceeded') {
+        throw new Error('You have reached your request limit. Please try again later or upgrade to Pro.');
+      }
+      throw error;
+    }
+  };
+
   const handleGenerate = async () => {
     try {
       if (!youtubeLink) {
@@ -34,6 +47,9 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       }
 
       setIsGenerating(true);
+
+      // Check rate limit before proceeding
+      await checkRateLimit();
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {

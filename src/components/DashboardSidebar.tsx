@@ -14,12 +14,24 @@ interface DashboardSidebarProps {
 export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: DashboardSidebarProps) => {
   const navigate = useNavigate();
   const [threadsCount, setThreadsCount] = useState<number>(5);
+  const [remainingRequests, setRemainingRequests] = useState<number | null>(null);
   const [isPro] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchUserData();
+    checkRateLimit();
   }, []);
+
+  const checkRateLimit = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('rate-limiter');
+      if (error) throw error;
+      setRemainingRequests(data.remaining);
+    } catch (error) {
+      console.error('Error checking rate limit:', error);
+    }
+  };
 
   const fetchUserData = async () => {
     try {
@@ -120,6 +132,13 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: Dash
             <p className="text-sm text-gray-300">Threads Remaining</p>
             <p className="text-xl font-bold text-cyber-blue">{threadsCount}</p>
           </div>
+
+          {remainingRequests !== null && (
+            <div className="px-4 py-2 bg-cyber-blue/10 rounded-md">
+              <p className="text-sm text-gray-300">API Requests Remaining</p>
+              <p className="text-xl font-bold text-cyber-blue">{remainingRequests}</p>
+            </div>
+          )}
 
           <div className="px-4 py-2 text-center">
             <h3 className="text-cyber-blue font-semibold mb-1">Pro Features Coming Soon</h3>
