@@ -23,7 +23,10 @@ export const ProFeaturesInfo = () => {
         </Button>
       </div>
 
-      <Dialog open={showPricing} onOpenChange={setShowPricing}>
+      <Dialog 
+        open={showPricing} 
+        onOpenChange={setShowPricing}
+      >
         <DialogContent className="max-w-4xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold">Upgrade to Pro</DialogTitle>
