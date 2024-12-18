@@ -36,6 +36,29 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
     }
   };
 
+  const checkThreadsLimit = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('threads_count, is_pro')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) throw profileError;
+
+      if (!profile.is_pro && profile.threads_count <= 0) {
+        throw new Error('You have reached your free plan limit. Please upgrade to Pro for unlimited threads.');
+      }
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const handleGenerate = async () => {
     try {
       if (!youtubeLink) {
@@ -48,8 +71,9 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
 
       setIsGenerating(true);
 
-      // Check rate limit before proceeding
+      // Check both rate limit and threads limit
       await checkRateLimit();
+      await checkThreadsLimit();
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
