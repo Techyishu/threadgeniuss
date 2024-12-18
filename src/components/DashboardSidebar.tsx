@@ -1,6 +1,14 @@
-import { Home, List, User, LogOut } from "lucide-react";
+import { Home, List, User, LogOut, Crown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface DashboardSidebarProps {
   userName?: string;
@@ -10,6 +18,31 @@ interface DashboardSidebarProps {
 
 export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: DashboardSidebarProps) => {
   const navigate = useNavigate();
+  const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
+  const [threadsCount, setThreadsCount] = useState<number>(5);
+
+  useEffect(() => {
+    fetchThreadsCount();
+  }, []);
+
+  const fetchThreadsCount = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('threads_count')
+          .eq('id', user.id)
+          .single();
+        
+        if (data) {
+          setThreadsCount(data.threads_count);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching threads count:', error);
+    }
+  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -70,7 +103,33 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: Dash
             </button>
           ))}
         </div>
+
+        <div className="mt-6 space-y-4">
+          <div className="px-4 py-2 bg-cyber-blue/10 rounded-md">
+            <p className="text-sm text-gray-300">Threads Remaining</p>
+            <p className="text-xl font-bold text-cyber-blue">{threadsCount}</p>
+          </div>
+
+          <button
+            onClick={() => setIsUpgradeOpen(true)}
+            className="w-full flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-cyber-purple to-cyber-blue rounded-md text-white font-medium hover:opacity-90 transition-opacity"
+          >
+            <Crown className="h-5 w-5" />
+            Upgrade to Pro
+          </button>
+        </div>
       </nav>
+
+      <Dialog open={isUpgradeOpen} onOpenChange={setIsUpgradeOpen}>
+        <DialogContent className="bg-cyber-dark border border-cyber-purple/20">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-white">Upgrade to Pro</DialogTitle>
+            <DialogDescription className="text-gray-300">
+              Coming soon! Get ready for unlimited threads and premium features.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
