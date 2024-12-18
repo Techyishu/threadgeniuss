@@ -25,7 +25,7 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         cyber: {
-          dark: "#1A1F2C",
+          dark: "#FFFFFF",
           blue: "#33C3F0",
           purple: "#8B5CF6",
         },
@@ -83,7 +83,7 @@ export default {
         float: "float 3s ease-in-out infinite",
       },
       backgroundImage: {
-        "cyber-gradient": "linear-gradient(135deg, #1A1F2C 0%, #33C3F0 100%)",
+        "cyber-gradient": "linear-gradient(135deg, #FFFFFF 0%, #33C3F0 100%)",
         "glow-gradient": "linear-gradient(90deg, #8B5CF6 0%, #33C3F0 100%)",
       },
     },

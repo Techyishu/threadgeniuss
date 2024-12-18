@@ -38,9 +38,9 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
   };
 
   return (
-    <div className="bg-cyber-dark/80 p-4 sm:p-6 rounded-lg border border-cyber-purple/20">
+    <div className="bg-white p-4 sm:p-6 rounded-lg border border-cyber-purple/20 shadow-lg">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
-        <h2 className="text-lg sm:text-xl font-semibold text-white">Preview</h2>
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Preview</h2>
         <Button
           variant="outline"
           size="sm"
@@ -57,9 +57,9 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
           tweets.map((tweet, index) => (
             <div 
               key={index}
-              className="relative bg-cyber-dark/40 rounded-lg border border-dashed border-gray-700 p-4 group"
+              className="relative bg-gray-50 rounded-lg border border-dashed border-gray-300 p-4 group"
             >
-              <div className="text-white whitespace-pre-line">
+              <div className="text-gray-900 whitespace-pre-line">
                 {tweet}
               </div>
               <Button

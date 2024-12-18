@@ -120,14 +120,14 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
   };
 
   return (
-    <div className="bg-gradient-to-r from-cyber-dark to-cyber-dark/50 p-4 sm:p-6 rounded-lg border border-cyber-purple/20 backdrop-blur-sm">
+    <div className="bg-white p-4 sm:p-6 rounded-lg border border-cyber-purple/20 shadow-lg">
       <div className="space-y-4">
         <Input
           type="url"
           placeholder="Paste YouTube URL here (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)"
           value={youtubeLink}
           onChange={(e) => setYoutubeLink(e.target.value)}
-          className="bg-cyber-dark/60 border-cyber-purple/30 text-white placeholder:text-gray-500 h-12"
+          className="bg-white border-cyber-purple/30 text-gray-900 placeholder:text-gray-500 h-12"
         />
         
         {isPro && (
