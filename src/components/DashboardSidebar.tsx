@@ -8,6 +8,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 
 interface DashboardSidebarProps {
@@ -110,26 +111,26 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: Dash
             <p className="text-xl font-bold text-cyber-blue">{threadsCount}</p>
           </div>
 
-          <button
-            onClick={() => setIsUpgradeOpen(true)}
-            className="w-full flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-cyber-purple to-cyber-blue rounded-md text-white font-medium hover:opacity-90 transition-opacity"
-          >
-            <Crown className="h-5 w-5" />
-            Upgrade to Pro
-          </button>
+          <Dialog open={isUpgradeOpen} onOpenChange={setIsUpgradeOpen}>
+            <DialogTrigger asChild>
+              <button
+                className="w-full flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-cyber-purple to-cyber-blue rounded-md text-white font-medium hover:opacity-90 transition-opacity"
+              >
+                <Crown className="h-5 w-5" />
+                Upgrade to Pro
+              </button>
+            </DialogTrigger>
+            <DialogContent className="bg-cyber-dark border border-cyber-purple/20">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold text-white">Upgrade to Pro</DialogTitle>
+                <DialogDescription className="text-gray-300">
+                  Coming soon! Get ready for unlimited threads and premium features.
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </div>
       </nav>
-
-      <Dialog open={isUpgradeOpen} onOpenChange={setIsUpgradeOpen}>
-        <DialogContent className="bg-cyber-dark border border-cyber-purple/20">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-white">Upgrade to Pro</DialogTitle>
-            <DialogDescription className="text-gray-300">
-              Coming soon! Get ready for unlimited threads and premium features.
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
