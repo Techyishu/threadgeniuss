@@ -57,6 +57,7 @@ const PlanCard = ({
           onClick={onSelect}
           disabled={isCurrentPlan}
           className={`w-full ${isPro ? "bg-cyber-purple hover:bg-cyber-purple/90" : ""}`}
+          tabIndex={isCurrentPlan ? -1 : 0}
         >
           {isCurrentPlan ? "Current Plan" : isPro ? "Upgrade to Pro" : "Stay Free"}
         </Button>
@@ -70,6 +71,7 @@ export const UpgradeDialog = () => {
   const [loading, setLoading] = React.useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const initialFocusRef = React.useRef<HTMLButtonElement>(null);
 
   const handleUpgrade = async () => {
     setLoading(true);
@@ -80,7 +82,6 @@ export const UpgradeDialog = () => {
         return;
       }
 
-      // Here you would typically redirect to a payment page or handle the upgrade process
       toast({
         title: "Pro upgrade coming soon!",
         description: "This feature is under development.",
@@ -103,12 +104,22 @@ export const UpgradeDialog = () => {
       <Button
         onClick={() => setOpen(true)}
         className="w-full bg-cyber-purple hover:bg-cyber-purple/90"
+        ref={initialFocusRef}
       >
         Upgrade to Pro
       </Button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[900px] bg-cyber-dark border border-cyber-blue/20">
+      <Dialog 
+        open={open} 
+        onOpenChange={setOpen}
+      >
+        <DialogContent 
+          className="sm:max-w-[900px] bg-cyber-dark border border-cyber-blue/20"
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            initialFocusRef.current?.focus();
+          }}
+        >
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-white">Choose Your Plan</DialogTitle>
             <DialogDescription>
