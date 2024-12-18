@@ -9,19 +9,16 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
   try {
-    // Get the JWT token from the Authorization header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       throw new Error('Missing Authorization header');
     }
 
-    // Create Supabase client with auth context
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
@@ -32,7 +29,6 @@ serve(async (req) => {
       }
     );
 
-    // Get the authenticated user
     const {
       data: { user },
       error: userError,
@@ -42,9 +38,8 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    // Parse request body
-    const { youtubeUrl } = await req.json();
-    console.log('Received YouTube URL:', youtubeUrl);
+    const { youtubeUrl, tone = 'professional', threadSize = 'medium' } = await req.json();
+    console.log('Received request:', { youtubeUrl, tone, threadSize });
 
     if (!youtubeUrl) {
       return new Response(
@@ -67,15 +62,12 @@ serve(async (req) => {
       );
     }
 
-    // Get video transcript and title
     const { transcript, title } = await getYouTubeTranscript(youtubeUrl, youtubeApiKey);
     console.log('Successfully retrieved transcript for video:', title);
     
-    // Generate thread using OpenAI
-    const thread = await generateThread(transcript, title);
+    const thread = await generateThread(transcript, title, tone, threadSize);
     console.log('Successfully generated thread');
 
-    // Save thread to database with user_id
     const { data, error } = await supabaseClient
       .from('threads')
       .insert([

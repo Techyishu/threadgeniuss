@@ -1,12 +1,23 @@
-export async function generateThread(transcript: string, title: string) {
+export async function generateThread(transcript: string, title: string, tone = 'professional', threadSize = 'medium') {
   const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIApiKey) {
     throw new Error('OpenAI API key not configured');
   }
 
+  const getTweetCount = (size: string) => {
+    switch (size) {
+      case 'short': return 3;
+      case 'long': return 7;
+      default: return 5; // medium
+    }
+  };
+
+  const tweetCount = getTweetCount(threadSize);
+
   const prompt = `
     You are an expert social media content creator specializing in creating viral Twitter threads.
-    Based on the following YouTube video title and transcript, create an engaging Twitter thread with EXACTLY 5 tweets.
+    Based on the following YouTube video title and transcript, create an engaging Twitter thread with EXACTLY ${tweetCount} tweets.
+    The tone should be ${tone}.
     
     Follow these guidelines:
     1. Start with a hook that grabs attention and promises value
@@ -17,25 +28,20 @@ export async function generateThread(transcript: string, title: string) {
     6. Keep each tweet under 280 characters
     7. Format each tweet exactly like this:
 
-    1/5
+    1/${tweetCount}
     [First tweet content]
 
-    2/5
+    2/${tweetCount}
     [Second tweet content]
 
-    3/5
-    [Third tweet content]
-
-    4/5
-    [Fourth tweet content]
-
-    5/5
+    ${tweetCount}/${tweetCount}
     [Final tweet content with call-to-action]
 
     Make sure to:
     - Include exactly two line breaks between tweets
-    - Start each tweet with its number (1/5, 2/5, etc.)
+    - Start each tweet with its number (1/${tweetCount}, 2/${tweetCount}, etc.)
     - Keep the content engaging and valuable
+    - Maintain a ${tone} tone throughout the thread
     
     Title: ${title}
     Transcript: ${transcript}
