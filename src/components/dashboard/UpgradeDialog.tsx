@@ -1,14 +1,14 @@
 import { Check, Crown } from "lucide-react";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 export const UpgradeDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,8 +21,8 @@ export const UpgradeDialog = () => {
   ];
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+      <DrawerTrigger asChild>
         <Button 
           className="w-full flex items-center gap-2 bg-gradient-to-r from-cyber-purple to-cyber-blue hover:opacity-90 transition-opacity"
           onClick={() => setIsOpen(true)}
@@ -30,13 +30,13 @@ export const UpgradeDialog = () => {
           <Crown className="h-5 w-5" />
           Upgrade to Pro
         </Button>
-      </DialogTrigger>
-      <DialogContent className="bg-cyber-dark border border-cyber-purple/20">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-white">
+      </DrawerTrigger>
+      <DrawerContent className="bg-cyber-dark border-t border-cyber-purple/20">
+        <DrawerHeader>
+          <DrawerTitle className="text-xl font-bold text-white">
             Upgrade to Pro
-          </DialogTitle>
-          <DialogDescription className="space-y-4">
+          </DrawerTitle>
+          <DrawerDescription className="space-y-4">
             <div className="space-y-3">
               {benefits.map((benefit, index) => (
                 <div key={index} className="flex items-start gap-2">
@@ -56,9 +56,9 @@ export const UpgradeDialog = () => {
                 Get ready for an enhanced thread generation experience!
               </p>
             </div>
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
+          </DrawerDescription>
+        </DrawerHeader>
+      </DrawerContent>
+    </Drawer>
   );
 };
