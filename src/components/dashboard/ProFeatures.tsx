@@ -38,9 +38,9 @@ export const ProFeatures = ({ tone, setTone, threadSize, setThreadSize }: ProFea
             <SelectValue placeholder="Select size" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="short">Short (3 tweets)</SelectItem>
-            <SelectItem value="medium">Medium (5 tweets)</SelectItem>
-            <SelectItem value="long">Long (7 tweets)</SelectItem>
+            <SelectItem value="short">Short (5 tweets)</SelectItem>
+            <SelectItem value="medium">Medium (10 tweets)</SelectItem>
+            <SelectItem value="long">Long (15 tweets)</SelectItem>
           </SelectContent>
         </Select>
       </div>
