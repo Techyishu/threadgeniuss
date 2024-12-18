@@ -20,9 +20,9 @@ const steps = [
 
 export const Process = () => {
   return (
-    <section className="py-12 sm:py-20 bg-cyber-dark/90">
+    <section className="py-12 sm:py-20 bg-white">
       <div className="container mx-auto px-4 sm:px-6">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 bg-clip-text text-transparent bg-glow-gradient">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 text-[#1A1F2C]">
           How It Works
         </h2>
 
@@ -32,15 +32,15 @@ export const Process = () => {
               key={index}
               className="relative flex flex-col items-center text-center"
             >
-              <div className="w-16 h-16 rounded-full bg-cyber-blue/10 flex items-center justify-center mb-6 text-cyber-blue relative">
+              <div className="w-16 h-16 rounded-full bg-[#1A1F2C]/10 flex items-center justify-center mb-6 text-[#1A1F2C] relative">
                 {step.icon}
-                <div className="absolute -inset-2 bg-cyber-blue/20 rounded-full animate-pulse opacity-0 group-hover:opacity-100"></div>
+                <div className="absolute -inset-2 bg-[#1A1F2C]/20 rounded-full animate-pulse opacity-0 group-hover:opacity-100"></div>
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold mb-2 text-white">{step.title}</h3>
-              <p className="text-sm sm:text-base text-gray-400">{step.description}</p>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 text-[#1A1F2C]">{step.title}</h3>
+              <p className="text-sm sm:text-base text-[#403E43]">{step.description}</p>
               
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-8 left-[60%] w-[calc(100%-4rem)] h-[2px] bg-gradient-to-r from-cyber-blue to-transparent"></div>
+                <div className="hidden md:block absolute top-8 left-[60%] w-[calc(100%-4rem)] h-[2px] bg-gradient-to-r from-[#1A1F2C] to-transparent"></div>
               )}
             </div>
           ))}
