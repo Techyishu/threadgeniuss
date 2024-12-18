@@ -15,27 +15,29 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: Dash
   const navigate = useNavigate();
   const [threadsCount, setThreadsCount] = useState<number>(5);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [isPro, setIsPro] = useState(false);
 
   useEffect(() => {
-    fetchThreadsCount();
+    fetchUserData();
   }, []);
 
-  const fetchThreadsCount = async () => {
+  const fetchUserData = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data } = await supabase
           .from('profiles')
-          .select('threads_count')
+          .select('threads_count, is_pro')
           .eq('id', user.id)
           .single();
         
         if (data) {
           setThreadsCount(data.threads_count);
+          setIsPro(data.is_pro);
         }
       }
     } catch (error) {
-      console.error('Error fetching threads count:', error);
+      console.error('Error fetching user data:', error);
     }
   };
 
@@ -103,7 +105,7 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: Dash
             <p className="text-xl font-bold text-cyber-blue">{threadsCount}</p>
           </div>
 
-          <UpgradeDialog />
+          <UpgradeDialog open={dialogOpen} onOpenChange={setDialogOpen} isPro={isPro} onUpgrade={fetchUserData} />
         </div>
       </nav>
     </div>

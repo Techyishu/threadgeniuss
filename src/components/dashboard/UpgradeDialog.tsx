@@ -65,35 +65,17 @@ const PlanCard = ({
   );
 };
 
-export const UpgradeDialog = () => {
-  const [open, setOpen] = React.useState(false);
+interface UpgradeDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  isPro: boolean;
+  onUpgrade?: () => void;
+}
+
+export const UpgradeDialog = ({ open, onOpenChange, isPro, onUpgrade }: UpgradeDialogProps) => {
   const [loading, setLoading] = React.useState(false);
-  const [isPro, setIsPro] = React.useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-
-  React.useEffect(() => {
-    checkProStatus();
-  }, []);
-
-  const checkProStatus = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('is_pro')
-          .eq('id', user.id)
-          .single();
-        
-        if (data) {
-          setIsPro(data.is_pro);
-        }
-      }
-    } catch (error) {
-      console.error('Error checking pro status:', error);
-    }
-  };
 
   const handleUpgrade = async () => {
     setLoading(true);
@@ -111,12 +93,12 @@ export const UpgradeDialog = () => {
 
       if (error) throw error;
 
-      setIsPro(true);
       toast({
         title: "Upgrade successful!",
         description: "You now have access to all Pro features.",
       });
-      setOpen(false);
+      onUpgrade?.();
+      onOpenChange(false);
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -132,14 +114,14 @@ export const UpgradeDialog = () => {
   return (
     <>
       <Button
-        onClick={() => setOpen(true)}
+        onClick={() => onOpenChange(true)}
         className="w-full bg-cyber-purple hover:bg-cyber-purple/90"
         disabled={loading || isPro}
       >
         {isPro ? "Pro Plan Active" : "Upgrade to Pro"}
       </Button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[900px] bg-cyber-dark border border-cyber-blue/20">
           <DialogHeader>
             <DialogTitle asChild>
@@ -162,7 +144,7 @@ export const UpgradeDialog = () => {
               ]}
               isPro={false}
               isCurrentPlan={!isPro}
-              onSelect={() => setOpen(false)}
+              onSelect={() => onOpenChange(false)}
             />
             <PlanCard
               title="Pro"
