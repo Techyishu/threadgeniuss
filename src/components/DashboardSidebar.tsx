@@ -14,7 +14,7 @@ interface DashboardSidebarProps {
 export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: DashboardSidebarProps) => {
   const navigate = useNavigate();
   const [threadsCount, setThreadsCount] = useState<number>(5);
-  const [isPro] = useState(false);
+  const [isPro, setIsPro] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -36,6 +36,7 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: Dash
       
       if (data) {
         setThreadsCount(data.threads_count);
+        setIsPro(data.is_pro);
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -118,7 +119,9 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: Dash
         <div className="mt-6 space-y-4">
           <div className="px-4 py-2 bg-cyber-blue/10 rounded-md">
             <p className="text-sm text-gray-300">Threads Remaining</p>
-            <p className="text-xl font-bold text-cyber-blue">{threadsCount}</p>
+            <p className="text-xl font-bold text-cyber-blue">
+              {isPro ? "Unlimited" : threadsCount}
+            </p>
           </div>
 
           <div className="px-4 py-2 text-center">
