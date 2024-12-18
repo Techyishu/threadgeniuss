@@ -57,7 +57,6 @@ const PlanCard = ({
           onClick={onSelect}
           disabled={isCurrentPlan}
           className={`w-full ${isPro ? "bg-cyber-purple hover:bg-cyber-purple/90" : ""}`}
-          tabIndex={isCurrentPlan ? -1 : 0}
         >
           {isCurrentPlan ? "Current Plan" : isPro ? "Upgrade to Pro" : "Stay Free"}
         </Button>
@@ -69,9 +68,32 @@ const PlanCard = ({
 export const UpgradeDialog = () => {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [isPro, setIsPro] = React.useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const initialFocusRef = React.useRef<HTMLButtonElement>(null);
+
+  React.useEffect(() => {
+    checkProStatus();
+  }, []);
+
+  const checkProStatus = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('is_pro')
+          .eq('id', user.id)
+          .single();
+        
+        if (data) {
+          setIsPro(data.is_pro);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking pro status:', error);
+    }
+  };
 
   const handleUpgrade = async () => {
     setLoading(true);
@@ -82,10 +104,19 @@ export const UpgradeDialog = () => {
         return;
       }
 
+      const { error } = await supabase
+        .from('profiles')
+        .update({ is_pro: true, threads_count: 999999 })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      setIsPro(true);
       toast({
-        title: "Pro upgrade coming soon!",
-        description: "This feature is under development.",
+        title: "Upgrade successful!",
+        description: "You now have access to all Pro features.",
       });
+      setOpen(false);
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -95,7 +126,6 @@ export const UpgradeDialog = () => {
       });
     } finally {
       setLoading(false);
-      setOpen(false);
     }
   };
 
@@ -104,22 +134,13 @@ export const UpgradeDialog = () => {
       <Button
         onClick={() => setOpen(true)}
         className="w-full bg-cyber-purple hover:bg-cyber-purple/90"
-        ref={initialFocusRef}
+        disabled={loading || isPro}
       >
-        Upgrade to Pro
+        {isPro ? "Pro Plan Active" : "Upgrade to Pro"}
       </Button>
 
-      <Dialog 
-        open={open} 
-        onOpenChange={setOpen}
-      >
-        <DialogContent 
-          className="sm:max-w-[900px] bg-cyber-dark border border-cyber-blue/20"
-          onOpenAutoFocus={(e) => {
-            e.preventDefault();
-            initialFocusRef.current?.focus();
-          }}
-        >
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[900px] bg-cyber-dark border border-cyber-blue/20">
           <DialogHeader>
             <DialogTitle asChild>
               <h2 className="text-2xl font-bold text-white">Choose Your Plan</h2>
@@ -140,7 +161,7 @@ export const UpgradeDialog = () => {
                 "Standard support"
               ]}
               isPro={false}
-              isCurrentPlan={true}
+              isCurrentPlan={!isPro}
               onSelect={() => setOpen(false)}
             />
             <PlanCard
@@ -155,7 +176,7 @@ export const UpgradeDialog = () => {
                 "Analytics dashboard"
               ]}
               isPro={true}
-              isCurrentPlan={false}
+              isCurrentPlan={isPro}
               onSelect={handleUpgrade}
             />
           </div>
