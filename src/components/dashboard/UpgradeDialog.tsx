@@ -1,4 +1,5 @@
 import { Check, Crown } from "lucide-react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 
 export const UpgradeDialog = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  
   const benefits = [
     "Unlimited thread generation",
     "Advanced customization options",
@@ -18,7 +21,7 @@ export const UpgradeDialog = () => {
   ];
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <button className="w-full flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-cyber-purple to-cyber-blue rounded-md text-white font-medium hover:opacity-90 transition-opacity">
           <Crown className="h-5 w-5" />
