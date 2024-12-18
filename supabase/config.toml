@@ -1,1 +1,3 @@
 project_id = "rcebmiftdxxpbeiwbncb"
+[functions.rate-limiter]
+verify_jwt = true
