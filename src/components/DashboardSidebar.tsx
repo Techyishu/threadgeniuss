@@ -1,4 +1,4 @@
-import { Home, List, User, LogOut, Crown } from "lucide-react";
+import { Home, List, User, LogOut, Crown, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface DashboardSidebarProps {
   userName?: string;
@@ -19,7 +20,6 @@ interface DashboardSidebarProps {
 
 export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: DashboardSidebarProps) => {
   const navigate = useNavigate();
-  const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const [threadsCount, setThreadsCount] = useState<number>(5);
 
   useEffect(() => {
@@ -122,9 +122,39 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: Dash
             </DialogTrigger>
             <DialogContent className="bg-cyber-dark border border-cyber-purple/20">
               <DialogHeader>
-                <DialogTitle className="text-xl font-bold text-white">Upgrade to Pro</DialogTitle>
-                <DialogDescription className="text-gray-300">
-                  Coming soon! Get ready for unlimited threads and premium features.
+                <DialogTitle className="text-xl font-bold text-white mb-4">
+                  Upgrade to Pro
+                </DialogTitle>
+                <DialogDescription className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-cyber-blue mt-0.5" />
+                      <span className="text-gray-300">Unlimited thread generation</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-cyber-blue mt-0.5" />
+                      <span className="text-gray-300">Advanced customization options</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-cyber-blue mt-0.5" />
+                      <span className="text-gray-300">Priority support</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-cyber-blue mt-0.5" />
+                      <span className="text-gray-300">Custom thread templates</span>
+                    </div>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-cyber-purple/20">
+                    <Button 
+                      className="w-full bg-cyber-purple hover:bg-cyber-purple/90 text-white"
+                      disabled
+                    >
+                      Coming Soon
+                    </Button>
+                    <p className="text-sm text-gray-400 text-center mt-2">
+                      Get ready for an enhanced thread generation experience!
+                    </p>
+                  </div>
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>
