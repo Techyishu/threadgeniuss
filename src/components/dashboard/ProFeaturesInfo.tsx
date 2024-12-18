@@ -1,20 +1,19 @@
 import { useProStatus } from "@/hooks/useProStatus";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
 
 export const ProFeaturesInfo = () => {
   const { isPro } = useProStatus();
-  const { toast } = useToast();
 
   if (isPro) {
     return null;
   }
 
   const handleUpgrade = () => {
-    toast({
-      title: "Coming Soon",
-      description: "Pro upgrade functionality will be available soon!",
-    });
+    // Scroll to pricing section
+    const pricingSection = document.getElementById('pricing-plans');
+    if (pricingSection) {
+      pricingSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
