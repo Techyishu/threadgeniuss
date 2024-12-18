@@ -1,18 +1,19 @@
 import { useProStatus } from "@/hooks/useProStatus";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { PricingPlans } from "./PricingPlans";
 
-export const ProFeaturesInfo = () => {
+interface ProFeaturesInfoProps {
+  onShowPricing: () => void;
+}
+
+export const ProFeaturesInfo = ({ onShowPricing }: ProFeaturesInfoProps) => {
   const { isPro } = useProStatus();
-  const [showPricing, setShowPricing] = useState(false);
 
   if (isPro) {
     return null;
   }
 
   const handleUpgradeClick = () => {
-    setShowPricing(true);
+    onShowPricing();
     // Scroll to pricing section
     const pricingSection = document.getElementById('pricing-section');
     if (pricingSection) {

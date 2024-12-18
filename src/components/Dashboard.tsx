@@ -4,6 +4,7 @@ import { ThreadPreview } from "./dashboard/ThreadPreview";
 import { SavedThreads } from "./dashboard/SavedThreads";
 import { DashboardHeader } from "./dashboard/DashboardHeader";
 import { PricingPlans } from "./dashboard/PricingPlans";
+import { ProFeaturesInfo } from "./dashboard/ProFeaturesInfo";
 
 interface DashboardProps {
   showSavedThreads?: boolean;
@@ -21,6 +22,7 @@ export const Dashboard = ({ showSavedThreads = false }: DashboardProps) => {
           <SavedThreads />
         ) : (
           <>
+            <ProFeaturesInfo onShowPricing={() => setShowPricing(true)} />
             <ThreadGenerator onThreadGenerated={setGeneratedThread} />
             <ThreadPreview generatedThread={generatedThread} />
             {showPricing && (
