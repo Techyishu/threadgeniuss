@@ -3,6 +3,8 @@ import { ThreadGenerator } from "./dashboard/ThreadGenerator";
 import { ThreadPreview } from "./dashboard/ThreadPreview";
 import { SavedThreads } from "./dashboard/SavedThreads";
 import { DashboardHeader } from "./dashboard/DashboardHeader";
+import { PricingPlans } from "./dashboard/PricingPlans";
+import { useProStatus } from "@/hooks/useProStatus";
 
 interface DashboardProps {
   showSavedThreads?: boolean;
@@ -10,6 +12,7 @@ interface DashboardProps {
 
 export const Dashboard = ({ showSavedThreads = false }: DashboardProps) => {
   const [generatedThread, setGeneratedThread] = useState<string | null>(null);
+  const { isPro } = useProStatus();
 
   return (
     <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
@@ -21,6 +24,7 @@ export const Dashboard = ({ showSavedThreads = false }: DashboardProps) => {
           <>
             <ThreadGenerator onThreadGenerated={setGeneratedThread} />
             <ThreadPreview generatedThread={generatedThread} />
+            {!isPro && <PricingPlans />}
           </>
         )}
       </div>
