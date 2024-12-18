@@ -1,13 +1,14 @@
-import { Check, Crown } from "lucide-react";
+import { Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Check } from "lucide-react";
 
 export const UpgradeDialog = () => {
   const plans = [
@@ -38,22 +39,22 @@ export const UpgradeDialog = () => {
   ];
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
+    <Dialog>
+      <DialogTrigger asChild>
         <Button 
           className="w-full flex items-center gap-2 bg-gradient-to-r from-cyber-purple to-cyber-blue hover:opacity-90 transition-opacity"
         >
           <Crown className="h-5 w-5" />
           Upgrade to Pro
         </Button>
-      </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:w-[540px] bg-cyber-dark border-cyber-purple/20">
-        <SheetHeader className="space-y-2 text-white">
-          <SheetTitle className="text-2xl font-bold text-center">Choose Your Plan</SheetTitle>
-          <SheetDescription className="text-gray-400 text-center">
+      </DialogTrigger>
+      <DialogContent className="w-full max-w-3xl bg-cyber-dark border-cyber-purple/20">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-bold text-center text-white">Choose Your Plan</DialogTitle>
+          <DialogDescription className="text-gray-400 text-center">
             Select the plan that best fits your needs
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
         <div className="mt-6 space-y-6">
           {plans.map((plan, index) => (
             <div
@@ -100,7 +101,7 @@ export const UpgradeDialog = () => {
             </div>
           ))}
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 };
