@@ -27,24 +27,14 @@ const DashboardPage = () => {
       <div className="flex min-h-screen w-full bg-cyber-dark text-white">
         {/* Mobile Sidebar */}
         <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-          <SheetTrigger asChild>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="fixed top-4 left-4 z-50 md:hidden"
-              aria-label="Open menu"
-            >
+          <SheetTrigger asChild className="fixed top-4 left-4 z-50 md:hidden">
+            <Button variant="ghost" size="icon">
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
           <SheetContent 
             side="left" 
             className="w-[240px] p-0 border-cyber-blue/20 bg-cyber-dark text-white"
-            onInteractOutside={(e) => {
-              e.preventDefault();
-              setIsSidebarOpen(false);
-            }}
-            onEscapeKeyDown={() => setIsSidebarOpen(false)}
           >
             <DashboardSidebar 
               userName={userName} 
@@ -58,23 +48,13 @@ const DashboardPage = () => {
         <div className="hidden md:block">
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
             <SheetTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="fixed top-4 left-4 z-50"
-                aria-label="Open menu"
-              >
+              <Button variant="ghost" size="icon" className="fixed top-4 left-4 z-50">
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
             <SheetContent 
               side="left" 
               className="w-[240px] p-0 border-cyber-blue/20 bg-cyber-dark text-white"
-              onInteractOutside={(e) => {
-                e.preventDefault();
-                setIsSidebarOpen(false);
-              }}
-              onEscapeKeyDown={() => setIsSidebarOpen(false)}
             >
               <DashboardSidebar 
                 userName={userName} 
