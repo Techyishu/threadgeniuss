@@ -13,7 +13,7 @@ export const Hero = () => {
 
       <div className="container mx-auto relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-[#1A1F2C]">
             Create <span className="bg-[#1A1F2C] text-white px-2">viral threads</span>
             <br className="hidden sm:block" /> effortlessly
           </h1>
