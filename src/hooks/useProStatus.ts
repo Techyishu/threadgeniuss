@@ -14,7 +14,7 @@ export const useProStatus = () => {
           .from('profiles')
           .select('is_pro')
           .eq('id', user.id)
-          .maybeSingle();
+          .single();
 
         if (data) {
           setIsPro(data.is_pro);
