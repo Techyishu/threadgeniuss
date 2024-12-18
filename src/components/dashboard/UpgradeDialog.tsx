@@ -23,14 +23,17 @@ export const UpgradeDialog = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <button className="w-full flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-cyber-purple to-cyber-blue rounded-md text-white font-medium hover:opacity-90 transition-opacity">
+        <Button 
+          className="w-full flex items-center gap-2 bg-gradient-to-r from-cyber-purple to-cyber-blue hover:opacity-90 transition-opacity"
+          onClick={() => setIsOpen(true)}
+        >
           <Crown className="h-5 w-5" />
           Upgrade to Pro
-        </button>
+        </Button>
       </DialogTrigger>
       <DialogContent className="bg-cyber-dark border border-cyber-purple/20">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-white mb-4">
+          <DialogTitle className="text-xl font-bold text-white">
             Upgrade to Pro
           </DialogTitle>
           <DialogDescription className="space-y-4">
