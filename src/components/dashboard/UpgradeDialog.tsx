@@ -1,5 +1,4 @@
 import { Check, Crown } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -11,8 +10,6 @@ import {
 } from "@/components/ui/drawer";
 
 export const UpgradeDialog = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  
   const benefits = [
     "Unlimited thread generation",
     "Advanced customization options",
@@ -20,12 +17,8 @@ export const UpgradeDialog = () => {
     "Custom thread templates",
   ];
 
-  const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
-  };
-
   return (
-    <Drawer open={isOpen} onOpenChange={handleOpenChange}>
+    <Drawer>
       <DrawerTrigger asChild>
         <Button 
           className="w-full flex items-center gap-2 bg-gradient-to-r from-cyber-purple to-cyber-blue hover:opacity-90 transition-opacity"
