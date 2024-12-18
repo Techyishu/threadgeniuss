@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { SidebarMenuItem } from "./dashboard/SidebarMenuItem";
-import { UpgradeDialog } from "./dashboard/UpgradeDialog";
 
 interface DashboardSidebarProps {
   userName?: string;
@@ -14,7 +13,6 @@ interface DashboardSidebarProps {
 export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: DashboardSidebarProps) => {
   const navigate = useNavigate();
   const [threadsCount, setThreadsCount] = useState<number>(5);
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [isPro, setIsPro] = useState(false);
 
   useEffect(() => {
