@@ -17,9 +17,9 @@ export const ProFeatures = ({ tone, setTone, threadSize, setThreadSize }: ProFea
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div className="space-y-2">
-        <label className="text-sm text-gray-300">Tone</label>
+        <label className="text-sm font-medium text-[#1A1F2C]">Tone</label>
         <Select value={tone} onValueChange={setTone}>
-          <SelectTrigger className="bg-cyber-dark/60 border-cyber-purple/30 text-white">
+          <SelectTrigger className="bg-white border-cyber-purple/30 text-[#1A1F2C]">
             <SelectValue placeholder="Select tone" />
           </SelectTrigger>
           <SelectContent>
@@ -32,9 +32,9 @@ export const ProFeatures = ({ tone, setTone, threadSize, setThreadSize }: ProFea
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm text-gray-300">Thread Size</label>
+        <label className="text-sm font-medium text-[#1A1F2C]">Thread Size</label>
         <Select value={threadSize} onValueChange={setThreadSize}>
-          <SelectTrigger className="bg-cyber-dark/60 border-cyber-purple/30 text-white">
+          <SelectTrigger className="bg-white border-cyber-purple/30 text-[#1A1F2C]">
             <SelectValue placeholder="Select size" />
           </SelectTrigger>
           <SelectContent>
