@@ -6,9 +6,9 @@ export async function generateThread(transcript: string, title: string, tone = '
 
   const getTweetCount = (size: string) => {
     switch (size) {
-      case 'short': return 3;
-      case 'long': return 7;
-      default: return 5; // medium
+      case 'short': return 5;
+      case 'long': return 15;
+      default: return 10; // medium
     }
   };
 
