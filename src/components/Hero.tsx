@@ -14,9 +14,11 @@ export const Hero = () => {
       <div className="container mx-auto relative z-10">
         <div className="max-w-[95%] md:max-w-4xl mx-auto text-center">
           <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-8 text-[#1A1F2C] leading-tight">
-            <span className="inline-block">Create <span className="bg-[#1A1F2C] text-white px-3 py-1">viral threads</span></span>
-            <br />
-            <span className="inline-block">effortlessly</span>
+            <div className="flex flex-wrap justify-center items-center gap-x-3">
+              <span>Create</span>
+              <span className="bg-[#1A1F2C] text-white px-3 py-1 rounded-lg">viral threads</span>
+            </div>
+            <span>effortlessly</span>
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl mb-10 sm:mb-12 mx-auto px-2 sm:px-4 font-medium text-[#222222] max-w-[90%] sm:max-w-2xl leading-relaxed">
             Transform any YouTube video into engaging Twitter threads in seconds.
