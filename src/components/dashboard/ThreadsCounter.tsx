@@ -20,7 +20,7 @@ export const ThreadsCounter = () => {
         .from('profiles')
         .select('threads_count, is_pro')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       
