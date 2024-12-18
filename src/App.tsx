@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import DashboardPage from "./pages/DashboardPage";
 import { AuthPage } from "./components/AuthPage";
+import PricingPage from "./pages/PricingPage";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,12 @@ const App = () => {
               path="/dashboard"
               element={
                 session ? <DashboardPage /> : <Navigate to="/auth" replace />
+              }
+            />
+            <Route
+              path="/pricing"
+              element={
+                session ? <PricingPage /> : <Navigate to="/auth" replace />
               }
             />
           </Routes>
