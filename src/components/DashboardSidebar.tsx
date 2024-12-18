@@ -14,6 +14,7 @@ interface DashboardSidebarProps {
 export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads }: DashboardSidebarProps) => {
   const navigate = useNavigate();
   const [threadsCount, setThreadsCount] = useState<number>(5);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchThreadsCount();
