@@ -51,6 +51,19 @@ serve(async (req) => {
       );
     }
 
+    // Get user's pro status
+    const { data: profile, error: profileError } = await supabaseClient
+      .from('profiles')
+      .select('is_pro')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError) {
+      throw profileError;
+    }
+
+    const isPro = profile?.is_pro ?? false;
+
     const youtubeApiKey = Deno.env.get('YOUTUBE_API_KEY');
     if (!youtubeApiKey) {
       return new Response(
@@ -65,7 +78,7 @@ serve(async (req) => {
     const { transcript, title } = await getYouTubeTranscript(youtubeUrl, youtubeApiKey);
     console.log('Successfully retrieved transcript for video:', title);
     
-    const thread = await generateThread(transcript, title, tone, threadSize);
+    const thread = await generateThread(transcript, title, tone, threadSize, isPro);
     console.log('Successfully generated thread');
 
     const { data, error } = await supabaseClient
