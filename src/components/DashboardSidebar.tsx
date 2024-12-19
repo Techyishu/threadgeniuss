@@ -1,14 +1,9 @@
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DashboardSidebarProps } from "@/types/dashboard";
 import { SidebarNavigation } from "./dashboard/SidebarNavigation";
 import { ThreadsCounter } from "./dashboard/ThreadsCounter";
 import { ProFeaturesInfo } from "./dashboard/ProFeaturesInfo";
-import { Button } from "./ui/button";
 
 export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads, onShowPricing }: DashboardSidebarProps) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   return (
     <div className="flex h-full flex-col bg-white text-[#1A1F2C]">
       <div className="flex justify-between items-center p-4 border-b border-cyber-blue/20">
@@ -25,28 +20,6 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads, onShow
         <div className="mt-6 space-y-4">
           <ThreadsCounter />
           <ProFeaturesInfo onShowPricing={onShowPricing} />
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="btn-upgrade w-full">
-                Upgrade to Pro
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Upgrade to Pro</DialogTitle>
-              </DialogHeader>
-              <div className="p-4">
-                <p>Here are the benefits of upgrading to Pro...</p>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setIsDialogOpen(false)}
-                  className="mt-4"
-                >
-                  Close
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
         </div>
       </nav>
     </div>
