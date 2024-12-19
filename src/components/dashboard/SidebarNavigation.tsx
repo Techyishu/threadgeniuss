@@ -11,7 +11,7 @@ interface SidebarNavigationProps {
   onShowPricing?: () => void;
 }
 
-export const SidebarNavigation = ({ userName, onClose, onShowSavedThreads, onShowPricing }: SidebarNavigationProps) => {
+export const SidebarNavigation = ({ onClose, onShowSavedThreads, onShowPricing }: SidebarNavigationProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -49,7 +49,7 @@ export const SidebarNavigation = ({ userName, onClose, onShowSavedThreads, onSho
       }
     },
     {
-      label: userName || "Profile",
+      label: "Profile",
       icon: User,
       onClick: () => {
         onClose?.();
