@@ -8,9 +8,10 @@ interface SidebarNavigationProps {
   userName?: string;
   onClose?: () => void;
   onShowSavedThreads?: (show: boolean) => void;
+  onShowPricing?: () => void;
 }
 
-export const SidebarNavigation = ({ userName, onClose, onShowSavedThreads }: SidebarNavigationProps) => {
+export const SidebarNavigation = ({ userName, onClose, onShowSavedThreads, onShowPricing }: SidebarNavigationProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -75,5 +76,7 @@ export const SidebarNavigation = ({ userName, onClose, onShowSavedThreads }: Sid
         />
       ))}
     </div>
+  );
+};
   );
 };
