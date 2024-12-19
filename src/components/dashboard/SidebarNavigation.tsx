@@ -40,6 +40,14 @@ export const SidebarNavigation = ({ onClose, onShowSavedThreads, onShowPricing }
       }
     },
     {
+      label: "Saved Threads",
+      icon: List,
+      onClick: () => {
+        onShowSavedThreads?.(true);
+        onClose?.();
+      }
+    },
+    {
       label: "Profile",
       icon: User,
       onClick: () => {
