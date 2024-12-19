@@ -3,7 +3,7 @@ import { SidebarNavigation } from "./dashboard/SidebarNavigation";
 import { ThreadsCounter } from "./dashboard/ThreadsCounter";
 import { ProFeaturesInfo } from "./dashboard/ProFeaturesInfo";
 
-export const DashboardSidebar = ({ onClose, onShowSavedThreads, onShowPricing }: DashboardSidebarProps) => {
+export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads, onShowPricing }: DashboardSidebarProps) => {
   return (
     <div className="flex h-full flex-col bg-white text-[#1A1F2C]">
       <div className="flex justify-between items-center p-4 border-b border-cyber-blue/20">
@@ -12,6 +12,7 @@ export const DashboardSidebar = ({ onClose, onShowSavedThreads, onShowPricing }:
 
       <nav className="flex-1 overflow-y-auto p-4">
         <SidebarNavigation 
+          userName={userName} 
           onClose={onClose} 
           onShowSavedThreads={onShowSavedThreads}
         />
