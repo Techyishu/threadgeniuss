@@ -46,14 +46,14 @@ export const Pricing = () => {
                   Most Popular
                 </span>
               )}
-              <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-              <p className="text-4xl font-bold mb-6">
+              <h3 className="text-2xl font-bold mb-2 text-[#1A1F2C]">{plan.name}</h3>
+              <p className="text-4xl font-bold mb-6 text-[#1A1F2C]">
                 {plan.price}
                 <span className="text-gray-500 text-base font-normal">/month</span>
               </p>
               <ul className="space-y-4 mb-8">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2">
+                  <li key={feature} className="flex items-center gap-2 text-[#1A1F2C]">
                     <Check className="text-cyber-blue w-5 h-5" />
                     <span>{feature}</span>
                   </li>
