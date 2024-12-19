@@ -5,7 +5,6 @@ import { SidebarMenuItem } from "./SidebarMenuItem";
 import { useToast } from "@/components/ui/use-toast";
 
 interface SidebarNavigationProps {
-  userName?: string;
   onClose?: () => void;
   onShowSavedThreads?: (show: boolean) => void;
   onShowPricing?: () => void;
@@ -41,17 +40,10 @@ export const SidebarNavigation = ({ onClose, onShowSavedThreads, onShowPricing }
       }
     },
     {
-      label: "Saved Threads",
-      icon: List,
-      onClick: () => {
-        onShowSavedThreads?.(true);
-        onClose?.();
-      }
-    },
-    {
       label: "Profile",
       icon: User,
       onClick: () => {
+        navigate('/dashboard/profile');
         onClose?.();
       }
     },
