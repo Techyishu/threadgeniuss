@@ -23,10 +23,12 @@ export const DashboardSidebar = ({ userName, onClose, onShowSavedThreads, onShow
 
         <div className="mt-6 space-y-4">
           <ThreadsCounter />
-          <Button onClick={() => setIsDialogOpen(true)} className="w-full mt-4">
-            Upgrade to Pro
-          </Button>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={() => setIsDialogOpen(true)} className="w-full mt-4">
+                Upgrade to Pro
+              </Button>
+            </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Upgrade to Pro</DialogTitle>
