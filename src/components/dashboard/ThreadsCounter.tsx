@@ -40,8 +40,8 @@ export const ThreadsCounter = () => {
 
   return (
     <div className="px-4 py-2 bg-cyber-blue/10 rounded-md">
-      <p className="text-sm text-gray-300">Threads Remaining</p>
-      <p className="text-xl font-bold text-cyber-blue">
+      <p className="text-sm text-black font-medium">Threads Remaining</p>
+      <p className="text-xl font-bold text-black">
         {isPro ? "Unlimited" : threadsCount}
       </p>
     </div>
