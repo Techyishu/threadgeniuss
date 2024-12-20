@@ -1,8 +1,29 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 export const AuthPage = () => {
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Listen for auth state changes to handle errors
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "USER_SIGNUP_ERROR") {
+        toast({
+          title: "Account already exists",
+          description: "Please try signing in instead",
+          variant: "destructive",
+        });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [toast]);
+
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white px-4 sm:px-6">
       {/* Animated background */}
@@ -24,9 +45,32 @@ export const AuthPage = () => {
                   },
                 },
               },
+              className: {
+                message: 'text-red-500',
+              },
             }}
             theme="light"
             providers={[]}
+            localization={{
+              variables: {
+                sign_up: {
+                  email_label: 'Email',
+                  password_label: 'Create Password',
+                  button_label: 'Create Account',
+                  loading_button_label: 'Creating Account...',
+                  social_provider_text: 'Sign up with {{provider}}',
+                  link_text: "Don't have an account? Sign up",
+                },
+                sign_in: {
+                  email_label: 'Email',
+                  password_label: 'Your Password',
+                  button_label: 'Sign In',
+                  loading_button_label: 'Signing In...',
+                  social_provider_text: 'Sign in with {{provider}}',
+                  link_text: 'Already have an account? Sign in',
+                },
+              },
+            }}
           />
         </div>
       </div>
