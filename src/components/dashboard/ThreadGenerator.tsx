@@ -30,7 +30,15 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
 
   const checkRateLimit = async () => {
     try {
-      const { error } = await supabase.functions.invoke('rate-limiter');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Not authenticated');
+
+      const { error } = await supabase.functions.invoke('rate-limiter', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+      
       if (error) throw error;
       return true;
     } catch (error) {
@@ -50,9 +58,10 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         .from('profiles')
         .select('threads_count, is_pro')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (profileError) throw profileError;
+      if (!profile) throw new Error('Profile not found');
 
       if (!profile.is_pro && profile.threads_count <= 0) {
         throw new Error('You have reached your free plan limit. Please upgrade to Pro for unlimited threads.');
@@ -76,19 +85,22 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
 
       setIsGenerating(true);
 
-      await checkRateLimit();
-      await checkThreadsLimit();
-
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         throw new Error('Please sign in to generate threads');
       }
+
+      await checkRateLimit();
+      await checkThreadsLimit();
 
       const { data, error } = await supabase.functions.invoke('generate-thread', {
         body: { 
           youtubeUrl: youtubeLink,
           tone: isPro ? tone : 'professional',
           threadSize: isPro ? threadSize : 'medium'
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
         }
       });
 
