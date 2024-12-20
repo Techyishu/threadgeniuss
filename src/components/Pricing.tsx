@@ -5,21 +5,19 @@ const plans = [
   {
     name: "Free",
     price: "$0",
-    features: ["5 threads per month", "Basic thread styles", "YouTube video support"],
+    features: ["5 threads per month", "Basic thread styles"],
     buttonText: "Get Started",
     popular: false,
   },
   {
     name: "Pro",
-    price: "$19",
+    price: "$5",
     features: [
       "Unlimited threads",
       "Custom thread styles",
-      "Priority support",
-      "Advanced analytics",
-      "Custom branding",
+      "choose tone and thread size",
     ],
-    buttonText: "Upgrade to Pro",
+    buttonText: "coming soon",
     popular: true,
   },
 ];
