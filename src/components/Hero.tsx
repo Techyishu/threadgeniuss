@@ -22,7 +22,7 @@ export const Hero = () => {
             <span className="inline-block">effortlessly</span>
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl mb-10 sm:mb-12 mx-auto px-2 sm:px-4 font-medium text-[#222222] max-w-[90%] sm:max-w-2xl leading-relaxed">
-            Transform any YouTube video into engaging Twitter threads in seconds.
+            Transform any YouTube video into engaging X (twitter) threads in seconds.
             Choose your tone, customize length, and share your content effortlessly.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 px-2 sm:px-4 w-full max-w-xl mx-auto">
