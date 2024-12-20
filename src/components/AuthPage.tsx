@@ -3,6 +3,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
+import { AuthError } from "@supabase/supabase-js";
 
 export const AuthPage = () => {
   const { toast } = useToast();
@@ -12,7 +13,7 @@ export const AuthPage = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "USER_SIGNUP_ERROR") {
+      if (event === "SIGNED_OUT") {
         toast({
           title: "Account already exists",
           description: "Please try signing in instead",
