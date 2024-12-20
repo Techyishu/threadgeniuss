@@ -61,7 +61,11 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         .maybeSingle();
 
       if (profileError) throw profileError;
-      if (!profile) throw new Error('Profile not found');
+      
+      // If no profile is found, it means the trigger hasn't completed yet
+      if (!profile) {
+        throw new Error('Your profile is being set up. Please try again in a few seconds.');
+      }
 
       if (!profile.is_pro && profile.threads_count <= 0) {
         throw new Error('You have reached your free plan limit. Please upgrade to Pro for unlimited threads.');
