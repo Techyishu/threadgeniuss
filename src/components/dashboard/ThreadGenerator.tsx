@@ -50,9 +50,13 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         .from('profiles')
         .select('threads_count, is_pro')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (profileError) throw profileError;
+
+      if (!profile) {
+        throw new Error('Profile not found');
+      }
 
       if (!profile.is_pro && profile.threads_count <= 0) {
         throw new Error('You have reached your free plan limit. Please upgrade to Pro for unlimited threads.');
@@ -93,6 +97,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       });
 
       if (error) {
+        console.error('Error from generate-thread function:', error);
         throw new Error(error.message || 'Failed to generate thread');
       }
 
