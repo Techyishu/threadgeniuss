@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import DashboardPage from "./pages/DashboardPage";
 import { AuthPage } from "./components/AuthPage";
+import { Analytics } from "@vercel/analytics/react";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => {
             />
           </Routes>
         </BrowserRouter>
+        <Analytics />
       </TooltipProvider>
     </QueryClientProvider>
   );
