@@ -24,8 +24,16 @@ const plans = [
 
 export const Pricing = () => {
   return (
-    <section id="pricing" className="py-16 bg-white">
-      <div className="container mx-auto px-4">
+    <section id="pricing" className="relative py-16 bg-white">
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[#1A1F2C] opacity-[0.02]" />
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, #1A1F2C 1px, transparent 0)',
+          backgroundSize: '40px 40px',
+          opacity: 0.1
+        }} />
+      </div>
+      <div className="container relative z-10 mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-[#1A1F2C]">
           Simple, Transparent Pricing
         </h2>
@@ -37,7 +45,7 @@ export const Pricing = () => {
                 plan.popular
                   ? "border-cyber-blue shadow-lg"
                   : "border-gray-200"
-              } p-8`}
+              } p-8 bg-white`}
             >
               {plan.popular && (
                 <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-cyber-blue text-white px-4 py-1 rounded-full text-sm">

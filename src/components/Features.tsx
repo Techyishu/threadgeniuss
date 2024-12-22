@@ -20,8 +20,16 @@ const features = [
 
 export const Features = () => {
   return (
-    <section className="py-12 sm:py-20 bg-white">
-      <div className="container mx-auto px-4 sm:px-6">
+    <section className="relative py-12 sm:py-20 bg-white">
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[#1A1F2C] opacity-[0.02]" />
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, #1A1F2C 1px, transparent 0)',
+          backgroundSize: '40px 40px',
+          opacity: 0.1
+        }} />
+      </div>
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 text-[#1A1F2C]">
           Powerful Features for Content Creators
         </h2>

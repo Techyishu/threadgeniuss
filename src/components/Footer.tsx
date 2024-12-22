@@ -2,8 +2,16 @@ import { Instagram, Youtube, Twitter } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="bg-white border-t border-gray-200 py-8">
-      <div className="container mx-auto px-4">
+    <footer className="relative bg-white border-t border-gray-200 py-8">
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[#1A1F2C] opacity-[0.02]" />
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, #1A1F2C 1px, transparent 0)',
+          backgroundSize: '40px 40px',
+          opacity: 0.1
+        }} />
+      </div>
+      <div className="container relative z-10 mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-6">
             <a
