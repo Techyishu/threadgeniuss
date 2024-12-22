@@ -12,14 +12,14 @@ export const Hero = () => {
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white px-2 sm:px-6">
       <div className="absolute inset-0 bg-cyber-gradient opacity-10"></div>
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMjIiIGZpbGwtb3BhY2l0eT0iMC40Ij48cGF0aCBkPSJNNTQgMGg2djZoLTZWMHptNiA2aDZ2NmgtNlY2em0tNiA2aDZ2NmgtNnYtNnptNiA2aDZ2NmgtNnYtNnptLTYgNmg2djZoLTZ2LTZ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-5"></div>
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25[...]
 
       <div className="container mx-auto relative z-10">
         <div className="max-w-[95%] md:max-w-5xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-[#1A1F2C] leading-tight">
-            <span className="inline-block">Create <span className="bg-[#1A1F2C] text-white px-3 py-1">viral threads</span></span>
-            <br />
-            <span className="inline-block">effortlessly</span>
+            <span className="block sm:inline">Create <span className="bg-[#1A1F2C] text-white px-3 py-1">viral threads</span></span>
+            <br className="hidden sm:block" />
+            <span className="block sm:inline">effortlessly</span>
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl mb-10 sm:mb-12 mx-auto px-2 sm:px-4 font-medium text-[#222222] max-w-[90%] sm:max-w-2xl leading-relaxed">
             Transform any YouTube video into engaging X (twitter) threads in seconds.
