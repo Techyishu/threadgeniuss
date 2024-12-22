@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const Hero = () => {
   const navigate = useNavigate();
@@ -9,26 +10,73 @@ export const Hero = () => {
     document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Sample avatar data - these would typically come from your actual users
+  const avatars = [
+    { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U1" },
+    { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U2" },
+    { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U3" },
+    { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U4" },
+  ];
+
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white px-2 sm:px-6">
-      <div className="absolute inset-0 bg-cyber-gradient opacity-10"></div>
-      <div className="absolute inset-0 bg-gradient-to-r from-gray-50 to-transparent"></div>
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white px-4 sm:px-6">
+      {/* Background pattern */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[#1A1F2C] opacity-[0.02]" />
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, #1A1F2C 1px, transparent 0)',
+          backgroundSize: '40px 40px',
+          opacity: 0.1
+        }} />
+      </div>
+
+      {/* Floating avatars */}
+      <div className="absolute inset-0 overflow-hidden">
+        {avatars.map((_, index) => (
+          <div
+            key={index}
+            className="absolute animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${index * 0.5}s`
+            }}
+          >
+            <div className="w-12 h-12 rounded-full bg-white shadow-lg p-1">
+              <Avatar className="w-full h-full">
+                <AvatarImage src={`https://avatar.vercel.sh/${index}`} />
+                <AvatarFallback>U{index + 1}</AvatarFallback>
+              </Avatar>
+            </div>
+          </div>
+        ))}
+      </div>
 
       <div className="container mx-auto relative z-10">
-        <div className="max-w-[95%] md:max-w-5xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-[#1A1F2C] leading-tight">
-            <span className="block sm:inline">Create <span className="bg-[#1A1F2C] text-white px-3 py-1">viral threads</span></span>
+        <div className="max-w-[95%] md:max-w-4xl mx-auto text-center">
+          <div className="mb-6 inline-block">
+            <span className="px-3 py-1 text-sm font-medium bg-[#1A1F2C]/10 text-[#1A1F2C] rounded-full">
+              ThreadGenius for Content Creators
+            </span>
+          </div>
+          
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-[#1A1F2C] leading-[1.1]">
+            Transform Videos into
             <br className="hidden sm:block" />
-            <span className="block sm:inline">effortlessly</span>
+            <span className="bg-gradient-to-r from-[#1A1F2C] to-[#2A2F3C] bg-clip-text text-transparent">
+              Viral Threads
+            </span>
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl mb-10 sm:mb-12 mx-auto px-2 sm:px-4 font-medium text-[#222222] max-w-[90%] sm:max-w-2xl leading-relaxed">
-            Transform any YouTube video into engaging X (twitter) threads in seconds.
-            Choose your tone, customize length, and share your content effortlessly.
+
+          <p className="text-lg sm:text-xl md:text-2xl mb-10 mx-auto font-medium text-[#1A1F2C]/70 max-w-2xl leading-relaxed">
+            Turn any YouTube video into engaging X (Twitter) threads in seconds. 
+            AI-powered content that drives engagement.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 px-2 sm:px-4 w-full max-w-xl mx-auto">
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <Button
               size="lg"
-              className="w-full sm:w-auto bg-[#1A1F2C] hover:bg-[#2A2F3C] text-white transition-all duration-300 text-lg py-6"
+              className="w-full sm:w-auto bg-[#1A1F2C] hover:bg-[#2A2F3C] text-white transition-all duration-300 text-lg py-6 rounded-full"
               onClick={() => navigate('/dashboard')}
             >
               Start Creating <ArrowRight className="ml-2 h-5 w-5" />
@@ -36,11 +84,25 @@ export const Hero = () => {
             <Button
               size="lg"
               variant="outline"
-              className="w-full sm:w-auto border-[#1A1F2C] text-[#1A1F2C] hover:bg-[#1A1F2C] hover:text-white transition-all duration-300 text-lg py-6"
+              className="w-full sm:w-auto border-[#1A1F2C] text-[#1A1F2C] hover:bg-[#1A1F2C] hover:text-white transition-all duration-300 text-lg py-6 rounded-full"
               onClick={scrollToPricing}
             >
               View Pricing
             </Button>
+          </div>
+
+          <div className="flex items-center justify-center gap-2">
+            <div className="flex -space-x-2">
+              {[1, 2, 3, 4].map((i) => (
+                <Avatar key={i} className="w-8 h-8 border-2 border-white">
+                  <AvatarImage src={`https://avatar.vercel.sh/${i}`} />
+                  <AvatarFallback>U{i}</AvatarFallback>
+                </Avatar>
+              ))}
+            </div>
+            <span className="text-sm text-[#1A1F2C]/70">
+              Join thousands of content creators
+            </span>
           </div>
         </div>
       </div>
