@@ -8,10 +8,10 @@ interface SidebarNavigationProps {
   userName?: string;
   onClose?: () => void;
   onShowSavedThreads?: (show: boolean) => void;
-  onShowPricing?: () => void;
+  onNavigateHome?: () => void;
 }
 
-export const SidebarNavigation = ({ onClose, onShowSavedThreads, onShowPricing }: SidebarNavigationProps) => {
+export const SidebarNavigation = ({ onClose, onShowSavedThreads, onNavigateHome }: SidebarNavigationProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -35,8 +35,7 @@ export const SidebarNavigation = ({ onClose, onShowSavedThreads, onShowPricing }
       label: "Home",
       icon: Home,
       onClick: () => {
-        onShowSavedThreads?.(false);
-        navigate('/dashboard');
+        onNavigateHome?.();
         onClose?.();
       }
     },

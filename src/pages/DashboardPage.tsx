@@ -42,6 +42,18 @@ const DashboardPage = () => {
     setIsSidebarOpen(false);
   };
 
+  const handleShowSavedThreads = (show: boolean) => {
+    setShowSavedThreads(show);
+    setShowPricing(false);
+    setIsSidebarOpen(false);
+  };
+
+  const handleNavigateHome = () => {
+    setShowSavedThreads(false);
+    setShowPricing(false);
+    setIsSidebarOpen(false);
+  };
+
   return (
     <AuthGuard>
       <SidebarProvider>
@@ -60,8 +72,9 @@ const DashboardPage = () => {
               <DashboardSidebar 
                 userName={userName} 
                 onClose={() => setIsSidebarOpen(false)} 
-                onShowSavedThreads={setShowSavedThreads}
+                onShowSavedThreads={handleShowSavedThreads}
                 onShowPricing={handleShowPricing}
+                onNavigateHome={handleNavigateHome}
               />
             </SheetContent>
           </Sheet>
@@ -81,8 +94,9 @@ const DashboardPage = () => {
                 <DashboardSidebar 
                   userName={userName} 
                   onClose={() => setIsSidebarOpen(false)} 
-                  onShowSavedThreads={setShowSavedThreads}
+                  onShowSavedThreads={handleShowSavedThreads}
                   onShowPricing={handleShowPricing}
+                  onNavigateHome={handleNavigateHome}
                 />
               </SheetContent>
             </Sheet>

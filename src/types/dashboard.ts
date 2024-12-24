@@ -3,4 +3,5 @@ export interface DashboardSidebarProps {
   onClose?: () => void;
   onShowSavedThreads?: (show: boolean) => void;
   onShowPricing?: () => void;
+  onNavigateHome?: () => void;
 }
