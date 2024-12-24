@@ -13,6 +13,7 @@ const DashboardPage = () => {
   const [userName, setUserName] = useState<string>("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showSavedThreads, setShowSavedThreads] = useState(false);
+  const [showPricing, setShowPricing] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -35,6 +36,12 @@ const DashboardPage = () => {
     getUser();
   }, [toast]);
 
+  const handleShowPricing = () => {
+    setShowPricing(true);
+    setShowSavedThreads(false);
+    setIsSidebarOpen(false);
+  };
+
   return (
     <AuthGuard>
       <SidebarProvider>
@@ -54,7 +61,7 @@ const DashboardPage = () => {
                 userName={userName} 
                 onClose={() => setIsSidebarOpen(false)} 
                 onShowSavedThreads={setShowSavedThreads}
-                onShowPricing={() => {/* handle showing pricing here */}}
+                onShowPricing={handleShowPricing}
               />
             </SheetContent>
           </Sheet>
@@ -75,14 +82,17 @@ const DashboardPage = () => {
                   userName={userName} 
                   onClose={() => setIsSidebarOpen(false)} 
                   onShowSavedThreads={setShowSavedThreads}
-                  onShowPricing={() => {/* handle showing pricing here */}}
+                  onShowPricing={handleShowPricing}
                 />
               </SheetContent>
             </Sheet>
           </div>
 
           <main className="flex-1">
-            <Dashboard showSavedThreads={showSavedThreads} />
+            <Dashboard 
+              showSavedThreads={showSavedThreads} 
+              showPricing={showPricing}
+            />
           </main>
         </div>
       </SidebarProvider>
