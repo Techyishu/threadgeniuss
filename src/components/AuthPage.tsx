@@ -3,7 +3,6 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
-import { AuthError } from "@supabase/supabase-js";
 
 export const AuthPage = () => {
   const { toast } = useToast();
@@ -48,10 +47,13 @@ export const AuthPage = () => {
               },
               className: {
                 message: 'text-red-500',
+                container: 'w-full',
+                button: 'w-full',
+                divider: 'my-4',
               },
             }}
             theme="light"
-            providers={[]}
+            providers={['google']}
             localization={{
               variables: {
                 sign_up: {
@@ -59,7 +61,7 @@ export const AuthPage = () => {
                   password_label: 'Create Password',
                   button_label: 'Create Account',
                   loading_button_label: 'Creating Account...',
-                  social_provider_text: 'Sign up with {{provider}}',
+                  social_provider_text: 'Continue with {{provider}}',
                   link_text: "Don't have an account? Sign up",
                 },
                 sign_in: {
@@ -67,7 +69,7 @@ export const AuthPage = () => {
                   password_label: 'Your Password',
                   button_label: 'Sign In',
                   loading_button_label: 'Signing In...',
-                  social_provider_text: 'Sign in with {{provider}}',
+                  social_provider_text: 'Continue with {{provider}}',
                   link_text: 'Already have an account? Sign in',
                 },
               },
