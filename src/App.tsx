@@ -10,6 +10,10 @@ import DashboardPage from "./pages/DashboardPage";
 import { AuthPage } from "./components/AuthPage";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import TermsOfService from "./pages/TermsOfService";
+import Support from "./pages/Support";
+import RefundPolicy from "./pages/RefundPolicy";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +54,10 @@ const App = () => {
                 session ? <DashboardPage /> : <Navigate to="/auth" replace />
               }
             />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           </Routes>
         </BrowserRouter>
         <Analytics />
