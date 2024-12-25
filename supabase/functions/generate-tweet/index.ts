@@ -1,12 +1,60 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 import { Configuration, OpenAIApi } from "https://esm.sh/openai@3.3.0";
-import { getYouTubeTranscript } from "../generate-thread/youtube.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+async function getYouTubeTranscript(youtubeUrl: string, apiKey: string) {
+  try {
+    // Extract video ID from URL
+    const videoId = new URL(youtubeUrl).searchParams.get('v');
+    if (!videoId) {
+      throw new Error('Invalid YouTube URL');
+    }
+
+    // First, get video details to get the title
+    const detailsResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`
+    );
+    const detailsData = await detailsResponse.json();
+    
+    if (!detailsData.items?.[0]?.snippet) {
+      throw new Error('Failed to fetch video details');
+    }
+
+    const title = detailsData.items[0].snippet.title;
+
+    // Then, get captions
+    const captionsResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/captions?part=snippet&videoId=${videoId}&key=${apiKey}`
+    );
+    const captionsData = await captionsResponse.json();
+
+    if (!captionsData.items?.[0]) {
+      throw new Error('No captions found for this video');
+    }
+
+    // Get the first available caption track
+    const captionId = captionsData.items[0].id;
+
+    // Get the actual transcript
+    const transcriptResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/captions/${captionId}?key=${apiKey}`
+    );
+    const transcriptText = await transcriptResponse.text();
+
+    return {
+      transcript: transcriptText,
+      title: title
+    };
+  } catch (error) {
+    console.error('Error fetching YouTube transcript:', error);
+    throw error;
+  }
+}
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -47,12 +95,10 @@ serve(async (req) => {
       throw new Error('YouTube API key not configured');
     }
 
-    const transcriptResult = await getYouTubeTranscript(youtubeUrl, youtubeApiKey);
-    if (!transcriptResult || !transcriptResult.transcript) {
+    const { transcript, title } = await getYouTubeTranscript(youtubeUrl, youtubeApiKey);
+    if (!transcript) {
       throw new Error('Failed to get video transcript');
     }
-
-    const { transcript, title } = transcriptResult;
 
     // Initialize OpenAI
     const configuration = new Configuration({
