@@ -36,9 +36,19 @@ export async function getYouTubeTranscript(youtubeUrl: string, apiKey: string) {
     }
 
     const captionsData = await captionsResponse.json();
+    console.log('Captions data:', captionsData);
 
     if (!captionsData.items?.[0]) {
-      console.error('No captions found:', captionsData);
+      // If no captions are found, try getting the transcript from video description
+      const description = detailsData.items[0].snippet.description;
+      if (description) {
+        console.log('Using video description as fallback');
+        return {
+          transcript: description,
+          title: title
+        };
+      }
+      console.error('No captions or description found:', captionsData);
       throw new Error('No captions found for this video');
     }
 
@@ -48,11 +58,25 @@ export async function getYouTubeTranscript(youtubeUrl: string, apiKey: string) {
 
     // Get the actual transcript
     const transcriptResponse = await fetch(
-      `https://www.googleapis.com/youtube/v3/captions/${captionId}?key=${apiKey}`
+      `https://www.googleapis.com/youtube/v3/captions/${captionId}?key=${apiKey}`,
+      {
+        headers: {
+          'Accept': 'application/json',
+        }
+      }
     );
     
     if (!transcriptResponse.ok) {
       console.error('Failed to fetch transcript:', await transcriptResponse.text());
+      // Fallback to description if transcript fetch fails
+      const description = detailsData.items[0].snippet.description;
+      if (description) {
+        console.log('Using video description as fallback after transcript fetch failure');
+        return {
+          transcript: description,
+          title: title
+        };
+      }
       throw new Error('Failed to fetch video transcript');
     }
 
