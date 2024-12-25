@@ -42,10 +42,17 @@ serve(async (req) => {
 
     // Get video transcript
     console.log('Fetching video transcript...');
-    const { transcript, title } = await getYouTubeTranscript(youtubeUrl, Deno.env.get('YOUTUBE_API_KEY') || '');
-    if (!transcript) {
+    const youtubeApiKey = Deno.env.get('YOUTUBE_API_KEY');
+    if (!youtubeApiKey) {
+      throw new Error('YouTube API key not configured');
+    }
+
+    const transcriptResult = await getYouTubeTranscript(youtubeUrl, youtubeApiKey);
+    if (!transcriptResult || !transcriptResult.transcript) {
       throw new Error('Failed to get video transcript');
     }
+
+    const { transcript, title } = transcriptResult;
 
     // Initialize OpenAI
     const configuration = new Configuration({
@@ -64,7 +71,7 @@ serve(async (req) => {
         },
         {
           role: "user",
-          content: `Create a tweet based on this video transcript: ${transcript}`
+          content: `Create a tweet based on this video titled "${title}". Here's the transcript: ${transcript}`
         }
       ],
     });
@@ -83,6 +90,7 @@ serve(async (req) => {
         youtube_url: youtubeUrl,
         content: tweet,
         user_id: user.id,
+        title: title,
       });
 
     if (insertError) {
