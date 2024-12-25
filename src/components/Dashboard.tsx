@@ -16,18 +16,18 @@ export const Dashboard = ({ showSavedThreads = false, showPricing = false }: Das
 
   return (
     <>
-      <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
-        <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
+      <div className="min-h-screen bg-[#F8F9FE] p-4 sm:p-6 md:p-8">
+        <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8">
           <DashboardHeader />
           {showPricing ? (
             <DashboardPricing />
           ) : showSavedThreads ? (
             <SavedThreads />
           ) : (
-            <>
+            <div className="grid gap-6">
               <ThreadGenerator onThreadGenerated={setGeneratedThread} />
               <ThreadPreview generatedThread={generatedThread} />
-            </>
+            </div>
           )}
         </div>
       </div>
