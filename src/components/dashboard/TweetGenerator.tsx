@@ -14,12 +14,32 @@ export const TweetGenerator = ({ onTweetGenerated }: TweetGeneratorProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  const isValidYoutubeUrl = (url: string) => {
+    try {
+      const urlObj = new URL(url);
+      const isYoutube = urlObj.hostname === 'youtube.com' || urlObj.hostname === 'www.youtube.com';
+      const hasVideoId = urlObj.searchParams.get('v');
+      return isYoutube && hasVideoId;
+    } catch {
+      return false;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!youtubeUrl) {
       toast({
         title: "Error",
         description: "Please enter a YouTube URL",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!isValidYoutubeUrl(youtubeUrl)) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid YouTube URL (e.g., https://www.youtube.com/watch?v=xxxxx)",
         variant: "destructive",
       });
       return;
@@ -74,7 +94,7 @@ export const TweetGenerator = ({ onTweetGenerated }: TweetGeneratorProps) => {
       <div className="flex gap-2">
         <Input
           type="url"
-          placeholder="Enter YouTube URL"
+          placeholder="Enter YouTube URL (e.g., https://www.youtube.com/watch?v=xxxxx)"
           value={youtubeUrl}
           onChange={(e) => setYoutubeUrl(e.target.value)}
           className="flex-1"

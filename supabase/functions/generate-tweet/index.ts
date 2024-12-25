@@ -9,11 +9,23 @@ const corsHeaders = {
 
 async function getYouTubeTranscript(youtubeUrl: string, apiKey: string) {
   try {
-    // Extract video ID from URL
-    const videoId = new URL(youtubeUrl).searchParams.get('v');
-    if (!videoId) {
-      throw new Error('Invalid YouTube URL');
+    // Validate URL format
+    let videoId;
+    try {
+      const url = new URL(youtubeUrl);
+      if (!url.hostname.includes('youtube.com')) {
+        throw new Error('Not a YouTube URL');
+      }
+      videoId = url.searchParams.get('v');
+      if (!videoId) {
+        throw new Error('No video ID found in URL');
+      }
+    } catch (error) {
+      console.error('URL parsing error:', error);
+      throw new Error('Invalid YouTube URL format');
     }
+
+    console.log('Fetching details for video ID:', videoId);
 
     // First, get video details to get the title
     const detailsResponse = await fetch(
@@ -22,10 +34,12 @@ async function getYouTubeTranscript(youtubeUrl: string, apiKey: string) {
     const detailsData = await detailsResponse.json();
     
     if (!detailsData.items?.[0]?.snippet) {
+      console.error('Video details response:', detailsData);
       throw new Error('Failed to fetch video details');
     }
 
     const title = detailsData.items[0].snippet.title;
+    console.log('Retrieved video title:', title);
 
     // Then, get captions
     const captionsResponse = await fetch(
@@ -34,24 +48,33 @@ async function getYouTubeTranscript(youtubeUrl: string, apiKey: string) {
     const captionsData = await captionsResponse.json();
 
     if (!captionsData.items?.[0]) {
+      console.error('Captions response:', captionsData);
       throw new Error('No captions found for this video');
     }
 
     // Get the first available caption track
     const captionId = captionsData.items[0].id;
+    console.log('Found caption track ID:', captionId);
 
     // Get the actual transcript
     const transcriptResponse = await fetch(
       `https://www.googleapis.com/youtube/v3/captions/${captionId}?key=${apiKey}`
     );
+    
+    if (!transcriptResponse.ok) {
+      console.error('Transcript response status:', transcriptResponse.status);
+      throw new Error('Failed to fetch transcript');
+    }
+
     const transcriptText = await transcriptResponse.text();
+    console.log('Successfully retrieved transcript');
 
     return {
       transcript: transcriptText,
       title: title
     };
   } catch (error) {
-    console.error('Error fetching YouTube transcript:', error);
+    console.error('Error in getYouTubeTranscript:', error);
     throw error;
   }
 }
@@ -59,12 +82,7 @@ async function getYouTubeTranscript(youtubeUrl: string, apiKey: string) {
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { 
-      headers: {
-        ...corsHeaders,
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      }
-    });
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
