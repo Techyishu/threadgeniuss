@@ -27,8 +27,16 @@ export const TweetGenerator = ({ onTweetGenerated }: TweetGeneratorProps) => {
 
     setIsLoading(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('Please sign in to generate tweets');
+      }
+
       const { data, error } = await supabase.functions.invoke("generate-tweet", {
         body: { youtubeUrl },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
       });
 
       if (error) throw error;
@@ -39,14 +47,17 @@ export const TweetGenerator = ({ onTweetGenerated }: TweetGeneratorProps) => {
           title: "Success",
           description: "Tweet generated successfully!",
         });
+      } else {
+        throw new Error('No tweet was generated');
       }
     } catch (error) {
       console.error("Error generating tweet:", error);
       toast({
         title: "Error",
-        description: "Failed to generate tweet. Please try again.",
+        description: error.message || "Failed to generate tweet. Please try again.",
         variant: "destructive",
       });
+      onTweetGenerated(null);
     } finally {
       setIsLoading(false);
     }

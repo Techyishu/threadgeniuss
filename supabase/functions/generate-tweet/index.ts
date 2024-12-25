@@ -9,12 +9,14 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const { youtubeUrl } = await req.json();
+    console.log('Processing YouTube URL:', youtubeUrl);
 
     // Initialize Supabase client
     const supabaseClient = createClient(
@@ -34,6 +36,7 @@ serve(async (req) => {
     }
 
     // Get video transcript
+    console.log('Fetching video transcript...');
     const transcript = await getVideoTranscript(youtubeUrl);
     if (!transcript) {
       throw new Error('Failed to get video transcript');
@@ -45,9 +48,10 @@ serve(async (req) => {
     });
     const openai = new OpenAIApi(configuration);
 
+    console.log('Generating tweet with OpenAI...');
     // Generate tweet using OpenAI
     const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
@@ -65,6 +69,8 @@ serve(async (req) => {
       throw new Error('Failed to generate tweet');
     }
 
+    console.log('Tweet generated successfully');
+
     // Save tweet to database
     const { error: insertError } = await supabaseClient
       .from('tweets')
@@ -75,6 +81,7 @@ serve(async (req) => {
       });
 
     if (insertError) {
+      console.error('Error saving tweet:', insertError);
       throw new Error('Failed to save tweet');
     }
 
@@ -88,7 +95,7 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error in generate-tweet function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
