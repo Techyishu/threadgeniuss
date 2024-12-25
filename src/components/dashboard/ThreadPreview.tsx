@@ -1,7 +1,9 @@
-import { Copy } from "lucide-react";
+import { Copy, Twitter, MessageCircle, Heart, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useState, useEffect } from "react";
+import { Avatar } from "@/components/ui/avatar";
+import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ThreadPreviewProps {
   generatedThread: string | null;
@@ -38,16 +40,16 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
   };
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-lg border border-cyber-purple/20 shadow-lg">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Preview</h2>
+    <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-gray-900">Thread Preview</h2>
         <Button
           variant="outline"
           size="sm"
-          className="flex-1 sm:flex-none border-cyber-blue/30 hover:border-cyber-blue text-cyber-blue"
+          className="flex items-center gap-2 text-blue-500 hover:bg-blue-50"
           onClick={() => generatedThread && copyToClipboard(generatedThread)}
         >
-          <Copy className="w-4 h-4 mr-2" />
+          <Copy className="w-4 h-4" />
           Copy All
         </Button>
       </div>
@@ -57,25 +59,54 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
           tweets.map((tweet, index) => (
             <div 
               key={index}
-              className="relative bg-gray-50 rounded-lg border border-dashed border-gray-300 p-4 group"
+              className="relative bg-white rounded-xl border border-gray-200 p-4 hover:bg-gray-50 transition-colors group"
             >
-              <div className="text-gray-900 whitespace-pre-line">
-                {tweet}
+              <div className="flex gap-3">
+                <Avatar className="w-10 h-10">
+                  <AvatarImage src="/placeholder.svg" />
+                  <AvatarFallback>UN</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-semibold text-gray-900">Username</span>
+                    <span className="text-gray-500">@username</span>
+                  </div>
+                  <div className="text-gray-900 whitespace-pre-line mb-3">
+                    {tweet}
+                  </div>
+                  <div className="flex items-center gap-6 text-gray-500">
+                    <button className="flex items-center gap-2 hover:text-blue-500">
+                      <MessageCircle className="w-4 h-4" />
+                      <span className="text-sm">0</span>
+                    </button>
+                    <button className="flex items-center gap-2 hover:text-pink-500">
+                      <Heart className="w-4 h-4" />
+                      <span className="text-sm">0</span>
+                    </button>
+                    <button className="flex items-center gap-2 hover:text-blue-500">
+                      <Share className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => copyToClipboard(tweet)}
+                >
+                  <Copy className="w-4 h-4" />
+                </Button>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => copyToClipboard(tweet)}
-              >
-                <Copy className="w-4 h-4" />
-              </Button>
+              {index < tweets.length - 1 && (
+                <div className="absolute left-7 top-[4.5rem] bottom-0 w-0.5 bg-gray-200" />
+              )}
             </div>
           ))
         ) : (
-          <p className="text-gray-500 text-center text-sm sm:text-base">
-            Generated thread will appear here...
-          </p>
+          <div className="text-center py-8 text-gray-500">
+            <Twitter className="w-12 h-12 mx-auto mb-3 text-blue-500 opacity-50" />
+            <p>Generated thread will appear here...</p>
+          </div>
         )}
       </div>
     </div>
