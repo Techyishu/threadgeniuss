@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import { Button } from "../ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 
 const plans = [
   {
@@ -26,10 +27,26 @@ const plans = [
 
 export const DashboardPricing = () => {
   const { toast } = useToast();
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleUpgrade = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({
           title: "Error",
@@ -45,7 +62,10 @@ export const DashboardPricing = () => {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Subscription error:', error);
+        throw error;
+      }
 
       // Redirect to PayPal approval URL
       window.location.href = data.approvalUrl;
