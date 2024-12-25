@@ -59,6 +59,42 @@ export const DashboardPricing = () => {
     }
   };
 
+  const handleTestSubscription = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Error",
+          description: "Please sign in first",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-paypal-subscription', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: { test: true }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Test subscription created! Check the webhook logs.",
+      });
+
+    } catch (error) {
+      console.error('Error creating test subscription:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create test subscription. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-[#1A1F2C]">
@@ -105,6 +141,16 @@ export const DashboardPricing = () => {
             </Button>
           </div>
         ))}
+      </div>
+      
+      <div className="mt-8 text-center">
+        <Button 
+          variant="outline"
+          onClick={handleTestSubscription}
+          className="bg-gray-100 hover:bg-gray-200 text-gray-700"
+        >
+          Create Test Subscription
+        </Button>
       </div>
     </div>
   );

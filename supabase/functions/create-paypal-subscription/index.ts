@@ -42,9 +42,31 @@ Deno.serve(async (req) => {
       throw new Error('Unauthorized')
     }
 
+    // Check if this is a test subscription request
+    const { test } = await req.json()
+    
+    if (test) {
+      // Update the user's profile directly for testing
+      const { error: updateError } = await supabaseClient
+        .from('profiles')
+        .update({ 
+          is_pro: true,
+          subscription_status: 'active',
+          subscription_id: 'test_subscription'
+        })
+        .eq('id', user.id)
+
+      if (updateError) throw updateError
+
+      return new Response(
+        JSON.stringify({ success: true }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Regular subscription flow
     const accessToken = await getPayPalAccessToken()
     
-    // Create subscription with your specific plan ID
     const subscriptionResponse = await fetch('https://api-m.paypal.com/v1/billing/subscriptions', {
       method: 'POST',
       headers: {
@@ -52,7 +74,7 @@ Deno.serve(async (req) => {
         'Authorization': `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
-        plan_id: 'P-9K972479M6302650RM5VX4OQ', // Your PayPal plan ID
+        plan_id: 'P-9K972479M6302650RM5VX4OQ',
         subscriber: {
           name: {
             given_name: user.email?.split('@')[0] || 'User',
