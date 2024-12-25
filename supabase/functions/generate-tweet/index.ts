@@ -7,24 +7,40 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+function extractVideoId(url: string): string {
+  try {
+    // Handle youtu.be URLs
+    if (url.includes('youtu.be')) {
+      const match = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+      if (match) return match[1];
+    }
+    
+    // Handle youtube.com URLs
+    const urlObj = new URL(url);
+    if (urlObj.hostname.includes('youtube.com')) {
+      // Handle watch URLs
+      const searchParams = urlObj.searchParams.get('v');
+      if (searchParams) return searchParams;
+      
+      // Handle embed URLs
+      const pathMatch = urlObj.pathname.match(/embed\/([a-zA-Z0-9_-]{11})/);
+      if (pathMatch) return pathMatch[1];
+      
+      // Handle v/ URLs
+      const vMatch = urlObj.pathname.match(/v\/([a-zA-Z0-9_-]{11})/);
+      if (vMatch) return vMatch[1];
+    }
+    
+    throw new Error('Could not extract video ID from URL');
+  } catch (error) {
+    console.error('Error extracting video ID:', error);
+    throw new Error('Invalid YouTube URL format');
+  }
+}
+
 async function getYouTubeTranscript(youtubeUrl: string, apiKey: string) {
   try {
-    // Validate URL format
-    let videoId;
-    try {
-      const url = new URL(youtubeUrl);
-      if (!url.hostname.includes('youtube.com')) {
-        throw new Error('Not a YouTube URL');
-      }
-      videoId = url.searchParams.get('v');
-      if (!videoId) {
-        throw new Error('No video ID found in URL');
-      }
-    } catch (error) {
-      console.error('URL parsing error:', error);
-      throw new Error('Invalid YouTube URL format');
-    }
-
+    const videoId = extractVideoId(youtubeUrl);
     console.log('Fetching details for video ID:', videoId);
 
     // First, get video details to get the title

@@ -15,14 +15,13 @@ export const TweetGenerator = ({ onTweetGenerated }: TweetGeneratorProps) => {
   const { toast } = useToast();
 
   const isValidYoutubeUrl = (url: string) => {
-    try {
-      const urlObj = new URL(url);
-      const isYoutube = urlObj.hostname === 'youtube.com' || urlObj.hostname === 'www.youtube.com';
-      const hasVideoId = urlObj.searchParams.get('v');
-      return isYoutube && hasVideoId;
-    } catch {
-      return false;
-    }
+    const patterns = [
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})(&.*)?$/,
+      /^(https?:\/\/)?(www\.)?(youtu\.be\/)([a-zA-Z0-9_-]{11})(\?.*)?$/,
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})(\?.*)?$/,
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/v\/)([a-zA-Z0-9_-]{11})(\?.*)?$/,
+    ];
+    return patterns.some(pattern => pattern.test(url));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,7 +38,7 @@ export const TweetGenerator = ({ onTweetGenerated }: TweetGeneratorProps) => {
     if (!isValidYoutubeUrl(youtubeUrl)) {
       toast({
         title: "Error",
-        description: "Please enter a valid YouTube URL (e.g., https://www.youtube.com/watch?v=xxxxx)",
+        description: "Please enter a valid YouTube URL (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)",
         variant: "destructive",
       });
       return;
@@ -94,7 +93,7 @@ export const TweetGenerator = ({ onTweetGenerated }: TweetGeneratorProps) => {
       <div className="flex gap-2">
         <Input
           type="url"
-          placeholder="Enter YouTube URL (e.g., https://www.youtube.com/watch?v=xxxxx)"
+          placeholder="Enter YouTube URL (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)"
           value={youtubeUrl}
           onChange={(e) => setYoutubeUrl(e.target.value)}
           className="flex-1"
