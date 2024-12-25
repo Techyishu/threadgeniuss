@@ -1,7 +1,5 @@
 import { Check } from "lucide-react";
 import { Button } from "../ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 
 const plans = [
   {
@@ -25,40 +23,6 @@ const plans = [
 ];
 
 export const DashboardPricing = () => {
-  const { toast } = useToast();
-
-  const handleUpgrade = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
-          title: "Error",
-          description: "Please sign in to upgrade",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (error) throw error;
-      if (!data.url) throw new Error('No checkout URL returned');
-
-      window.location.href = data.url;
-    } catch (error) {
-      console.error('Error:', error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to start checkout process",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-[#1A1F2C]">
@@ -98,7 +62,6 @@ export const DashboardPricing = () => {
                   ? "bg-cyber-blue hover:bg-cyber-blue/90"
                   : "bg-[#1A1F2C] hover:bg-[#2A2F3C]"
               }`}
-              onClick={plan.popular ? handleUpgrade : undefined}
               disabled={!plan.popular}
             >
               {plan.buttonText}
