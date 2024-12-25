@@ -11,7 +11,12 @@ const corsHeaders = {
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { 
+      headers: {
+        ...corsHeaders,
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      }
+    });
   }
 
   try {
@@ -51,7 +56,7 @@ serve(async (req) => {
     console.log('Generating tweet with OpenAI...');
     // Generate tweet using OpenAI
     const completion = await openai.createChatCompletion({
-      model: "gpt-4o-mini",
+      model: "gpt-3.5-turbo", // Changed from non-existent gpt-4o-mini
       messages: [
         {
           role: "system",
