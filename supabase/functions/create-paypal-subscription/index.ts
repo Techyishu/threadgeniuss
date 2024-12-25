@@ -9,69 +9,74 @@ async function getPayPalAccessToken() {
   const clientId = Deno.env.get('PAYPAL_CLIENT_ID')
   const clientSecret = Deno.env.get('PAYPAL_SECRET_KEY')
   
+  if (!clientId || !clientSecret) {
+    throw new Error('PayPal credentials not configured')
+  }
+
   const response = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Accept-Language': 'en_US',
       'Authorization': `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: 'grant_type=client_credentials',
   })
+
+  if (!response.ok) {
+    const error = await response.text()
+    console.error('PayPal token error:', error)
+    throw new Error('Failed to get PayPal access token')
+  }
 
   const data = await response.json()
   return data.access_token
 }
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
 
   try {
+    console.log('Creating PayPal subscription...')
+    
+    // Initialize Supabase client
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     )
 
+    // Authenticate user
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader) {
+      throw new Error('No authorization header')
+    }
+
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser(
-      req.headers.get('Authorization')?.split(' ')[1] ?? ''
+      authHeader.split(' ')[1]
     )
 
     if (authError || !user) {
+      console.error('Auth error:', authError)
       throw new Error('Unauthorized')
     }
 
-    // Check if this is a test subscription request
-    const { test } = await req.json()
-    
-    if (test) {
-      // Update the user's profile directly for testing
-      const { error: updateError } = await supabaseClient
-        .from('profiles')
-        .update({ 
-          is_pro: true,
-          subscription_status: 'active',
-          subscription_id: 'test_subscription'
-        })
-        .eq('id', user.id)
+    console.log('User authenticated:', user.id)
 
-      if (updateError) throw updateError
-
-      return new Response(
-        JSON.stringify({ success: true }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
-
-    // Regular subscription flow
+    // Get PayPal access token
     const accessToken = await getPayPalAccessToken()
-    
+    console.log('Got PayPal access token')
+
+    // Create subscription
     const subscriptionResponse = await fetch('https://api-m.paypal.com/v1/billing/subscriptions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`,
+        'PayPal-Request-Id': crypto.randomUUID(),
       },
       body: JSON.stringify({
         plan_id: 'P-9K972479M6302650RM5VX4OQ',
@@ -89,26 +94,35 @@ Deno.serve(async (req) => {
       }),
     })
 
-    const subscriptionData = await subscriptionResponse.json()
-
     if (!subscriptionResponse.ok) {
-      console.error('PayPal API Error:', subscriptionData)
-      throw new Error(subscriptionData.message || 'Failed to create subscription')
+      const errorData = await subscriptionResponse.text()
+      console.error('PayPal subscription error:', errorData)
+      throw new Error('Failed to create PayPal subscription')
+    }
+
+    const subscriptionData = await subscriptionResponse.json()
+    console.log('Subscription created:', subscriptionData.id)
+
+    const approvalLink = subscriptionData.links.find((link: any) => link.rel === 'approve')
+    if (!approvalLink) {
+      throw new Error('No approval URL found in PayPal response')
     }
 
     return new Response(
       JSON.stringify({
         subscriptionId: subscriptionData.id,
-        approvalUrl: subscriptionData.links.find((link: any) => link.rel === 'approve').href,
+        approvalUrl: approvalLink.href,
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     )
   } catch (error) {
-    console.error('Error:', error)
+    console.error('Error in create-paypal-subscription:', error)
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error instanceof Error ? error.message : 'Unknown error occurred' 
+      }),
       {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
