@@ -136,19 +136,14 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-      <div className="space-y-6">
-        <div className="space-y-2">
-          <h2 className="text-lg font-semibold text-[#1A1F2C]">Generate Thread</h2>
-          <p className="text-sm text-gray-500">Enter a YouTube URL to create your thread</p>
-        </div>
-
+    <div className="bg-white p-4 sm:p-6 rounded-lg border border-cyber-purple/20 shadow-lg">
+      <div className="space-y-4">
         <Input
           type="url"
           placeholder="Paste YouTube URL here (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)"
           value={youtubeLink}
           onChange={(e) => setYoutubeLink(e.target.value)}
-          className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 h-12 focus:ring-2 focus:ring-[#8B5CF6] focus:border-transparent"
+          className="bg-white border-cyber-purple/30 text-gray-900 placeholder:text-gray-500 h-12"
         />
         
         {isPro && (
@@ -163,7 +158,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         <Button
           onClick={handleGenerate}
           disabled={!youtubeLink || isGenerating}
-          className="w-full bg-[#8B5CF6] hover:bg-[#7C3AED] transition-colors h-12 text-white font-medium rounded-lg"
+          className="w-full bg-gradient-to-r from-cyber-purple to-cyber-blue hover:opacity-90 transition-opacity h-12 text-white font-medium"
         >
           {isGenerating ? 'Generating...' : 'Generate Thread'}
         </Button>
