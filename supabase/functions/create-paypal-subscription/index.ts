@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
 
     const accessToken = await getPayPalAccessToken()
     
-    // Create subscription
+    // Create subscription with your specific plan ID
     const subscriptionResponse = await fetch('https://api-m.paypal.com/v1/billing/subscriptions', {
       method: 'POST',
       headers: {
@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
         'Authorization': `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
-        plan_id: 'P-5ML4271244454362XMXKXSLY', // Replace with your actual plan ID
+        plan_id: 'P-9K972479M6302650RM5VX4OQ', // Your PayPal plan ID
         subscriber: {
           name: {
             given_name: user.email?.split('@')[0] || 'User',
@@ -70,6 +70,7 @@ Deno.serve(async (req) => {
     const subscriptionData = await subscriptionResponse.json()
 
     if (!subscriptionResponse.ok) {
+      console.error('PayPal API Error:', subscriptionData)
       throw new Error(subscriptionData.message || 'Failed to create subscription')
     }
 
@@ -83,6 +84,7 @@ Deno.serve(async (req) => {
       }
     )
   } catch (error) {
+    console.error('Error:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       {
