@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 import { Configuration, OpenAIApi } from "https://esm.sh/openai@3.3.0";
-import { getVideoTranscript } from "../generate-thread/youtube.ts";
+import { getYouTubeTranscript } from "../generate-thread/youtube.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -42,7 +42,7 @@ serve(async (req) => {
 
     // Get video transcript
     console.log('Fetching video transcript...');
-    const transcript = await getVideoTranscript(youtubeUrl);
+    const { transcript, title } = await getYouTubeTranscript(youtubeUrl, Deno.env.get('YOUTUBE_API_KEY') || '');
     if (!transcript) {
       throw new Error('Failed to get video transcript');
     }
@@ -56,7 +56,7 @@ serve(async (req) => {
     console.log('Generating tweet with OpenAI...');
     // Generate tweet using OpenAI
     const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo", // Changed from non-existent gpt-4o-mini
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
