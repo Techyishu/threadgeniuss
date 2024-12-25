@@ -1,0 +1,16 @@
+project_id = "rcebmiftdxxpbeiwbncb"
+
+[generate-thread]
+verify_jwt = true
+
+[generate-tweet]
+verify_jwt = true
+
+[paypal-webhook]
+verify_jwt = false
+
+[create-paypal-subscription]
+verify_jwt = true
+
+[rate-limiter]
+verify_jwt = true

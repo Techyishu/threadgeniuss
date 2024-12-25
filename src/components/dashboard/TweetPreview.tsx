@@ -1,6 +1,6 @@
-import { Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { Copy } from "lucide-react";
 
 interface TweetPreviewProps {
   generatedTweet: string | null;
@@ -9,51 +9,51 @@ interface TweetPreviewProps {
 export const TweetPreview = ({ generatedTweet }: TweetPreviewProps) => {
   const { toast } = useToast();
 
-  const copyToClipboard = async (text: string) => {
+  const handleCopy = async () => {
+    if (!generatedTweet) return;
+
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(generatedTweet);
       toast({
         title: "Copied!",
-        description: "Text copied to clipboard",
+        description: "Tweet copied to clipboard",
       });
-    } catch (err) {
+    } catch (error) {
+      console.error("Failed to copy:", error);
       toast({
         title: "Error",
-        description: "Failed to copy text",
+        description: "Failed to copy tweet",
         variant: "destructive",
       });
     }
   };
 
-  return (
-    <div className="bg-white p-4 sm:p-6 rounded-lg border border-cyber-purple/20 shadow-lg">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Preview</h2>
-        {generatedTweet && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1 sm:flex-none border-cyber-blue/30 hover:border-cyber-blue text-cyber-blue"
-            onClick={() => copyToClipboard(generatedTweet)}
-          >
-            <Copy className="w-4 h-4 mr-2" />
-            Copy Tweet
-          </Button>
-        )}
+  if (!generatedTweet) {
+    return (
+      <div className="rounded-lg border border-gray-200 p-6 text-center">
+        <p className="text-gray-500">
+          Generated tweet will appear here...
+        </p>
       </div>
-      
-      <div className="space-y-4">
-        {generatedTweet ? (
-          <div className="relative bg-gray-50 rounded-lg border border-dashed border-gray-300 p-4">
-            <div className="text-gray-900 whitespace-pre-line">
-              {generatedTweet}
-            </div>
-          </div>
-        ) : (
-          <p className="text-gray-500 text-center text-sm sm:text-base">
-            Generated tweet will appear here...
-          </p>
-        )}
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Preview</h2>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleCopy}
+          className="flex items-center gap-2"
+        >
+          <Copy className="h-4 w-4" />
+          Copy
+        </Button>
+      </div>
+      <div className="rounded-lg border border-gray-200 p-6">
+        <p className="whitespace-pre-wrap">{generatedTweet}</p>
       </div>
     </div>
   );
