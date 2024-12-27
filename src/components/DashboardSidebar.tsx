@@ -1,13 +1,11 @@
 import { DashboardSidebarProps } from "@/types/dashboard";
 import { SidebarNavigation } from "./dashboard/SidebarNavigation";
 import { ThreadsCounter } from "./dashboard/ThreadsCounter";
-import { ProFeaturesInfo } from "./dashboard/ProFeaturesInfo";
 
 export const DashboardSidebar = ({ 
   userName, 
   onClose, 
-  onShowSavedThreads, 
-  onShowPricing,
+  onShowSavedThreads,
   onNavigateHome 
 }: DashboardSidebarProps) => {
   return (
@@ -26,7 +24,6 @@ export const DashboardSidebar = ({
 
         <div className="mt-6 space-y-4">
           <ThreadsCounter />
-          <ProFeaturesInfo onShowPricing={onShowPricing} />
         </div>
       </nav>
     </div>
