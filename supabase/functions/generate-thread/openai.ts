@@ -1,11 +1,10 @@
-export async function generateThread(transcript: string, title: string, tone = 'professional', threadSize = 'medium', isPro = false) {
+export async function generateThread(transcript: string, title: string, tone = 'professional', threadSize = 'medium') {
   const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
   if (!openAIApiKey) {
     throw new Error('OpenAI API key not configured');
   }
 
   const getTweetCount = (size: string) => {
-    if (!isPro) return 5; // Free users always get 5 tweets
     switch (size) {
       case 'short': return 5;
       case 'long': return 15;
@@ -15,7 +14,6 @@ export async function generateThread(transcript: string, title: string, tone = '
 
   const tweetCount = getTweetCount(threadSize);
 
-  // Base prompt components
   const baseInstructions = `
     You are an expert social media content creator specializing in creating viral Twitter threads.
     Based on the following YouTube video title and transcript, create an engaging Twitter thread with EXACTLY ${tweetCount} tweets.
@@ -39,32 +37,8 @@ export async function generateThread(transcript: string, title: string, tone = '
     [Final tweet content with call-to-action]
   `;
 
-  // Pro-specific enhancements
-  const proEnhancements = isPro ? `
-    Additional pro guidelines:
-    1. Customize tone to be ${tone}
-    2. Include data-driven insights when relevant
-    3. Add industry-specific hashtags
-    4. Incorporate engagement hooks throughout the thread
-    5. Use advanced storytelling techniques
-    6. Include relevant @mentions when appropriate
-    7. Structure content for maximum virality
-  ` : '';
-
-  // Free user constraints
-  const freeConstraints = !isPro ? `
-    Constraints for free version:
-    1. Keep tone professional and straightforward
-    2. Focus on core insights only
-    3. Use basic formatting
-    4. Maintain simple structure
-    5. Include only essential information
-  ` : '';
-
   const prompt = `
     ${baseInstructions}
-    ${proEnhancements}
-    ${freeConstraints}
     
     Title: ${title}
     Transcript: ${transcript}
