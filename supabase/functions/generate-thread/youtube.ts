@@ -25,7 +25,7 @@ export async function getYouTubeTranscript(videoUrl: string, apiKey: string) {
       `https://www.googleapis.com/youtube/v3/captions?part=snippet&videoId=${videoId}&key=${apiKey}`
     );
     const captions = await captionsResponse.json();
-    console.log('Captions response:', captions);  // Log the entire captions response
+    console.log('Captions response:', captions);
 
     // Check for presence of captions
     if (!captions.items?.[0]) {
@@ -33,12 +33,26 @@ export async function getYouTubeTranscript(videoUrl: string, apiKey: string) {
       throw new Error('No captions found for this video');
     }
 
-    // Log the first caption item's snippet
-    console.log('First caption item:', captions.items[0]);
+    // Get the first available caption track
+    const captionId = captions.items[0].id;
+    console.log('Found caption track ID:', captionId);
+
+    // Get the actual transcript
+    const transcriptResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/captions/${captionId}?tfmt=ttml&key=${apiKey}`
+    );
+
+    if (!transcriptResponse.ok) {
+      console.error('Failed to fetch transcript:', await transcriptResponse.text());
+      throw new Error('Failed to fetch video transcript');
+    }
+
+    const transcriptText = await transcriptResponse.text();
+    console.log('Successfully retrieved transcript');
 
     return {
       title,
-      transcript: captions.items[0]?.snippet?.text || 'No transcript available'
+      transcript: transcriptText
     };
   } catch (error) {
     console.error('Error fetching YouTube data:', error);
