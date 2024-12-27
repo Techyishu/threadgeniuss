@@ -73,7 +73,6 @@ const DashboardPage = () => {
                 userName={userName} 
                 onClose={() => setIsSidebarOpen(false)} 
                 onShowSavedThreads={handleShowSavedThreads}
-                onShowPricing={handleShowPricing}
                 onNavigateHome={handleNavigateHome}
               />
             </SheetContent>
@@ -95,7 +94,6 @@ const DashboardPage = () => {
                   userName={userName} 
                   onClose={() => setIsSidebarOpen(false)} 
                   onShowSavedThreads={handleShowSavedThreads}
-                  onShowPricing={handleShowPricing}
                   onNavigateHome={handleNavigateHome}
                 />
               </SheetContent>
