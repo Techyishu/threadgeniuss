@@ -11,7 +11,7 @@ interface RateLimitConfig {
 }
 
 const defaultConfig: RateLimitConfig = {
-  maxRequests: 10,     // 10 requests
+  maxRequests: 50,     // 50 requests
   windowMs: 60000,     // per 1 minute
 }
 
@@ -41,17 +41,8 @@ Deno.serve(async (req) => {
       throw new Error('Not authenticated')
     }
 
-    // Get user's profile to check if they're a pro user
-    const { data: profile } = await supabaseClient
-      .from('profiles')
-      .select('is_pro')
-      .eq('id', user.id)
-      .single()
-
     // Adjust rate limits based on user type
-    const config: RateLimitConfig = profile?.is_pro
-      ? { ...defaultConfig, maxRequests: 50 } // Pro users get 50 requests per minute
-      : defaultConfig
+    const config: RateLimitConfig = defaultConfig
 
     // Check current request count
     const now = Date.now()
@@ -88,6 +79,14 @@ Deno.serve(async (req) => {
     )
   } catch (error) {
     return new Response(
+      JSON.stringify({ error: error.message }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: error.message === 'Rate limit exceeded' ? 429 : 400,
+      }
+    )
+  }
+})
       JSON.stringify({ error: error.message }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
