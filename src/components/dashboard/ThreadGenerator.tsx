@@ -1,10 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { ProFeatures } from "./ProFeatures";
-import { useProStatus } from "@/hooks/useProStatus";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ThreadGeneratorProps {
   onThreadGenerated: (thread: string | null) => void;
@@ -15,7 +20,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
   const [isGenerating, setIsGenerating] = useState(false);
   const [tone, setTone] = useState("professional");
   const [threadSize, setThreadSize] = useState("medium");
-  const { isPro } = useProStatus();
   const { toast } = useToast();
 
   const isValidYoutubeUrl = (url: string) => {
@@ -26,55 +30,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       /^(https?:\/\/)?(www\.)?(youtube\.com\/v\/)([a-zA-Z0-9_-]{11})(\?.*)?$/,
     ];
     return patterns.some(pattern => pattern.test(url));
-  };
-
-  const checkRateLimit = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('Not authenticated');
-
-      const { error } = await supabase.functions.invoke('rate-limiter', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
-        }
-      });
-      
-      if (error) throw error;
-      return true;
-    } catch (error) {
-      if (error.message === 'Rate limit exceeded') {
-        throw new Error('Too many requests. Please try again later.');
-      }
-      throw error;
-    }
-  };
-
-  const checkThreadsLimit = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('threads_count, is_pro')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      if (profileError) throw profileError;
-      
-      // If no profile is found, it means the trigger hasn't completed yet
-      if (!profile) {
-        throw new Error('Your profile is being set up. Please try again in a few seconds.');
-      }
-
-      if (!profile.is_pro && profile.threads_count <= 0) {
-        throw new Error('You have reached your free plan limit. Please upgrade to Pro for unlimited threads.');
-      }
-
-      return true;
-    } catch (error) {
-      throw error;
-    }
   };
 
   const handleGenerate = async () => {
@@ -94,14 +49,11 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error('Please sign in to generate threads');
       }
 
-      await checkRateLimit();
-      await checkThreadsLimit();
-
       const { data, error } = await supabase.functions.invoke('generate-thread', {
         body: { 
           youtubeUrl: youtubeLink,
-          tone: isPro ? tone : 'professional',
-          threadSize: isPro ? threadSize : 'medium'
+          tone: tone,
+          threadSize: threadSize
         },
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -146,14 +98,36 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           className="bg-white border-cyber-purple/30 text-gray-900 placeholder:text-gray-500 h-12"
         />
         
-        {isPro && (
-          <ProFeatures 
-            tone={tone}
-            setTone={setTone}
-            threadSize={threadSize}
-            setThreadSize={setThreadSize}
-          />
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-[#1A1F2C]">Tone</label>
+            <Select value={tone} onValueChange={setTone}>
+              <SelectTrigger className="bg-white border-cyber-purple/30 text-[#1A1F2C]">
+                <SelectValue placeholder="Select tone" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="professional">Professional</SelectItem>
+                <SelectItem value="casual">Casual</SelectItem>
+                <SelectItem value="humorous">Humorous</SelectItem>
+                <SelectItem value="educational">Educational</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-[#1A1F2C]">Thread Size</label>
+            <Select value={threadSize} onValueChange={setThreadSize}>
+              <SelectTrigger className="bg-white border-cyber-purple/30 text-[#1A1F2C]">
+                <SelectValue placeholder="Select size" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="short">Short (5 tweets)</SelectItem>
+                <SelectItem value="medium">Medium (10 tweets)</SelectItem>
+                <SelectItem value="long">Long (15 tweets)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
         <Button
           onClick={handleGenerate}

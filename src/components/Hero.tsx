@@ -6,10 +6,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export const Hero = () => {
   const navigate = useNavigate();
 
-  const scrollToPricing = () => {
-    document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   // Sample avatar data - these would typically come from your actual users
   const avatars = [
     { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U1" },
@@ -56,7 +52,7 @@ export const Hero = () => {
         <div className="max-w-[95%] md:max-w-4xl mx-auto text-center">
           <div className="mb-6 inline-block">
             <span className="px-3 py-1 text-sm font-medium bg-[#1A1F2C]/10 text-[#1A1F2C] rounded-full">
-              ThreadGenius for Content Creators
+              100% Free Thread Generator
             </span>
           </div>
           
@@ -79,15 +75,7 @@ export const Hero = () => {
               className="w-full sm:w-auto bg-[#1A1F2C] hover:bg-[#2A2F3C] text-white transition-all duration-300 text-lg py-6 rounded-full"
               onClick={() => navigate('/dashboard')}
             >
-              Start Creating <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="w-full sm:w-auto border-[#1A1F2C] text-[#1A1F2C] hover:bg-[#1A1F2C] hover:text-white transition-all duration-300 text-lg py-6 rounded-full"
-              onClick={scrollToPricing}
-            >
-              View Pricing
+              Start Creating - It's Free! <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
 
