@@ -1,20 +1,3 @@
-export function extractVideoId(url: string): string | null {
-  const patterns = [
-    /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})(?:&.*)?$/,
-    /^(?:https?:\/\/)?(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]{11})(?:\?.*)?$/,
-    /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([a-zA-Z0-9_-]{11})(?:\?.*)?$/,
-    /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/v\/([a-zA-Z0-9_-]{11})(?:\?.*)?$/,
-  ];
-
-  for (const pattern of patterns) {
-    const match = url.match(pattern);
-    if (match) {
-      return match[1];
-    }
-  }
-  return null;
-}
-
 export async function getYouTubeTranscript(videoUrl: string, apiKey: string) {
   const videoId = extractVideoId(videoUrl);
   if (!videoId) {
@@ -42,11 +25,20 @@ export async function getYouTubeTranscript(videoUrl: string, apiKey: string) {
       `https://www.googleapis.com/youtube/v3/captions?part=snippet&videoId=${videoId}&key=${apiKey}`
     );
     const captions = await captionsResponse.json();
-    console.log('Captions response:', captions);
-    
+    console.log('Captions response:', captions);  // Log the entire captions response
+
+    // Check for presence of captions
+    if (!captions.items?.[0]) {
+      console.error('No captions found:', captions);
+      throw new Error('No captions found for this video');
+    }
+
+    // Log the first caption item's snippet
+    console.log('First caption item:', captions.items[0]);
+
     return {
       title,
-      transcript: captions.items?.[0]?.snippet?.text || 'No transcript available'
+      transcript: captions.items[0]?.snippet?.text || 'No transcript available'
     };
   } catch (error) {
     console.error('Error fetching YouTube data:', error);
