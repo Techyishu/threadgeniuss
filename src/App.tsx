@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import DashboardPage from "./pages/DashboardPage";
 import { AuthPage } from "./components/AuthPage";
+import { AuthGuard } from "./components/auth/AuthGuard";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import TermsOfService from "./pages/TermsOfService";
@@ -15,7 +16,14 @@ import Support from "./pages/Support";
 import RefundPolicy from "./pages/RefundPolicy";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => {
   const [session, setSession] = useState(null);
@@ -51,7 +59,9 @@ const App = () => {
             <Route
               path="/dashboard"
               element={
-                session ? <DashboardPage /> : <Navigate to="/auth" replace />
+                <AuthGuard>
+                  {session ? <DashboardPage /> : <Navigate to="/auth" replace />}
+                </AuthGuard>
               }
             />
             <Route path="/terms-of-service" element={<TermsOfService />} />
