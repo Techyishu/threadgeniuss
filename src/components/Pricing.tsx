@@ -28,7 +28,7 @@ export const Pricing = () => {
       </div>
       <div className="container relative z-10 mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-[#1A1F2C]">
-          100% Free, Forever
+          100% Free
         </h2>
         <div className="max-w-lg mx-auto">
           {plans.map((plan) => (
@@ -37,12 +37,11 @@ export const Pricing = () => {
               className="relative rounded-xl border border-cyber-blue shadow-lg p-8 bg-white"
             >
               <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-cyber-blue text-white px-4 py-1 rounded-full text-sm">
-                Free Forever
+                Free Plan
               </span>
               <h3 className="text-2xl font-bold mb-2 text-[#1A1F2C]">{plan.name}</h3>
               <p className="text-4xl font-bold mb-6 text-[#1A1F2C]">
                 {plan.price}
-                <span className="text-gray-500 text-base font-normal">/forever</span>
               </p>
               <ul className="space-y-4 mb-8">
                 {plan.features.map((feature) => (

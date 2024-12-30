@@ -12,14 +12,17 @@ export type Database = {
       profiles: {
         Row: {
           id: string
+          is_pro: boolean | null
           threads_count: number
         }
         Insert: {
           id: string
+          is_pro?: boolean | null
           threads_count?: number
         }
         Update: {
           id?: string
+          is_pro?: boolean | null
           threads_count?: number
         }
         Relationships: []
