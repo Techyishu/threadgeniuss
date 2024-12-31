@@ -3,7 +3,6 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
 
 export const AuthPage = () => {
   const { toast } = useToast();
@@ -32,40 +31,6 @@ export const AuthPage = () => {
 
     return () => subscription.unsubscribe();
   }, [toast]);
-
-  const handleDeleteAccount = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Error",
-          description: "You must be logged in to delete your account",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { error } = await supabase.auth.admin.deleteUser(user.id);
-      
-      if (error) throw error;
-
-      toast({
-        title: "Account deleted",
-        description: "Your account has been successfully deleted",
-      });
-
-      // Sign out after successful deletion
-      await supabase.auth.signOut();
-    } catch (error) {
-      console.error('Error deleting account:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete account. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white px-4 sm:px-6">
@@ -114,15 +79,6 @@ export const AuthPage = () => {
               },
             }}
           />
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <Button
-              variant="destructive"
-              className="w-full"
-              onClick={handleDeleteAccount}
-            >
-              Delete Account
-            </Button>
-          </div>
         </div>
       </div>
     </div>
