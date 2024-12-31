@@ -10,7 +10,7 @@ export const AuthPage = () => {
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_OUT") {
         toast({
           title: "Signed out",
@@ -31,6 +31,29 @@ export const AuthPage = () => {
 
     return () => subscription.unsubscribe();
   }, [toast]);
+
+  const sendConfirmationEmail = async (email: string, token: string, type: "signup" | "recovery") => {
+    try {
+      const response = await fetch("/api/send-confirmation-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, token, type }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send confirmation email");
+      }
+    } catch (error) {
+      console.error("Error sending confirmation email:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send confirmation email. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white px-4 sm:px-6">
