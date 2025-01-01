@@ -28,9 +28,14 @@ serve(async (req) => {
       throw new Error('YouTube URL is required');
     }
 
+    const youtubeApiKey = Deno.env.get('YOUTUBE_API_KEY');
+    if (!youtubeApiKey) {
+      throw new Error('YouTube API key not configured');
+    }
+
     // Get video transcript and title
     console.log('Fetching transcript for:', youtubeUrl);
-    const { transcript, title } = await getYouTubeTranscript(youtubeUrl);
+    const { transcript, title } = await getYouTubeTranscript(youtubeUrl, youtubeApiKey);
     
     if (!transcript) {
       throw new Error('Failed to get video transcript');
