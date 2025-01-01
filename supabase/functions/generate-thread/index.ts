@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { generateThread } from "./deepseek.ts";
-import { getTranscript } from "./youtube.ts";
+import { getYouTubeTranscript } from "./youtube.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -30,7 +30,7 @@ serve(async (req) => {
 
     // Get video transcript and title
     console.log('Fetching transcript for:', youtubeUrl);
-    const { transcript, title } = await getTranscript(youtubeUrl);
+    const { transcript, title } = await getYouTubeTranscript(youtubeUrl);
     
     if (!transcript) {
       throw new Error('Failed to get video transcript');
