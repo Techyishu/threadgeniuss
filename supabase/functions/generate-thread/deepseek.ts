@@ -1,4 +1,6 @@
 export async function generateThread(transcript: string, title: string, tone = 'professional', threadSize = 'medium') {
+  console.log('Starting thread generation with DeepSeek');
+  
   const deepseekApiKey = Deno.env.get('DEEPSEEK_API_KEY');
   if (!deepseekApiKey) {
     throw new Error('DeepSeek API key not configured');
@@ -45,6 +47,7 @@ export async function generateThread(transcript: string, title: string, tone = '
   `;
 
   try {
+    console.log('Making request to DeepSeek API');
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -71,6 +74,7 @@ export async function generateThread(transcript: string, title: string, tone = '
     }
 
     const data = await response.json();
+    console.log('Successfully received response from DeepSeek');
     return data.choices[0]?.message?.content;
   } catch (error) {
     console.error('Error generating thread with DeepSeek:', error);
