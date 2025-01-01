@@ -58,6 +58,7 @@ export const AuthPage = () => {
             }}
             theme="light"
             providers={[]}
+            redirectTo={window.location.origin}
             localization={{
               variables: {
                 sign_up: {

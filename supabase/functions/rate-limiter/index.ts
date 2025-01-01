@@ -69,7 +69,6 @@ Deno.serve(async (req) => {
         }
       ])
 
-    // We no longer return the remaining requests count to hide it from users
     return new Response(
       JSON.stringify({ success: true }),
       {
@@ -79,14 +78,6 @@ Deno.serve(async (req) => {
     )
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: error.message === 'Rate limit exceeded' ? 429 : 400,
-      }
-    )
-  }
-})
       JSON.stringify({ error: error.message }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

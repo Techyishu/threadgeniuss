@@ -1,12 +1,17 @@
 project_id = "rcebmiftdxxpbeiwbncb"
 
-[api]
-enabled = true
-url = "https://rcebmiftdxxpbeiwbncb.supabase.co"
-
 [functions]
 [functions.create-paypal-subscription]
 verify_jwt = true
 
 [functions.paypal-webhook]
 verify_jwt = false
+
+[functions.generate-thread]
+verify_jwt = true
+
+[functions.generate-tweet]
+verify_jwt = true
+
+[functions.rate-limiter]
+verify_jwt = true
