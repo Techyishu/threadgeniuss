@@ -44,11 +44,24 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
 
       setIsGenerating(true);
 
+      // First check if we're authenticated
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         throw new Error('Please sign in to generate threads');
       }
 
+      // Check rate limit first
+      const { error: rateLimitError } = await supabase.functions.invoke('rate-limiter', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (rateLimitError) {
+        throw new Error(rateLimitError.message || 'Rate limit exceeded');
+      }
+
+      // If rate limit check passes, generate the thread
       const { data, error } = await supabase.functions.invoke('generate-thread', {
         body: { 
           youtubeUrl: youtubeLink,
@@ -61,6 +74,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       });
 
       if (error) {
+        console.error('Error from generate-thread:', error);
         throw new Error(error.message || 'Failed to generate thread');
       }
 
