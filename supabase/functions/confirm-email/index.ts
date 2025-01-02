@@ -23,25 +23,36 @@ serve(async (req) => {
     const url = new URL(req.url)
     const hashParams = new URLSearchParams(url.hash.substring(1));
     const token = hashParams.get('token') || url.searchParams.get('token');
+    const type = hashParams.get('type') || 'signup';
 
     if (!token) {
       throw new Error('No confirmation token provided')
     }
 
     // Verify the token
-    const { error: verifyError, data } = await supabaseClient.auth.verifyOtp({
+    const { error: verifyError } = await supabaseClient.auth.verifyOtp({
       token_hash: token,
-      type: 'email'
+      type: 'signup'
     })
 
-    if (verifyError) throw verifyError
+    if (verifyError) {
+      console.error('Error verifying token:', verifyError);
+      // Redirect to auth page with error
+      return new Response(null, {
+        status: 302,
+        headers: {
+          ...corsHeaders,
+          'Location': `/auth?error=${encodeURIComponent(verifyError.message)}`
+        }
+      })
+    }
 
-    // Redirect to the app's success page
+    // Redirect to the dashboard with success message
     return new Response(null, {
       status: 302,
       headers: {
         ...corsHeaders,
-        'Location': '/?confirmed=true'
+        'Location': '/dashboard?confirmed=true'
       }
     })
 
