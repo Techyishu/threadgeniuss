@@ -64,7 +64,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
   };
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-lg border border-cyber-purple/20 shadow-lg overflow-x-auto">
+    <div className="bg-white p-4 sm:p-6 rounded-lg border border-cyber-purple/20 shadow-lg">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Preview</h2>
         <Button
@@ -78,7 +78,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
         </Button>
       </div>
       
-      <div className="space-y-4 w-full max-w-full">
+      <div className="space-y-4 w-full">
         {tweets.length > 0 ? (
           tweets.map((tweet, index) => (
             <div 
@@ -90,7 +90,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                   <Textarea
                     value={editedTweet}
                     onChange={(e) => setEditedTweet(e.target.value)}
-                    className="w-full min-h-[100px] text-gray-900"
+                    className="w-full min-h-[100px] text-gray-900 break-words"
                   />
                   <div className="flex gap-2">
                     <Button
@@ -111,7 +111,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                 </div>
               ) : (
                 <>
-                  <div className="text-gray-900 whitespace-pre-line">
+                  <div className="text-gray-900 whitespace-pre-line break-words max-w-full">
                     {tweet}
                   </div>
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">

@@ -82,10 +82,25 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error('Invalid response from server');
       }
 
+      // Save the generated thread to the database
+      const { error: saveError } = await supabase
+        .from('threads')
+        .insert({
+          youtube_url: youtubeLink,
+          content: data.thread.content,
+          title: data.thread.title,
+          status: 'generated'
+        });
+
+      if (saveError) {
+        console.error('Error saving thread:', saveError);
+        throw new Error('Failed to save thread');
+      }
+
       onThreadGenerated(data.thread.content);
 
       toast({
-        title: "Thread generated successfully!",
+        title: "Thread generated and saved successfully!",
         description: "Your thread is ready to be shared.",
       });
     } catch (error) {
