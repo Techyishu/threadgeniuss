@@ -19,21 +19,22 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // Get the confirmation token from the URL
+    // Get the token from the URL hash
     const url = new URL(req.url)
-    const token = url.searchParams.get('confirmation_token')
+    const hashParams = new URLSearchParams(url.hash.substring(1));
+    const token = hashParams.get('token') || url.searchParams.get('token');
 
     if (!token) {
       throw new Error('No confirmation token provided')
     }
 
-    // Verify the token and update the user's email status
-    const { error } = await supabaseClient.auth.admin.updateUserById(
-      token,
-      { email_confirmed: true }
-    )
+    // Verify the token
+    const { error: verifyError, data } = await supabaseClient.auth.verifyOtp({
+      token_hash: token,
+      type: 'email'
+    })
 
-    if (error) throw error
+    if (verifyError) throw verifyError
 
     // Redirect to the app's success page
     return new Response(null, {
@@ -45,6 +46,7 @@ serve(async (req) => {
     })
 
   } catch (error) {
+    console.error('Error confirming email:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
