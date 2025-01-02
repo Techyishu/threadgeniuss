@@ -38,6 +38,7 @@ serve(async (req) => {
     const { transcript, title } = await getYouTubeTranscript(youtubeUrl, youtubeApiKey);
     
     if (!transcript) {
+      console.error('No transcript found for video');
       throw new Error('Failed to get video transcript');
     }
     console.log('Successfully got transcript, title:', title);
@@ -45,6 +46,11 @@ serve(async (req) => {
     // Generate thread using DeepSeek
     console.log('Generating thread with DeepSeek');
     const thread = await generateThread(transcript, title, tone, threadSize);
+    
+    if (!thread) {
+      console.error('No thread generated from DeepSeek');
+      throw new Error('Failed to generate thread content');
+    }
     console.log('Thread generated successfully');
 
     return new Response(

@@ -43,6 +43,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       }
 
       setIsGenerating(true);
+      onThreadGenerated(null); // Clear any previous thread
 
       // First check if we're authenticated
       const { data: { session } } = await supabase.auth.getSession();
@@ -89,7 +90,8 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           youtube_url: youtubeLink,
           content: data.thread.content,
           title: data.thread.title,
-          status: 'generated'
+          status: 'generated',
+          user_id: session.user.id // Make sure to include the user_id
         });
 
       if (saveError) {
