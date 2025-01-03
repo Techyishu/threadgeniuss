@@ -38,6 +38,12 @@ export const Footer = () => {
             >
               <Youtube className="w-6 h-6" />
             </a>
+            <a
+              href="/privacy-policy"
+              className="text-gray-600 hover:text-cyber-blue transition-colors"
+            >
+              Privacy Policy
+            </a>
           </div>
           <p className="text-gray-600 text-sm">
             © {new Date().getFullYear()} ThreadGenius. All rights reserved.
