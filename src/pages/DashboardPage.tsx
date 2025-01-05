@@ -57,17 +57,17 @@ const DashboardPage = () => {
   return (
     <AuthGuard>
       <SidebarProvider>
-        <div className="flex min-h-screen w-full bg-cyber-dark">
+        <div className="flex min-h-screen w-full bg-white">
           {/* Mobile Sidebar */}
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
             <SheetTrigger asChild className="fixed top-4 left-4 z-50 md:hidden">
               <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6 text-white" />
+                <Menu className="h-6 w-6 text-[#1A1F2C]" />
               </Button>
             </SheetTrigger>
             <SheetContent 
               side="left" 
-              className="w-[240px] p-0 border-cyber-blue/20 bg-cyber-darker text-white"
+              className="w-[240px] p-0 border-cyber-blue/20 bg-white text-[#1A1F2C]"
             >
               <DashboardSidebar 
                 userName={userName} 
@@ -83,12 +83,12 @@ const DashboardPage = () => {
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="fixed top-4 left-4 z-50">
-                  <Menu className="h-6 w-6 text-white" />
+                  <Menu className="h-6 w-6 text-[#1A1F2C]" />
                 </Button>
               </SheetTrigger>
               <SheetContent 
                 side="left" 
-                className="w-[240px] p-0 border-cyber-blue/20 bg-cyber-darker text-white"
+                className="w-[240px] p-0 border-cyber-blue/20 bg-white text-[#1A1F2C]"
               >
                 <DashboardSidebar 
                   userName={userName} 

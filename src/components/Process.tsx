@@ -20,15 +20,17 @@ const steps = [
 
 export const Process = () => {
   return (
-    <section className="relative py-20 bg-cyber-darker">
+    <section className="relative py-12 sm:py-20 bg-white">
       <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[#1A1F2C] opacity-[0.02]" />
         <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(51, 195, 240, 0.1) 1px, transparent 0)',
+          backgroundImage: 'radial-gradient(circle at 1px 1px, #1A1F2C 1px, transparent 0)',
           backgroundSize: '40px 40px',
+          opacity: 0.1
         }} />
       </div>
       <div className="container relative z-10 mx-auto px-4 sm:px-6">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 text-white font-orbitron">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 text-[#1A1F2C]">
           How It Works
         </h2>
 
@@ -36,19 +38,17 @@ export const Process = () => {
           {steps.map((step, index) => (
             <div
               key={index}
-              className="relative group p-6 rounded-lg border border-cyber-blue/20 bg-cyber-dark/50 backdrop-blur-sm hover:border-cyber-blue/50 transition-all duration-300"
+              className="relative flex flex-col items-center text-center"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-cyber-blue/5 to-cyber-purple/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-full bg-cyber-blue/10 flex items-center justify-center mb-4 text-cyber-blue group-hover:text-cyber-purple transition-colors duration-300">
-                  {step.icon}
-                </div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-2 text-white font-orbitron">{step.title}</h3>
-                <p className="text-sm sm:text-base text-gray-400 font-rajdhani">{step.description}</p>
+              <div className="w-16 h-16 rounded-full bg-[#1A1F2C]/10 flex items-center justify-center mb-6 text-[#1A1F2C] relative">
+                {step.icon}
+                <div className="absolute -inset-2 bg-[#1A1F2C]/20 rounded-full animate-pulse opacity-0 group-hover:opacity-100"></div>
               </div>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 text-[#1A1F2C]">{step.title}</h3>
+              <p className="text-sm sm:text-base text-[#403E43]">{step.description}</p>
               
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-8 left-[60%] w-[calc(100%-4rem)] h-[2px] bg-gradient-to-r from-cyber-blue to-transparent"></div>
+                <div className="hidden md:block absolute top-8 left-[60%] w-[calc(100%-4rem)] h-[2px] bg-gradient-to-r from-[#1A1F2C] to-transparent"></div>
               )}
             </div>
           ))}
