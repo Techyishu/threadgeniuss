@@ -14,48 +14,23 @@ export const Hero = () => {
   ];
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-cyber-dark">
-      {/* Cyberpunk grid background */}
+    <div className="relative min-h-screen flex items-center justify-center bg-cyber-dark">
+      {/* Static grid background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-cyber-darker to-cyber-dark" />
         <div className="absolute inset-0" style={{
           backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(51, 195, 240, 0.1) 1px, transparent 0)',
           backgroundSize: '40px 40px',
         }} />
       </div>
 
-      {/* Glowing orbs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyber-blue/20 rounded-full filter blur-[100px] animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyber-purple/20 rounded-full filter blur-[100px] animate-pulse delay-1000" />
-      </div>
-
-      {/* Floating avatars */}
-      <div className="absolute inset-0 overflow-hidden">
-        {avatars.map((_, index) => (
-          <div
-            key={index}
-            className="absolute animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${index * 0.5}s`
-            }}
-          >
-            <div className="w-12 h-12 rounded-full bg-cyber-dark/50 backdrop-blur-sm border border-cyber-blue/20 p-1">
-              <Avatar className="w-full h-full">
-                <AvatarImage src={`https://avatar.vercel.sh/${index}`} />
-                <AvatarFallback>U{index + 1}</AvatarFallback>
-              </Avatar>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Static accent elements */}
+      <div className="absolute top-20 left-20 w-64 h-64 bg-cyber-purple/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 right-20 w-64 h-64 bg-cyber-blue/10 rounded-full blur-3xl" />
 
       <div className="container mx-auto relative z-10">
         <div className="max-w-[95%] md:max-w-4xl mx-auto text-center">
-          {/* Logo */}
-          <div className="mb-12">
+          {/* Logo with simple fade-in animation */}
+          <div className="mb-12 animate-fade-in">
             <img 
               src="/lovable-uploads/7d48e3a1-4d20-4175-b71b-5dc99ec8c51d.png" 
               alt="Thread Genius Logo" 
@@ -63,13 +38,13 @@ export const Hero = () => {
             />
           </div>
           
-          <div className="mb-6 inline-block">
+          <div className="mb-6 inline-block animate-fade-in" style={{ animationDelay: '200ms' }}>
             <span className="px-3 py-1 text-sm font-medium bg-cyber-blue/10 text-cyber-blue rounded-full border border-cyber-blue/20 font-rajdhani">
               100% Free Thread Generator
             </span>
           </div>
           
-          <h1 className="font-orbitron text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-white leading-[1.1] tracking-tight">
+          <h1 className="font-orbitron text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-white leading-[1.1] tracking-tight animate-fade-in" style={{ animationDelay: '400ms' }}>
             Transform Videos into
             <br className="hidden sm:block" />
             <span className="bg-gradient-to-r from-cyber-blue via-cyber-purple to-cyber-pink bg-clip-text text-transparent">
@@ -77,22 +52,22 @@ export const Hero = () => {
             </span>
           </h1>
 
-          <p className="font-rajdhani text-lg sm:text-xl md:text-2xl mb-10 mx-auto text-gray-400 max-w-2xl leading-relaxed">
+          <p className="font-rajdhani text-lg sm:text-xl md:text-2xl mb-10 mx-auto text-gray-400 max-w-2xl leading-relaxed animate-fade-in" style={{ animationDelay: '600ms' }}>
             Turn any YouTube video into engaging X (Twitter) threads in seconds. 
             AI-powered content that drives engagement.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in" style={{ animationDelay: '800ms' }}>
             <Button
               size="lg"
-              className="w-full sm:w-auto bg-cyber-blue hover:bg-cyber-blue/90 text-white transition-all duration-300 text-lg py-6 rounded-full font-rajdhani"
+              className="w-full sm:w-auto bg-cyber-blue hover:bg-cyber-blue/90 text-white transition-all duration-300 text-lg py-6 rounded-full font-rajdhani hover:scale-105"
               onClick={() => navigate('/dashboard')}
             >
               Start Creating - It's Free! <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
 
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-2 animate-fade-in" style={{ animationDelay: '1000ms' }}>
             <div className="flex -space-x-2">
               {[1, 2, 3, 4].map((i) => (
                 <Avatar key={i} className="w-8 h-8 border-2 border-cyber-dark">
