@@ -9,9 +9,9 @@ export const DashboardSidebar = ({
   onNavigateHome 
 }: DashboardSidebarProps) => {
   return (
-    <div className="flex h-full flex-col bg-white text-[#1A1F2C]">
+    <div className="flex h-full flex-col bg-cyber-darker text-white">
       <div className="flex justify-between items-center p-4 border-b border-cyber-blue/20">
-        <h2 className="text-lg font-semibold text-[#1A1F2C]">Menu</h2>
+        <h2 className="text-lg font-semibold text-white font-orbitron">Menu</h2>
       </div>
 
       <nav className="flex-1 overflow-y-auto p-4">

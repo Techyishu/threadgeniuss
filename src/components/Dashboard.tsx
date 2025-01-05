@@ -15,8 +15,8 @@ export const Dashboard = ({ showSavedThreads = false, showPricing = false }: Das
   const [generatedThread, setGeneratedThread] = useState<string | null>(null);
 
   return (
-    <>
-      <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
+    <div className="cyber-container min-h-screen">
+      <div className="cyber-content p-4 sm:p-6 md:p-8">
         <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
           <DashboardHeader />
           {showPricing ? (
@@ -32,6 +32,6 @@ export const Dashboard = ({ showSavedThreads = false, showPricing = false }: Das
         </div>
       </div>
       <Toaster />
-    </>
+    </div>
   );
 };
