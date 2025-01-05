@@ -18,6 +18,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        orbitron: ['Orbitron', 'sans-serif'],
+        rajdhani: ['Rajdhani', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -25,9 +29,12 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         cyber: {
-          dark: "#FFFFFF",
+          dark: "#1A1F2C",
+          darker: "#151821",
           blue: "#33C3F0",
           purple: "#8B5CF6",
+          pink: "#D946EF",
+          orange: "#F97316",
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",

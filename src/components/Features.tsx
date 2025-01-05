@@ -20,17 +20,15 @@ const features = [
 
 export const Features = () => {
   return (
-    <section className="relative py-12 sm:py-20 bg-white">
+    <section className="relative py-20 bg-cyber-dark">
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[#1A1F2C] opacity-[0.02]" />
         <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, #1A1F2C 1px, transparent 0)',
+          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(51, 195, 240, 0.1) 1px, transparent 0)',
           backgroundSize: '40px 40px',
-          opacity: 0.1
         }} />
       </div>
       <div className="container relative z-10 mx-auto px-4 sm:px-6">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 text-[#1A1F2C]">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-12 text-white font-orbitron">
           Powerful Features for Everyone
         </h2>
         
@@ -38,15 +36,15 @@ export const Features = () => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="relative group p-6 rounded-lg border border-[#1A1F2C]/20 bg-white hover:border-[#1A1F2C]/50 transition-all duration-300"
+              className="relative group p-6 rounded-lg border border-cyber-blue/20 bg-cyber-darker/50 backdrop-blur-sm hover:border-cyber-purple/50 transition-all duration-300"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-[#1A1F2C]/5 to-[#403E43]/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-cyber-purple/5 to-cyber-pink/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-12 h-12 rounded-full bg-[#1A1F2C]/10 flex items-center justify-center mb-4 text-[#1A1F2C] group-hover:text-[#403E43] transition-colors duration-300">
+                <div className="w-12 h-12 rounded-full bg-cyber-purple/10 flex items-center justify-center mb-4 text-cyber-purple group-hover:text-cyber-pink transition-colors duration-300">
                   {feature.icon}
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-2 text-[#1A1F2C]">{feature.title}</h3>
-                <p className="text-sm sm:text-base text-[#403E43]">{feature.description}</p>
+                <h3 className="text-lg sm:text-xl font-semibold mb-2 text-white font-orbitron">{feature.title}</h3>
+                <p className="text-sm sm:text-base text-gray-400 font-rajdhani">{feature.description}</p>
               </div>
             </div>
           ))}
