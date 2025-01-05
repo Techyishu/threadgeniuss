@@ -51,11 +51,11 @@ export const Hero = () => {
       <div className="container mx-auto relative z-10">
         <div className="max-w-[95%] md:max-w-4xl mx-auto text-center">
           {/* Logo */}
-          <div className="mb-8">
+          <div className="mb-12">
             <img 
               src="/lovable-uploads/7d48e3a1-4d20-4175-b71b-5dc99ec8c51d.png" 
               alt="Thread Genius Logo" 
-              className="h-16 mx-auto"
+              className="h-24 md:h-32 mx-auto"
             />
           </div>
           
