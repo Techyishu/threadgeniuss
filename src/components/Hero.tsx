@@ -50,6 +50,15 @@ export const Hero = () => {
 
       <div className="container mx-auto relative z-10">
         <div className="max-w-[95%] md:max-w-4xl mx-auto text-center">
+          {/* Logo */}
+          <div className="mb-8">
+            <img 
+              src="/lovable-uploads/7d48e3a1-4d20-4175-b71b-5dc99ec8c51d.png" 
+              alt="Thread Genius Logo" 
+              className="h-16 mx-auto"
+            />
+          </div>
+          
           <div className="mb-6 inline-block">
             <span className="px-3 py-1 text-sm font-medium bg-[#1A1F2C]/10 text-[#1A1F2C] rounded-full">
               100% Free Thread Generator
