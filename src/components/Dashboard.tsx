@@ -1,37 +1,25 @@
-import { useState } from "react";
+import React from "react";
+import { DashboardSidebar } from "./DashboardSidebar";
 import { ThreadGenerator } from "./dashboard/ThreadGenerator";
-import { ThreadPreview } from "./dashboard/ThreadPreview";
 import { SavedThreads } from "./dashboard/SavedThreads";
-import { DashboardHeader } from "./dashboard/DashboardHeader";
-import { DashboardPricing } from "./dashboard/DashboardPricing";
-import { Toaster } from "@/components/ui/toaster";
+import { ThreadsCounter } from "./dashboard/ThreadsCounter";
+import { useLocation } from "react-router-dom";
 
-interface DashboardProps {
-  showSavedThreads?: boolean;
-  showPricing?: boolean;
-}
-
-export const Dashboard = ({ showSavedThreads = false, showPricing = false }: DashboardProps) => {
-  const [generatedThread, setGeneratedThread] = useState<string | null>(null);
+export const Dashboard = () => {
+  const location = useLocation();
+  const showThreadGenerator = location.pathname === "/dashboard";
+  const showSavedThreads = location.pathname === "/dashboard/saved";
 
   return (
-    <div className="cyber-container min-h-screen">
-      <div className="cyber-content p-4 sm:p-6 md:p-8">
-        <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
-          <DashboardHeader />
-          {showPricing ? (
-            <DashboardPricing />
-          ) : showSavedThreads ? (
-            <SavedThreads />
-          ) : (
-            <div className="space-y-6">
-              <ThreadGenerator onThreadGenerated={setGeneratedThread} />
-              <ThreadPreview generatedThread={generatedThread} />
-            </div>
-          )}
+    <div className="dashboard-container flex min-h-screen">
+      <DashboardSidebar />
+      <main className="flex-1 dashboard-content">
+        <div className="max-w-6xl mx-auto space-y-8">
+          <ThreadsCounter />
+          {showThreadGenerator && <ThreadGenerator />}
+          {showSavedThreads && <SavedThreads />}
         </div>
-      </div>
-      <Toaster />
+      </main>
     </div>
   );
 };

@@ -21,6 +21,7 @@ export default {
       fontFamily: {
         orbitron: ['Orbitron', 'sans-serif'],
         rajdhani: ['Rajdhani', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -29,12 +30,12 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         cyber: {
-          dark: "#1A1F2C",
-          darker: "#151821",
+          dark: "#0F0A1F",
+          darker: "#080510",
+          purple: "#9b87f5",
+          lightPurple: "#E5DEFF",
           blue: "#33C3F0",
-          purple: "#8B5CF6",
           pink: "#D946EF",
-          orange: "#F97316",
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -65,23 +66,10 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-      },
       backgroundImage: {
-        "cyber-gradient": "linear-gradient(135deg, #FFFFFF 0%, #33C3F0 100%)",
-        "glow-gradient": "linear-gradient(90deg, #8B5CF6 0%, #33C3F0 100%)",
+        'gradient-radial': 'radial-gradient(circle at center, var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'purple-gradient': 'linear-gradient(180deg, #0F0A1F 0%, #2D1B69 100%)',
       },
     },
   },
