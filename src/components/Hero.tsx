@@ -55,7 +55,7 @@ export const Hero = () => {
             <img 
               src="/lovable-uploads/7d48e3a1-4d20-4175-b71b-5dc99ec8c51d.png" 
               alt="Thread Genius Logo" 
-              className="h-24 md:h-32 mx-auto"
+              className="h-40 md:h-48 lg:h-56 mx-auto"
             />
           </div>
           
