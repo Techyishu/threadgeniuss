@@ -6,13 +6,13 @@ const corsHeaders = {
 }
 
 interface RateLimitConfig {
-  maxRequests: number;  // Maximum number of requests allowed
-  windowMs: number;     // Time window in milliseconds
+  hourlyLimit: number;
+  dailyLimit: number;
 }
 
 const defaultConfig: RateLimitConfig = {
-  maxRequests: 50,     // 50 requests
-  windowMs: 60000,     // per 1 minute
+  hourlyLimit: 10,    // 10 requests per hour
+  dailyLimit: 100,    // 100 requests per day
 }
 
 Deno.serve(async (req) => {
@@ -22,6 +22,8 @@ Deno.serve(async (req) => {
   }
 
   try {
+    console.log('Rate limiter function called');
+    
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
@@ -38,25 +40,41 @@ Deno.serve(async (req) => {
     } = await supabaseClient.auth.getUser()
 
     if (!user) {
+      console.error('User not authenticated');
       throw new Error('Not authenticated')
     }
 
-    // Adjust rate limits based on user type
-    const config: RateLimitConfig = defaultConfig
-
-    // Check current request count
-    const now = Date.now()
-    const windowStart = now - config.windowMs
-
-    // Get request count from the last window
-    const { count } = await supabaseClient
+    const config: RateLimitConfig = defaultConfig;
+    const now = new Date();
+    
+    // Check hourly limit
+    const hourAgo = new Date(now.getTime() - (60 * 60 * 1000));
+    const { count: hourlyCount } = await supabaseClient
       .rpc('get_request_count', {
         user_id: user.id,
-        window_start: new Date(windowStart).toISOString()
-      })
+        window_start: hourAgo.toISOString()
+      });
 
-    if (count >= config.maxRequests) {
-      throw new Error('Rate limit exceeded')
+    console.log('Hourly count:', hourlyCount);
+    
+    if (hourlyCount >= config.hourlyLimit) {
+      console.error('Hourly rate limit exceeded');
+      throw new Error(`Rate limit exceeded: Maximum ${config.hourlyLimit} threads per hour`);
+    }
+
+    // Check daily limit
+    const dayAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+    const { count: dailyCount } = await supabaseClient
+      .rpc('get_request_count', {
+        user_id: user.id,
+        window_start: dayAgo.toISOString()
+      });
+
+    console.log('Daily count:', dailyCount);
+    
+    if (dailyCount >= config.dailyLimit) {
+      console.error('Daily rate limit exceeded');
+      throw new Error(`Rate limit exceeded: Maximum ${config.dailyLimit} threads per day`);
     }
 
     // Log the request
@@ -65,23 +83,30 @@ Deno.serve(async (req) => {
       .insert([
         {
           user_id: user.id,
-          timestamp: new Date().toISOString()
+          timestamp: now.toISOString()
         }
-      ])
+      ]);
 
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ 
+        success: true,
+        hourlyCount,
+        dailyCount,
+        hourlyLimit: config.hourlyLimit,
+        dailyLimit: config.dailyLimit
+      }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
       }
     )
   } catch (error) {
+    console.error('Error in rate-limiter:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: error.message === 'Rate limit exceeded' ? 429 : 400,
+        status: error.message.includes('Rate limit exceeded') ? 429 : 400,
       }
     )
   }
