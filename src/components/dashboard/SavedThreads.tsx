@@ -74,33 +74,34 @@ export const SavedThreads = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen bg-[#0A0F1E] p-4 sm:p-6 md:p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold text-[#1A1F2C] mb-6">Saved Threads</h1>
+        <h1 className="text-2xl font-bold text-white mb-6">Saved Threads</h1>
         {threads.length > 0 ? (
           <Accordion type="single" collapsible className="space-y-4">
             {threads.map((thread) => (
               <AccordionItem
                 key={thread.id}
                 value={thread.id}
-                className="bg-white border border-cyber-purple/20 rounded-lg overflow-hidden"
+                className="bg-[#1A1F2C] border border-cyber-blue/20 rounded-lg overflow-hidden"
               >
-                <AccordionTrigger className="px-4 py-2 text-[#1A1F2C] hover:no-underline hover:bg-cyber-purple/10">
+                <AccordionTrigger className="px-4 py-2 text-white hover:no-underline hover:bg-cyber-blue/10">
                   <div className="flex items-center justify-between w-full">
                     <span>{thread.title || 'Untitled Thread'}</span>
-                    <span className="text-sm text-[#403E43]">
+                    <span className="text-sm text-gray-400">
                       {new Date(thread.created_at!).toLocaleDateString()}
                     </span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="relative">
-                  <div className="p-4 text-[#1A1F2C] whitespace-pre-line">
+                  <div className="p-4 text-white whitespace-pre-line">
                     {thread.content}
                     <div className="absolute top-2 right-2">
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => copyToClipboard(thread.content)}
+                        className="text-gray-300 hover:text-white hover:bg-cyber-blue/10"
                       >
                         <Copy className="w-4 h-4" />
                       </Button>
@@ -111,7 +112,7 @@ export const SavedThreads = () => {
             ))}
           </Accordion>
         ) : (
-          <p className="text-center text-[#403E43]">No saved threads yet</p>
+          <p className="text-center text-gray-400">No saved threads yet</p>
         )}
       </div>
     </div>
