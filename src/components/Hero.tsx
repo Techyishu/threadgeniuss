@@ -1,105 +1,84 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const Hero = () => {
   const navigate = useNavigate();
 
-  // Sample avatar data - these would typically come from your actual users
-  const avatars = [
-    { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U1" },
-    { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U2" },
-    { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U3" },
-    { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U4" },
-  ];
-
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white px-4 sm:px-6">
-      {/* Background pattern */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[#1A1F2C] opacity-[0.02]" />
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, #1A1F2C 1px, transparent 0)',
-          backgroundSize: '40px 40px',
-          opacity: 0.1
-        }} />
-      </div>
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-purple-50/20 to-white" />
 
-      {/* Floating avatars */}
-      <div className="absolute inset-0 overflow-hidden">
-        {avatars.map((_, index) => (
-          <div
-            key={index}
-            className="absolute animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${index * 0.5}s`
-            }}
-          >
-            <div className="w-12 h-12 rounded-full bg-white shadow-lg p-1">
-              <Avatar className="w-full h-full">
-                <AvatarImage src={`https://avatar.vercel.sh/${index}`} />
-                <AvatarFallback>U{index + 1}</AvatarFallback>
-              </Avatar>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="container mx-auto relative z-10">
+      <div className="container mx-auto relative z-10 pt-20 pb-32">
         <div className="max-w-[95%] md:max-w-4xl mx-auto text-center">
           {/* Logo */}
-          <div className="mb-12">
+          <div className="mb-8">
             <img 
               src="/lovable-uploads/7d48e3a1-4d20-4175-b71b-5dc99ec8c51d.png" 
               alt="Thread Genius Logo" 
-              className="h-40 md:h-48 lg:h-56 mx-auto"
+              className="h-24 md:h-32 mx-auto"
             />
           </div>
           
+          {/* Green pill badge */}
           <div className="mb-6 inline-block">
-            <span className="px-3 py-1 text-sm font-medium bg-[#1A1F2C]/10 text-[#1A1F2C] rounded-full">
-              100% Free Thread Generator
-            </span>
+            <div className="px-4 py-1.5 text-sm font-medium bg-green-100 text-green-800 rounded-full flex items-center gap-2">
+              <span>New</span>
+              <span className="w-1 h-1 bg-green-800 rounded-full"></span>
+              <span>Learn about our $50M investment →</span>
+            </div>
           </div>
           
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-[#1A1F2C] leading-[1.1]">
-            Transform Videos into
-            <br className="hidden sm:block" />
-            <span className="bg-gradient-to-r from-[#1A1F2C] to-[#2A2F3C] bg-clip-text text-transparent">
-              Viral Threads
-            </span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-[#1A1F2C] leading-[1.1] tracking-tight">
+            Versatile website
+            <br />
+            <span>to show your product</span>
           </h1>
 
-          <p className="text-lg sm:text-xl md:text-2xl mb-10 mx-auto font-medium text-[#1A1F2C]/70 max-w-2xl leading-relaxed">
-            Turn any YouTube video into engaging X (Twitter) threads in seconds. 
-            AI-powered content that drives engagement.
+          <p className="text-lg text-gray-600 mb-10 mx-auto max-w-2xl leading-relaxed">
+            Unlock your SaaS sales potential with Thread Genius Website.
+            <br />
+            Engage customers, and boost revenue with ease.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <Button
               size="lg"
-              className="w-full sm:w-auto bg-[#1A1F2C] hover:bg-[#2A2F3C] text-white transition-all duration-300 text-lg py-6 rounded-full"
+              className="w-full sm:w-auto bg-[#7C3AED] hover:bg-[#6D28D9] text-white transition-all duration-300 text-base py-6 px-8 rounded-lg flex items-center gap-2"
               onClick={() => navigate('/dashboard')}
             >
-              Start Creating - It's Free! <ArrowRight className="ml-2 h-5 w-5" />
+              Get started <ArrowRight className="h-5 w-5" />
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto border-gray-200 text-gray-700 hover:bg-gray-50 transition-all duration-300 text-base py-6 px-8 rounded-lg flex items-center gap-2"
+              onClick={() => navigate('/dashboard')}
+            >
+              <Play className="h-5 w-5" /> Watch a demo
             </Button>
           </div>
 
-          <div className="flex items-center justify-center gap-2">
-            <div className="flex -space-x-2">
-              {[1, 2, 3, 4].map((i) => (
-                <Avatar key={i} className="w-8 h-8 border-2 border-white">
-                  <AvatarImage src={`https://avatar.vercel.sh/${i}`} />
-                  <AvatarFallback>U{i}</AvatarFallback>
-                </Avatar>
-              ))}
+          {/* Dashboard Preview Image */}
+          <div className="relative mx-auto max-w-5xl">
+            <div className="relative rounded-xl overflow-hidden shadow-2xl">
+              <img 
+                src="/lovable-uploads/c99a4a2f-077d-485d-8ccd-c31135de4fc7.png"
+                alt="Dashboard Preview"
+                className="w-full h-auto"
+              />
+              
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent pointer-events-none" />
             </div>
-            <span className="text-sm text-[#1A1F2C]/70">
-              Join thousands of content creators
-            </span>
+            
+            {/* Decorative blur effects */}
+            <div className="absolute -top-40 -left-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
+            <div className="absolute -bottom-40 left-20 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
           </div>
         </div>
       </div>
