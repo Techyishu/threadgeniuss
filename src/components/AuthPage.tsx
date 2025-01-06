@@ -21,11 +21,6 @@ export const AuthPage = () => {
           title: "Signed in",
           description: "Welcome back!",
         });
-      } else if (event === "PASSWORD_RECOVERY") {
-        toast({
-          title: "Password recovery",
-          description: "Check your email for password reset instructions",
-        });
       }
     });
 
@@ -58,41 +53,24 @@ export const AuthPage = () => {
                     brandButtonText: "white",
                     defaultButtonBackground: "#1A1F2C",
                     defaultButtonBackgroundHover: "#403E43",
-                    inputBackground: "#1A1F2C",
-                    inputBorder: "#403E43",
-                    inputBorderHover: "#8B5CF6",
-                    inputBorderFocus: "#33C3F0",
                   },
                 },
               },
               className: {
-                message: 'text-red-400',
                 button: 'bg-gradient-to-r from-cyber-blue to-cyber-purple text-white',
-                input: 'bg-[#1A1F2C] border-cyber-blue/30 text-white',
-                label: 'text-gray-300',
               },
             }}
             theme="dark"
             providers={["google"]}
             redirectTo={window.location.origin}
-            localization={{
-              variables: {
-                sign_up: {
-                  email_label: 'Email',
-                  password_label: 'Create Password',
-                  button_label: 'Create Account',
-                  loading_button_label: 'Creating Account...',
-                  social_provider_text: 'Continue with {{provider}}',
-                  link_text: "Don't have an account? Sign up",
-                },
-                sign_in: {
-                  email_label: 'Email',
-                  password_label: 'Your Password',
-                  button_label: 'Sign In',
-                  loading_button_label: 'Signing In...',
-                  social_provider_text: 'Continue with {{provider}}',
-                  link_text: 'Already have an account? Sign in',
-                },
+            view="sign_in"
+            showLinks={false}
+            appearance={{
+              extend: true,
+              className: {
+                container: 'flex flex-col gap-4',
+                button: 'bg-gradient-to-r from-cyber-blue to-cyber-purple text-white hover:opacity-90 transition-opacity',
+                divider: 'hidden',
               },
             }}
           />
