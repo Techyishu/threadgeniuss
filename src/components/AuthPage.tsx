@@ -56,16 +56,6 @@ export const AuthPage = () => {
                   },
                 },
               },
-              className: {
-                button: 'bg-gradient-to-r from-cyber-blue to-cyber-purple text-white',
-              },
-            }}
-            theme="dark"
-            providers={["google"]}
-            redirectTo={window.location.origin}
-            view="sign_in"
-            showLinks={false}
-            appearance={{
               extend: true,
               className: {
                 container: 'flex flex-col gap-4',
@@ -73,6 +63,11 @@ export const AuthPage = () => {
                 divider: 'hidden',
               },
             }}
+            theme="dark"
+            providers={["google"]}
+            redirectTo={window.location.origin}
+            view="sign_in"
+            showLinks={false}
           />
         </div>
       </div>
