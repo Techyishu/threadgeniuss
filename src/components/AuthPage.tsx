@@ -43,6 +43,7 @@ export const AuthPage = () => {
           <h2 className="text-3xl font-bold text-white mb-8 text-center">Welcome Back</h2>
           <Auth
             supabaseClient={supabase}
+            view="sign_in"
             appearance={{
               theme: ThemeSupa,
               variables: {
@@ -51,8 +52,6 @@ export const AuthPage = () => {
                     brand: '#8B5CF6',
                     brandAccent: '#33C3F0',
                     brandButtonText: "white",
-                    defaultButtonBackground: "#1A1F2C",
-                    defaultButtonBackgroundHover: "#403E43",
                   },
                 },
               },
@@ -60,14 +59,21 @@ export const AuthPage = () => {
               className: {
                 container: 'flex flex-col gap-4',
                 button: 'bg-gradient-to-r from-cyber-blue to-cyber-purple text-white hover:opacity-90 transition-opacity',
+                anchor: 'hidden',
                 divider: 'hidden',
+                message: 'hidden',
+                container__provider: 'block',
+                container__social: 'block',
+                label: 'hidden',
+                input: 'hidden',
+                button__sign-in: 'hidden',
               },
             }}
             theme="dark"
             providers={["google"]}
             redirectTo={window.location.origin}
-            view="sign_in"
             showLinks={false}
+            onlyThirdPartyProviders={true}
           />
         </div>
       </div>
