@@ -62,11 +62,8 @@ export const AuthPage = () => {
                 anchor: 'hidden',
                 divider: 'hidden',
                 message: 'hidden',
-                container__provider: 'block',
-                container__social: 'block',
                 label: 'hidden',
-                input: 'hidden',
-                'button__sign-in': 'hidden'
+                input: 'hidden'
               }
             }}
             theme="dark"
