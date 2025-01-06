@@ -55,7 +55,6 @@ export const AuthPage = () => {
                   },
                 },
               },
-              extend: true,
               className: {
                 container: 'flex flex-col gap-4',
                 button: 'bg-gradient-to-r from-cyber-blue to-cyber-purple text-white hover:opacity-90 transition-opacity',
