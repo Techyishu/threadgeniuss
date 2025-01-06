@@ -6,98 +6,69 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export const Hero = () => {
   const navigate = useNavigate();
 
-  // Sample avatar data - these would typically come from your actual users
-  const avatars = [
-    { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U1" },
-    { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U2" },
-    { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U3" },
-    { src: "/lovable-uploads/cd59cca6-eaea-4c0a-b3ea-b43388222df6.png", fallback: "U4" },
-  ];
-
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white px-4 sm:px-6">
-      {/* Background pattern */}
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0A0F1E] px-4 sm:px-6">
+      {/* Gradient background effect */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[#1A1F2C] opacity-[0.02]" />
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, #1A1F2C 1px, transparent 0)',
-          backgroundSize: '40px 40px',
-          opacity: 0.1
-        }} />
+        <div 
+          className="absolute inset-0 bg-gradient-to-t from-[#0A0F1E] via-[#0A0F1E]/90 to-blue-900/20"
+          style={{
+            backgroundImage: `radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.1) 0%, transparent 50%)`
+          }}
+        />
       </div>
 
-      {/* Floating avatars */}
-      <div className="absolute inset-0 overflow-hidden">
-        {avatars.map((_, index) => (
-          <div
-            key={index}
-            className="absolute animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${index * 0.5}s`
-            }}
-          >
-            <div className="w-12 h-12 rounded-full bg-white shadow-lg p-1">
-              <Avatar className="w-full h-full">
-                <AvatarImage src={`https://avatar.vercel.sh/${index}`} />
-                <AvatarFallback>U{index + 1}</AvatarFallback>
-              </Avatar>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="container mx-auto relative z-10">
+      <div className="container mx-auto relative z-10 pt-20 pb-32">
         <div className="max-w-[95%] md:max-w-4xl mx-auto text-center">
-          {/* Logo */}
-          <div className="mb-12">
-            <img 
-              src="/lovable-uploads/7d48e3a1-4d20-4175-b71b-5dc99ec8c51d.png" 
-              alt="Thread Genius Logo" 
-              className="h-40 md:h-48 lg:h-56 mx-auto"
-            />
-          </div>
-          
-          <div className="mb-6 inline-block">
-            <span className="px-3 py-1 text-sm font-medium bg-[#1A1F2C]/10 text-[#1A1F2C] rounded-full">
-              100% Free Thread Generator
+          {/* New service badge */}
+          <div className="mb-8 inline-block">
+            <span className="px-4 py-1.5 text-sm font-medium bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-400 rounded-full border border-blue-500/20">
+              AI-Powered Thread Generation
             </span>
           </div>
           
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-[#1A1F2C] leading-[1.1]">
-            Transform Videos into
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-white leading-[1.1] tracking-tight">
+            Transform Your Videos into
             <br className="hidden sm:block" />
-            <span className="bg-gradient-to-r from-[#1A1F2C] to-[#2A2F3C] bg-clip-text text-transparent">
-              Viral Threads
+            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Viral Twitter Threads
             </span>
           </h1>
 
-          <p className="text-lg sm:text-xl md:text-2xl mb-10 mx-auto font-medium text-[#1A1F2C]/70 max-w-2xl leading-relaxed">
-            Turn any YouTube video into engaging X (Twitter) threads in seconds. 
-            AI-powered content that drives engagement.
+          <p className="text-lg sm:text-xl md:text-2xl mb-12 mx-auto text-slate-400 max-w-2xl leading-relaxed">
+            Turn any YouTube video into engaging Twitter threads in seconds. 
+            Save hours of content creation with AI-powered automation.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
             <Button
               size="lg"
-              className="w-full sm:w-auto bg-[#1A1F2C] hover:bg-[#2A2F3C] text-white transition-all duration-300 text-lg py-6 rounded-full"
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white transition-all duration-300 text-lg py-6 px-8 rounded-lg shadow-lg shadow-blue-500/25"
               onClick={() => navigate('/dashboard')}
             >
-              Start Creating - It's Free! <ArrowRight className="ml-2 h-5 w-5" />
+              Start Creating For Free <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full sm:w-auto border-slate-700 text-slate-300 hover:bg-slate-800 transition-all duration-300 text-lg py-6 px-8 rounded-lg"
+              onClick={() => window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')}
+            >
+              Watch Demo
             </Button>
           </div>
 
-          <div className="flex items-center justify-center gap-2">
+          {/* Social proof section */}
+          <div className="flex items-center justify-center gap-3">
             <div className="flex -space-x-2">
               {[1, 2, 3, 4].map((i) => (
-                <Avatar key={i} className="w-8 h-8 border-2 border-white">
+                <Avatar key={i} className="w-8 h-8 border-2 border-[#0A0F1E]">
                   <AvatarImage src={`https://avatar.vercel.sh/${i}`} />
                   <AvatarFallback>U{i}</AvatarFallback>
                 </Avatar>
               ))}
             </div>
-            <span className="text-sm text-[#1A1F2C]/70">
+            <span className="text-sm text-slate-400">
               Join thousands of content creators
             </span>
           </div>
