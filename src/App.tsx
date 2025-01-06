@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
@@ -15,6 +15,7 @@ import TermsOfService from "./pages/TermsOfService";
 import Support from "./pages/Support";
 import RefundPolicy from "./pages/RefundPolicy";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import { useToast } from "./hooks/use-toast";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,6 +25,47 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+// Email confirmation component
+const EmailConfirmation = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const confirmEmail = async () => {
+      const token_hash = searchParams.get('token_hash');
+      const type = searchParams.get('type');
+      const next = searchParams.get('next') || '/dashboard';
+
+      if (token_hash && type) {
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash,
+          type: type as any,
+        });
+
+        if (error) {
+          toast({
+            title: "Error confirming email",
+            description: error.message,
+            variant: "destructive",
+          });
+          navigate('/auth');
+        } else {
+          toast({
+            title: "Email confirmed",
+            description: "You can now sign in with your email",
+          });
+          navigate(next);
+        }
+      }
+    };
+
+    confirmEmail();
+  }, [searchParams, navigate, toast]);
+
+  return null;
+};
 
 const App = () => {
   const [session, setSession] = useState(null);
@@ -50,6 +92,7 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/auth/confirm" element={<EmailConfirmation />} />
             <Route
               path="/auth"
               element={
