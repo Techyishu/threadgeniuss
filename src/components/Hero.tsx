@@ -27,20 +27,20 @@ export const Hero = () => {
             <div className="px-4 py-1.5 text-sm font-medium bg-green-100 text-green-800 rounded-full flex items-center gap-2">
               <span>New</span>
               <span className="w-1 h-1 bg-green-800 rounded-full"></span>
-              <span>Learn about our $50M investment →</span>
+              <span>AI-Powered Thread Generation →</span>
             </div>
           </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-[#1A1F2C] leading-[1.1] tracking-tight">
-            Versatile website
+            Transform YouTube Videos
             <br />
-            <span>to show your product</span>
+            <span>Into Viral Threads</span>
           </h1>
 
           <p className="text-lg text-gray-600 mb-10 mx-auto max-w-2xl leading-relaxed">
-            Unlock your SaaS sales potential with Thread Genius Website.
+            Thread Genius uses advanced AI to convert any YouTube video into engaging Twitter threads.
             <br />
-            Engage customers, and boost revenue with ease.
+            Generate viral-worthy content in seconds, not hours.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -49,7 +49,7 @@ export const Hero = () => {
               className="w-full sm:w-auto bg-[#7C3AED] hover:bg-[#6D28D9] text-white transition-all duration-300 text-base py-6 px-8 rounded-lg flex items-center gap-2"
               onClick={() => navigate('/dashboard')}
             >
-              Get started <ArrowRight className="h-5 w-5" />
+              Start Creating Threads <ArrowRight className="h-5 w-5" />
             </Button>
             
             <Button
@@ -58,7 +58,7 @@ export const Hero = () => {
               className="w-full sm:w-auto border-gray-200 text-gray-700 hover:bg-gray-50 transition-all duration-300 text-base py-6 px-8 rounded-lg flex items-center gap-2"
               onClick={() => navigate('/dashboard')}
             >
-              <Play className="h-5 w-5" /> Watch a demo
+              <Play className="h-5 w-5" /> See How It Works
             </Button>
           </div>
 
@@ -67,7 +67,7 @@ export const Hero = () => {
             <div className="relative rounded-xl overflow-hidden shadow-2xl">
               <img 
                 src="/lovable-uploads/c99a4a2f-077d-485d-8ccd-c31135de4fc7.png"
-                alt="Dashboard Preview"
+                alt="Thread Generator Dashboard Preview"
                 className="w-full h-auto"
               />
               
