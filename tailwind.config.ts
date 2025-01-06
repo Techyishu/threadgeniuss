@@ -67,17 +67,6 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        blob: {
-          "0%, 100%": {
-            transform: "translate(0, 0) scale(1)",
-          },
-          "33%": {
-            transform: "translate(30px, -50px) scale(1.1)",
-          },
-          "66%": {
-            transform: "translate(-20px, 20px) scale(0.9)",
-          },
-        },
         glow: {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.5" },
@@ -90,7 +79,6 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        blob: "blob 7s infinite",
         glow: "glow 2s ease-in-out infinite",
         float: "float 3s ease-in-out infinite",
       },
