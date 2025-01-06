@@ -48,14 +48,6 @@ export const Hero = () => {
             >
               Start Creating For Free <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="w-full sm:w-auto border-slate-700 text-slate-300 hover:bg-slate-800 transition-all duration-300 text-lg py-6 px-8 rounded-lg"
-              onClick={() => window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')}
-            >
-              Watch Demo
-            </Button>
           </div>
 
           {/* Social proof section */}
