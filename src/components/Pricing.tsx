@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { Button } from "./ui/button";
+import { useNavigate } from 'react-router-dom';
 
 const plans = [
   {
@@ -16,6 +17,8 @@ const plans = [
 ];
 
 export const Pricing = () => {
+  const navigate = useNavigate();
+
   return (
     <section id="pricing" className="relative py-16 bg-[#0A0F1E]">
       <div className="absolute inset-0">
@@ -53,6 +56,7 @@ export const Pricing = () => {
               </ul>
               <Button
                 className="w-full bg-gradient-to-r from-cyber-blue to-cyber-purple hover:opacity-90 transition-opacity"
+                onClick={() => navigate('/auth')}
               >
                 {plan.buttonText}
               </Button>
