@@ -43,29 +43,62 @@ export async function getYouTubeTranscript(videoUrl: string, apiKey: string) {
 
     const title = details.items[0]?.snippet?.title;
 
-    // Use youtube-transcript API (no auth required)
-    const transcriptResponse = await fetch(
-      `https://youtube-transcript.vercel.app/api/transcript/${videoId}`
-    );
+    // Try multiple transcript APIs for better reliability
+    const apis = [
+      `https://youtube-transcript-api.vercel.app/api/transcript/${videoId}`,
+      `https://youtube-transcript.vercel.app/api/transcript/${videoId}`,
+      `https://yt-transcript.p.rapidapi.com/transcript/${videoId}?lang=en`
+    ];
 
-    if (!transcriptResponse.ok) {
-      throw new Error('Failed to fetch transcript');
+    let transcript = null;
+    let error = null;
+
+    for (const apiUrl of apis) {
+      try {
+        console.log('Attempting to fetch transcript from:', apiUrl);
+        const headers: Record<string, string> = {};
+        
+        // Add RapidAPI headers if using their endpoint
+        if (apiUrl.includes('rapidapi.com')) {
+          headers['X-RapidAPI-Key'] = 'YOUR-RAPIDAPI-KEY'; // This is optional, will be skipped if key not provided
+          headers['X-RapidAPI-Host'] = 'yt-transcript.p.rapidapi.com';
+        }
+
+        const response = await fetch(apiUrl, { headers });
+        
+        if (!response.ok) {
+          console.log(`Failed to fetch from ${apiUrl}:`, response.status);
+          continue;
+        }
+
+        const data = await response.json();
+        
+        if (Array.isArray(data)) {
+          // Handle array format (youtube-transcript.vercel.app)
+          transcript = data
+            .map((item: { text: string }) => item.text)
+            .join(' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        } else if (data.transcript) {
+          // Handle object format (rapidapi)
+          transcript = data.transcript;
+        }
+
+        if (transcript) {
+          console.log('Successfully retrieved transcript');
+          break;
+        }
+      } catch (e) {
+        error = e;
+        console.error(`Error fetching from ${apiUrl}:`, e);
+        continue;
+      }
     }
 
-    const transcriptData = await transcriptResponse.json();
-    
-    if (!transcriptData || transcriptData.length === 0) {
-      throw new Error('No transcript available for this video');
+    if (!transcript) {
+      throw error || new Error('Failed to fetch transcript from all available sources');
     }
-
-    // Combine all text segments into one transcript
-    const transcript = transcriptData
-      .map((item: { text: string }) => item.text)
-      .join(' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-
-    console.log('Successfully retrieved transcript');
 
     return {
       title,
