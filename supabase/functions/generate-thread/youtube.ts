@@ -21,10 +21,10 @@ export async function getYouTubeTranscript(videoUrl: string, apiKey: string) {
     throw new Error('Invalid YouTube URL');
   }
 
-  console.log('Extracted video ID:', videoId);
+  console.log('Extracting transcript for video ID:', videoId);
 
   try {
-    // First, get video details
+    // First get video details for the title
     const detailsResponse = await fetch(
       `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`
     );
@@ -42,17 +42,34 @@ export async function getYouTubeTranscript(videoUrl: string, apiKey: string) {
     }
 
     const title = details.items[0]?.snippet?.title;
-    const description = details.items[0]?.snippet?.description;
 
-    // For transcript, we'll use the description as a fallback since captions API requires OAuth
-    console.log('Using video description as transcript source');
-    if (!description) {
-      throw new Error('No description available for this video');
+    // Use youtube-transcript API (no auth required)
+    const transcriptResponse = await fetch(
+      `https://youtube-transcript.vercel.app/api/transcript/${videoId}`
+    );
+
+    if (!transcriptResponse.ok) {
+      throw new Error('Failed to fetch transcript');
     }
+
+    const transcriptData = await transcriptResponse.json();
+    
+    if (!transcriptData || transcriptData.length === 0) {
+      throw new Error('No transcript available for this video');
+    }
+
+    // Combine all text segments into one transcript
+    const transcript = transcriptData
+      .map((item: { text: string }) => item.text)
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    console.log('Successfully retrieved transcript');
 
     return {
       title,
-      transcript: description
+      transcript
     };
   } catch (error) {
     console.error('Error fetching YouTube data:', error);
