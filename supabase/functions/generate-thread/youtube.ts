@@ -39,30 +39,48 @@ export async function getYouTubeTranscript(videoUrl: string, apiKey: string) {
     }
 
     const title = details.items[0]?.snippet?.title;
+    const description = details.items[0]?.snippet?.description;
     console.log('Got video title:', title);
 
-    // Now fetch transcript using youtube-transcript
-    console.log('Fetching transcript for video ID:', videoId);
-    const transcriptItems = await YoutubeTranscript.fetchTranscript(videoId);
-    
-    if (!transcriptItems || transcriptItems.length === 0) {
-      console.error('No transcript available for this video');
-      throw new Error('No transcript available for this video');
+    try {
+      // Attempt to fetch transcript
+      console.log('Fetching transcript for video ID:', videoId);
+      const transcriptItems = await YoutubeTranscript.fetchTranscript(videoId);
+      
+      if (!transcriptItems || transcriptItems.length === 0) {
+        console.log('No transcript available, falling back to description');
+        if (!description) {
+          throw new Error('No transcript or description available for this video');
+        }
+        return {
+          title,
+          transcript: description
+        };
+      }
+
+      // Combine all transcript text
+      const transcriptText = transcriptItems
+        .map(item => item.text)
+        .join(' ');
+
+      console.log('Successfully retrieved transcript');
+      
+      return {
+        title,
+        transcript: transcriptText
+      };
+    } catch (transcriptError) {
+      console.log('Failed to fetch transcript, falling back to description:', transcriptError);
+      if (!description) {
+        throw new Error('No transcript or description available for this video');
+      }
+      return {
+        title,
+        transcript: description
+      };
     }
-
-    // Combine all transcript text
-    const transcriptText = transcriptItems
-      .map(item => item.text)
-      .join(' ');
-
-    console.log('Successfully retrieved transcript');
-    
-    return {
-      title,
-      transcript: transcriptText
-    };
   } catch (error) {
-    console.error('Error fetching transcript:', error);
-    throw new Error(`Failed to fetch transcript: ${error.message}`);
+    console.error('Error fetching video data:', error);
+    throw new Error(`Failed to fetch video data: ${error.message}`);
   }
 }
