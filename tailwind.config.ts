@@ -26,15 +26,8 @@ export default {
         foreground: "hsl(var(--foreground))",
         cyber: {
           dark: "#0A0F1E",
-          darker: "#070B14",
           blue: "#33C3F0",
           purple: "#8B5CF6",
-          pink: "#D946EF",
-          neon: {
-            blue: "#0EA5E9",
-            purple: "#7E69AB",
-            pink: "#EC4899"
-          }
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -82,30 +75,16 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
-        neonPulse: {
-          "0%, 100%": {
-            textShadow: "0 0 4px #fff, 0 0 11px #fff, 0 0 19px #fff, 0 0 40px #33C3F0, 0 0 80px #33C3F0, 0 0 90px #33C3F0, 0 0 100px #33C3F0, 0 0 150px #33C3F0"
-          },
-          "50%": {
-            textShadow: "0 0 4px #fff, 0 0 10px #fff, 0 0 18px #fff, 0 0 38px #33C3F0, 0 0 73px #33C3F0, 0 0 80px #33C3F0, 0 0 94px #33C3F0, 0 0 140px #33C3F0"
-          }
-        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         glow: "glow 2s ease-in-out infinite",
         float: "float 3s ease-in-out infinite",
-        neonPulse: "neonPulse 2.5s infinite",
       },
       backgroundImage: {
         "cyber-gradient": "linear-gradient(135deg, #0A0F1E 0%, #33C3F0 100%)",
         "glow-gradient": "linear-gradient(90deg, #8B5CF6 0%, #33C3F0 100%)",
-        "neon-grid": "linear-gradient(transparent 0%, #33C3F0 2%, transparent 2.5%), linear-gradient(90deg, transparent 0%, #33C3F0 2%, transparent 2.5%)",
-      },
-      boxShadow: {
-        neon: "0 0 5px theme('colors.cyber.blue'), 0 0 20px theme('colors.cyber.blue')",
-        "neon-strong": "0 0 5px theme('colors.cyber.blue'), 0 0 20px theme('colors.cyber.blue'), 0 0 40px theme('colors.cyber.blue')",
       },
     },
   },
