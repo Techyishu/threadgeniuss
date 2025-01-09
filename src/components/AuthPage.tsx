@@ -28,19 +28,20 @@ export const AuthPage = () => {
   }, [toast]);
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0A0F1E] px-4 sm:px-6">
-      <div className="absolute inset-0">
-        <div 
-          className="absolute inset-0 bg-gradient-to-t from-[#0A0F1E] via-[#0A0F1E]/90 to-blue-900/20"
-          style={{
-            backgroundImage: `radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.1) 0%, transparent 50%)`
-          }}
-        />
-      </div>
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-cyber-darker px-4">
+      {/* Cyberpunk grid background */}
+      <div className="absolute inset-0 bg-neon-grid bg-[length:50px_50px] opacity-5" />
+      
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-cyber-darker via-cyber-dark to-transparent" />
+
+      {/* Animated glow effects */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyber-blue/20 rounded-full blur-[100px] animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-cyber-purple/20 rounded-full blur-[100px] animate-pulse delay-300" />
 
       <div className="max-w-md w-full mx-auto relative z-10">
-        <div className="bg-[#1A1F2C]/80 p-8 rounded-lg backdrop-blur-sm border border-cyber-blue/20">
-          <h2 className="text-3xl font-bold text-white mb-8 text-center">Welcome Back</h2>
+        <div className="bg-cyber-darker/80 p-8 rounded-lg backdrop-blur-sm border border-cyber-blue/30 shadow-neon">
+          <h2 className="text-3xl font-bold text-white mb-8 text-center animate-neonPulse">Welcome Back</h2>
           <Auth
             supabaseClient={supabase}
             view="sign_in"
@@ -49,15 +50,15 @@ export const AuthPage = () => {
               variables: {
                 default: {
                   colors: {
-                    brand: '#8B5CF6',
-                    brandAccent: '#33C3F0',
+                    brand: '#33C3F0',
+                    brandAccent: '#8B5CF6',
                     brandButtonText: "white",
                   },
                 },
               },
               className: {
                 container: 'flex flex-col gap-4',
-                button: 'bg-gradient-to-r from-cyber-blue to-cyber-purple text-white hover:opacity-90 transition-opacity',
+                button: 'bg-gradient-to-r from-cyber-blue to-cyber-purple text-white hover:opacity-90 transition-opacity shadow-neon',
                 anchor: 'hidden',
                 divider: 'hidden',
                 message: 'hidden',
