@@ -16,13 +16,38 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
 
   useEffect(() => {
     if (generatedThread) {
-      setTweets(splitIntoTweets(generatedThread));
+      const formattedTweets = formatIntoThreadTweets(generatedThread);
+      setTweets(formattedTweets);
       setEditingIndex(null);
     }
   }, [generatedThread]);
 
-  const splitIntoTweets = (thread: string) => {
-    return thread.split('\n\n').filter(tweet => tweet.trim().length > 0);
+  const formatIntoThreadTweets = (content: string): string[] => {
+    const TWEET_LENGTH = 280;
+    const words = content.split(' ');
+    const tweets: string[] = [];
+    let currentTweet = '';
+    let wordIndex = 0;
+
+    while (wordIndex < words.length) {
+      const word = words[wordIndex];
+      const suffix = tweets.length === 0 ? '' : ` ${tweets.length + 1}/${Math.ceil(content.length / TWEET_LENGTH)}`;
+      const potentialTweet = currentTweet + (currentTweet ? ' ' : '') + word + suffix;
+
+      if (potentialTweet.length <= TWEET_LENGTH) {
+        currentTweet = potentialTweet;
+        wordIndex++;
+      } else {
+        tweets.push(currentTweet + suffix);
+        currentTweet = '';
+      }
+    }
+
+    if (currentTweet) {
+      tweets.push(currentTweet + ` ${tweets.length + 1}/${Math.ceil(content.length / TWEET_LENGTH)}`);
+    }
+
+    return tweets;
   };
 
   const copyToClipboard = async (text: string) => {
