@@ -61,13 +61,13 @@ const DashboardPage = () => {
           {/* Mobile Sidebar */}
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
             <SheetTrigger asChild className="fixed top-4 left-4 z-50 md:hidden">
-              <Button variant="ghost" size="icon" className="text-cyber-blue hover:text-cyber-purple">
-                <Menu className="h-6 w-6" />
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6 text-white" />
               </Button>
             </SheetTrigger>
             <SheetContent 
               side="left" 
-              className="w-[280px] p-0 border-cyber-blue/20 bg-cyber-dark"
+              className="w-[240px] p-0 border-cyber-blue/20 bg-[#1A1F2C] text-white"
             >
               <DashboardSidebar 
                 userName={userName} 
@@ -79,13 +79,25 @@ const DashboardPage = () => {
           </Sheet>
 
           {/* Desktop Sidebar */}
-          <div className="hidden md:block w-[280px] border-r border-cyber-blue/20">
-            <DashboardSidebar 
-              userName={userName} 
-              onClose={() => setIsSidebarOpen(false)} 
-              onShowSavedThreads={handleShowSavedThreads}
-              onNavigateHome={handleNavigateHome}
-            />
+          <div className="hidden md:block">
+            <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="fixed top-4 left-4 z-50">
+                  <Menu className="h-6 w-6 text-white" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent 
+                side="left" 
+                className="w-[240px] p-0 border-cyber-blue/20 bg-[#1A1F2C] text-white"
+              >
+                <DashboardSidebar 
+                  userName={userName} 
+                  onClose={() => setIsSidebarOpen(false)} 
+                  onShowSavedThreads={handleShowSavedThreads}
+                  onNavigateHome={handleNavigateHome}
+                />
+              </SheetContent>
+            </Sheet>
           </div>
 
           <main className="flex-1">
