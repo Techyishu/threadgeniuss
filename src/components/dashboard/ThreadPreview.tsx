@@ -63,85 +63,86 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
     setEditedTweet("");
   };
 
+  if (!generatedThread) {
+    return (
+      <div className="min-h-[200px] flex items-center justify-center text-gray-500">
+        Your generated thread will appear here...
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-[#1A1F2C] p-4 sm:p-6 rounded-lg border border-cyber-blue/20 shadow-lg">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
-        <h2 className="text-lg sm:text-xl font-semibold text-white">Preview</h2>
+    <div className="space-y-4">
+      <div className="flex justify-end">
         <Button
           variant="outline"
           size="sm"
-          className="flex-1 sm:flex-none border-cyber-blue/30 hover:border-cyber-blue text-cyber-blue"
-          onClick={() => tweets.length > 0 && copyToClipboard(tweets.join('\n\n'))}
+          onClick={() => copyToClipboard(tweets.join('\n\n'))}
+          className="text-white border-gray-800 hover:bg-gray-800"
         >
           <Copy className="w-4 h-4 mr-2" />
           Copy All
         </Button>
       </div>
       
-      <div className="space-y-4 w-full">
-        {tweets.length > 0 ? (
-          tweets.map((tweet, index) => (
-            <div 
-              key={index}
-              className="relative bg-[#0A0F1E] rounded-lg border border-dashed border-cyber-blue/20 p-4 group"
-            >
-              {editingIndex === index ? (
-                <div className="space-y-4">
-                  <Textarea
-                    value={editedTweet}
-                    onChange={(e) => setEditedTweet(e.target.value)}
-                    className="w-full min-h-[100px] text-white break-words bg-[#1A1F2C] border-cyber-blue/30"
-                  />
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      onClick={() => handleSaveEdit(index)}
-                      className="bg-cyber-blue hover:bg-cyber-blue/90"
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={handleCancelEdit}
-                      className="border-cyber-blue/30 text-white"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
+      <div className="space-y-4">
+        {tweets.map((tweet, index) => (
+          <div 
+            key={index}
+            className="relative bg-black rounded-lg border border-gray-800 p-4 group"
+          >
+            {editingIndex === index ? (
+              <div className="space-y-4">
+                <Textarea
+                  value={editedTweet}
+                  onChange={(e) => setEditedTweet(e.target.value)}
+                  className="w-full min-h-[100px] bg-black border-gray-800 text-white"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => handleSaveEdit(index)}
+                    className="bg-white text-black hover:bg-gray-100"
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleCancelEdit}
+                    className="border-gray-800 text-white"
+                  >
+                    Cancel
+                  </Button>
                 </div>
-              ) : (
-                <>
-                  <div className="text-white whitespace-pre-line break-words max-w-full">
-                    {tweet}
-                  </div>
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleEditClick(index, tweet)}
-                      className="text-gray-300 hover:text-white hover:bg-cyber-blue/10"
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => copyToClipboard(tweet)}
-                      className="text-gray-300 hover:text-white hover:bg-cyber-blue/10"
-                    >
-                      <Copy className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-400 text-center text-sm sm:text-base">
-            Generated thread will appear here...
-          </p>
-        )}
+              </div>
+            ) : (
+              <>
+                <div className="text-white whitespace-pre-line">
+                  {tweet}
+                </div>
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleEditClick(index, tweet)}
+                    className="text-gray-400 hover:text-white hover:bg-gray-800"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => copyToClipboard(tweet)}
+                    className="text-gray-400 hover:text-white hover:bg-gray-800"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
