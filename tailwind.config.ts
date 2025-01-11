@@ -28,6 +28,17 @@ export default {
           dark: "#0A0F1E",
           blue: "#33C3F0",
           purple: "#8B5CF6",
+          gray: {
+            100: "#F6F6F7",
+            200: "#EBEBEC",
+            300: "#D1D1D3",
+            400: "#A9A9AB",
+            500: "#8A898C",
+            600: "#6B6A6D",
+            700: "#403E43",
+            800: "#2A282D",
+            900: "#1A1F2C",
+          }
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
