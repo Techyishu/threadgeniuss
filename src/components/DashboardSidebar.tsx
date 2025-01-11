@@ -9,12 +9,14 @@ export const DashboardSidebar = ({
   onNavigateHome 
 }: DashboardSidebarProps) => {
   return (
-    <div className="flex h-full flex-col bg-cyber-gray-900 text-white border-r border-cyber-blue/20">
-      <div className="flex justify-between items-center p-4 border-b border-cyber-blue/20 bg-cyber-gray-800">
-        <h2 className="text-lg font-semibold text-cyber-blue">Menu</h2>
+    <div className="flex h-full flex-col bg-cyber-dark text-white">
+      <div className="flex justify-between items-center p-4 border-b border-cyber-blue/20 bg-gradient-to-r from-cyber-dark to-cyber-gray-900">
+        <h2 className="text-lg font-semibold bg-gradient-to-r from-cyber-blue to-cyber-purple bg-clip-text text-transparent">
+          Menu
+        </h2>
       </div>
 
-      <nav className="flex-1 overflow-y-auto p-4 bg-gradient-to-b from-cyber-gray-900 to-cyber-gray-800">
+      <nav className="flex-1 overflow-y-auto p-4 bg-gradient-to-b from-cyber-dark to-cyber-gray-900">
         <SidebarNavigation 
           userName={userName} 
           onClose={onClose} 
