@@ -86,10 +86,10 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+      <BrowserRouter>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth/confirm" element={<EmailConfirmation />} />
@@ -112,10 +112,10 @@ const App = () => {
             <Route path="/refund-policy" element={<RefundPolicy />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           </Routes>
-        </BrowserRouter>
-        <Analytics />
-        <SpeedInsights />
-      </TooltipProvider>
+          <Analytics />
+          <SpeedInsights />
+        </TooltipProvider>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 };
