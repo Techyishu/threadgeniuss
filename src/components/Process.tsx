@@ -1,21 +1,26 @@
-import { Link2, Sparkles, Share2 } from "lucide-react";
+import { User2, Sparkles, Mail, CheckCircle } from "lucide-react";
 
 const steps = [
   {
-    icon: <Link2 className="w-6 h-6" />,
-    title: "Paste YouTube Link",
-    description: "Simply paste the URL of any YouTube video you want to convert",
+    icon: <User2 className="w-6 h-6" />,
+    title: "Start",
+    description: "We provide the required customer details to AI",
   },
   {
     icon: <Sparkles className="w-6 h-6" />,
-    title: "AI Summarizes Content",
-    description: "Our AI analyzes and extracts the most important points",
+    title: "AI Processing",
+    description: "The AI process the details and writes a testimonial",
   },
   {
-    icon: <Share2 className="w-6 h-6" />,
-    title: "Get Twitter-Ready Thread",
-    description: "Receive a perfectly formatted thread ready to share",
+    icon: <Mail className="w-6 h-6" />,
+    title: "Review",
+    description: "The testimonial is sent to the customer for review",
   },
+  {
+    icon: <CheckCircle className="w-6 h-6" />,
+    title: "Approved",
+    description: "Once Approved, Congratulations you have got a new testimonial",
+  }
 ];
 
 export const Process = () => {
@@ -30,26 +35,34 @@ export const Process = () => {
         />
       </div>
       <div className="container relative z-10 mx-auto px-4 sm:px-6">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 text-white">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-16 text-white flex items-center justify-center gap-4">
+          <span className="h-[1px] w-12 bg-gradient-to-r from-transparent to-green-500"></span>
           How It Works
+          <span className="h-[1px] w-12 bg-gradient-to-l from-transparent to-green-500"></span>
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
+        <div className="max-w-3xl mx-auto">
           {steps.map((step, index) => (
-            <div
-              key={index}
-              className="relative flex flex-col items-center text-center group"
-            >
-              <div className="w-16 h-16 rounded-full bg-cyber-blue/10 flex items-center justify-center mb-6 text-cyber-blue group-hover:text-cyber-purple transition-colors duration-300 relative">
-                {step.icon}
-                <div className="absolute -inset-2 bg-cyber-blue/20 rounded-full animate-pulse opacity-0 group-hover:opacity-100"></div>
-              </div>
-              <h3 className="text-lg sm:text-xl font-semibold mb-2 text-white">{step.title}</h3>
-              <p className="text-sm sm:text-base text-slate-400">{step.description}</p>
-              
+            <div key={index} className="relative flex gap-8 pb-16 last:pb-0">
+              {/* Vertical Line */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-8 left-[60%] w-[calc(100%-4rem)] h-[2px] bg-gradient-to-r from-cyber-blue to-transparent"></div>
+                <div className="absolute left-[27px] top-12 bottom-0 w-[2px] bg-gradient-to-b from-green-500 to-transparent" />
               )}
+              
+              {/* Icon Circle */}
+              <div className="relative">
+                <div className="w-14 h-14 rounded-full bg-black border-2 border-green-500 flex items-center justify-center text-green-500 relative z-10">
+                  {step.icon}
+                </div>
+              </div>
+              
+              {/* Content */}
+              <div className="flex-1 pt-2">
+                <h3 className="text-lg font-semibold mb-2 text-green-500">{step.title}</h3>
+                <div className="bg-black/50 backdrop-blur-sm rounded-lg p-4 border border-green-500/20">
+                  <p className="text-slate-300">{step.description}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
