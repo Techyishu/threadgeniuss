@@ -28,6 +28,7 @@ const plans = [
 export const DashboardPricing = () => {
   const { toast } = useToast();
   const [session, setSession] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Get initial session
@@ -47,6 +48,8 @@ export const DashboardPricing = () => {
 
   const handleUpgrade = async () => {
     try {
+      setIsLoading(true);
+      
       if (!session) {
         toast({
           title: "Error",
@@ -76,6 +79,8 @@ export const DashboardPricing = () => {
         description: "Failed to create subscription. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -119,9 +124,9 @@ export const DashboardPricing = () => {
                   : "bg-[#1A1F2C] hover:bg-[#2A2F3C]"
               }`}
               onClick={plan.popular ? handleUpgrade : undefined}
-              disabled={!plan.popular}
+              disabled={!plan.popular || isLoading}
             >
-              {plan.buttonText}
+              {isLoading && plan.popular ? "Processing..." : plan.buttonText}
             </Button>
           </div>
         ))}
