@@ -6,9 +6,10 @@ import { ThreadForm } from "./thread/ThreadForm";
 
 interface ThreadGeneratorProps {
   onThreadGenerated: (thread: string | null) => void;
+  onContentTypeChange: (type: string) => void;
 }
 
-export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => {
+export const ThreadGenerator = ({ onThreadGenerated, onContentTypeChange }: ThreadGeneratorProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -161,6 +162,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         profileData={profileData}
         isGenerating={isGenerating}
         onGenerate={handleGenerate}
+        onContentTypeChange={onContentTypeChange}
       />
     </div>
   );

@@ -1,21 +1,23 @@
 interface ThreadPreviewProps {
   generatedThread: string | null;
-  contentType?: string;
+  contentType: string;
 }
 
 import { ThreadPreviewContainer } from "./thread/ThreadPreviewContainer";
 import { RedditPreviewContainer } from "./thread/RedditPreviewContainer";
 import { LongTweetPreviewContainer } from "./thread/LongTweetPreviewContainer";
 
-export const ThreadPreview = ({ generatedThread, contentType = 'thread' }: ThreadPreviewProps) => {
+export const ThreadPreview = ({ generatedThread, contentType }: ThreadPreviewProps) => {
   const renderPreview = () => {
     switch (contentType) {
       case 'reddit':
         return <RedditPreviewContainer generatedContent={generatedThread} />;
       case 'long_tweet':
         return <LongTweetPreviewContainer generatedContent={generatedThread} />;
-      default:
+      case 'thread':
         return <ThreadPreviewContainer generatedThread={generatedThread} />;
+      default:
+        return null;
     }
   };
 

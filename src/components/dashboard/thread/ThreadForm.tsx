@@ -10,15 +10,21 @@ interface ThreadFormProps {
   profileData: any;
   isGenerating: boolean;
   onGenerate: (youtubeLink: string, tone: string, threadSize: string, contentType: string, subreddit?: string, postType?: string) => void;
+  onContentTypeChange: (type: string) => void;
 }
 
-export const ThreadForm = ({ profileData, isGenerating, onGenerate }: ThreadFormProps) => {
+export const ThreadForm = ({ profileData, isGenerating, onGenerate, onContentTypeChange }: ThreadFormProps) => {
   const [youtubeLink, setYoutubeLink] = useState("");
   const [tone, setTone] = useState("professional");
   const [threadSize, setThreadSize] = useState("medium");
   const [contentType, setContentType] = useState("thread");
   const [subreddit, setSubreddit] = useState("");
   const [postType, setPostType] = useState("text");
+
+  const handleContentTypeChange = (type: string) => {
+    setContentType(type);
+    onContentTypeChange(type);
+  };
 
   const handleSubmit = () => {
     onGenerate(youtubeLink, tone, threadSize, contentType, subreddit, postType);
@@ -39,7 +45,7 @@ export const ThreadForm = ({ profileData, isGenerating, onGenerate }: ThreadForm
       {profileData?.is_pro && (
         <ContentTypeButtons
           selectedType={contentType}
-          onSelect={setContentType}
+          onSelect={handleContentTypeChange}
         />
       )}
       
@@ -56,7 +62,7 @@ export const ThreadForm = ({ profileData, isGenerating, onGenerate }: ThreadForm
           {contentType === 'reddit' && (
             <ContentTypeSelector 
               contentType={contentType} 
-              setContentType={setContentType}
+              setContentType={handleContentTypeChange}
               subreddit={subreddit}
               setSubreddit={setSubreddit}
               postType={postType}
