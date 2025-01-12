@@ -21,13 +21,14 @@ export const ThreadsCounter = () => {
 
   if (!profile) return null;
 
+  // Show either "Unlimited" for pro users or the remaining count (max 5) for free users
+  const displayCount = profile.is_pro 
+    ? "Unlimited threads available" 
+    : `${Math.min(profile.threads_count, 5)} threads remaining`;
+
   return (
     <div className="text-sm text-gray-400">
-      {profile.is_pro ? (
-        <span>Unlimited threads available</span>
-      ) : (
-        <span>{profile.threads_count} threads remaining</span>
-      )}
+      <span>{displayCount}</span>
     </div>
   );
 };
