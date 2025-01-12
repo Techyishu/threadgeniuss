@@ -16,14 +16,13 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
 
   useEffect(() => {
     if (generatedThread) {
-      setTweets(splitIntoTweets(generatedThread));
+      // Split by numbered tweet pattern (e.g., "1/5", "2/5")
+      const tweetPattern = /\d+\/\d+/;
+      const rawTweets = generatedThread.split('\n\n').filter(tweet => tweetPattern.test(tweet));
+      setTweets(rawTweets);
       setEditingIndex(null);
     }
   }, [generatedThread]);
-
-  const splitIntoTweets = (thread: string) => {
-    return thread.split('\n\n').filter(tweet => tweet.trim().length > 0);
-  };
 
   const copyToClipboard = async (text: string) => {
     try {
