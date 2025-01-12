@@ -29,7 +29,7 @@ export const DashboardSidebar = ({
   // Show either "Unlimited" for pro users or the remaining count (max 5) for free users
   const displayCount = profile?.is_pro 
     ? "Unlimited threads available" 
-    : `${Math.min(profile?.threads_count || 0, 5)} threads remaining`;
+    : `${Math.min(profile?.threads_count || 0, 5)} thread${profile?.threads_count === 1 ? '' : 's'} remaining`;
 
   return (
     <div className="flex h-full flex-col bg-[#1A1F2C] text-white">
