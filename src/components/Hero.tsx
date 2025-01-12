@@ -42,23 +42,23 @@ export const Hero = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
           <FeatureCard
             icon={<Globe2 className="h-6 w-6" />}
-            title="Content Infrastructure"
-            description="AI-powered thread generation with reliable content engine."
+            title="AI-Powered Content"
+            description="Automatically generate engaging threads and tweets from any YouTube video."
           />
           <FeatureCard
             icon={<Zap className="h-6 w-6" />}
-            title="Zero configuration"
-            description="Start creating viral threads instantly. No setup required."
+            title="Instant Generation"
+            description="Get viral-worthy content in seconds with our advanced AI technology."
           />
           <FeatureCard
             icon={<Gauge className="h-6 w-6" />}
-            title="Effortless scaling"
-            description="Built to handle your growing content needs efficiently."
+            title="Multiple Formats"
+            description="Create both Twitter threads and individual tweets from your videos."
           />
           <FeatureCard
             icon={<Wrench className="h-6 w-6" />}
-            title="No maintenance"
-            description="Focus on creating content, not managing infrastructure."
+            title="Easy to Use"
+            description="Just paste your YouTube URL and let our AI do the heavy lifting."
           />
         </div>
       </div>
