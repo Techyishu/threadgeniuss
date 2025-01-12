@@ -26,10 +26,10 @@ export const Hero = () => {
 
         {/* Main Heading */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-8 text-white leading-[1.1] tracking-tight max-w-4xl mx-auto">
-          Build, host, and scale your
+          Transform YouTube Videos into
           <br className="hidden sm:block" />
           <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            viral content strategy
+            viral threads & tweets
           </span>
         </h1>
 
