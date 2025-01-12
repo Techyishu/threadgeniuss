@@ -7,9 +7,14 @@ import { ThreadForm } from "./thread/ThreadForm";
 interface ThreadGeneratorProps {
   onThreadGenerated: (thread: string | null) => void;
   onContentTypeChange: (type: string) => void;
+  selectedContentType: string;
 }
 
-export const ThreadGenerator = ({ onThreadGenerated, onContentTypeChange }: ThreadGeneratorProps) => {
+export const ThreadGenerator = ({ 
+  onThreadGenerated, 
+  onContentTypeChange,
+  selectedContentType 
+}: ThreadGeneratorProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -32,7 +37,7 @@ export const ThreadGenerator = ({ onThreadGenerated, onContentTypeChange }: Thre
   });
 
   const handleGenerate = async (
-    youtubeLink: string, 
+    input: string, 
     tone: string, 
     threadSize: string,
     contentType: string,
@@ -68,51 +73,72 @@ export const ThreadGenerator = ({ onThreadGenerated, onContentTypeChange }: Thre
         throw new Error(rateLimitError.message || 'Rate limit exceeded');
       }
 
-      console.log('Processing YouTube video...');
-      const { data: processData, error: processError } = await supabase.functions.invoke('process-youtube', {
-        body: { youtubeUrl: youtubeLink },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
+      let content;
+      if (contentType === 'thread') {
+        console.log('Processing YouTube video...');
+        const { data: processData, error: processError } = await supabase.functions.invoke('process-youtube', {
+          body: { youtubeUrl: input },
+          headers: {
+            Authorization: `Bearer ${session.access_token}`
+          }
+        });
+
+        if (processError || !processData?.transcript) {
+          console.error('Error processing video:', processError);
+          throw new Error(processError?.message || 'Failed to process video');
         }
-      });
 
-      if (processError || !processData?.transcript) {
-        console.error('Error processing video:', processError);
-        throw new Error(processError?.message || 'Failed to process video');
-      }
+        console.log('Generating thread...');
+        const { data, error } = await supabase.functions.invoke('generate-thread', {
+          body: { 
+            youtubeUrl: input,
+            transcript: processData.transcript,
+            tone: profileData?.is_pro ? tone : 'professional',
+            threadSize: profileData?.is_pro ? threadSize : 'short',
+            contentType,
+            subreddit,
+            postType
+          },
+          headers: {
+            Authorization: `Bearer ${session.access_token}`
+          }
+        });
 
-      console.log('Generating content...');
-      const { data, error } = await supabase.functions.invoke('generate-thread', {
-        body: { 
-          youtubeUrl: youtubeLink,
-          transcript: processData.transcript,
-          tone: profileData?.is_pro ? tone : 'professional',
-          threadSize: profileData?.is_pro ? threadSize : 'short',
-          contentType,
-          subreddit,
-          postType
-        },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
+        if (error || !data?.thread) {
+          throw new Error(error?.message || 'Failed to generate content');
         }
-      });
 
-      if (error) {
-        console.error('Error from generate-thread:', error);
-        throw new Error(error.message || 'Failed to generate content');
-      }
+        content = data.thread;
+      } else {
+        // Generate content for Reddit post or long tweet directly from topic
+        console.log('Generating content from topic...');
+        const { data, error } = await supabase.functions.invoke('generate-thread', {
+          body: { 
+            topic: input,
+            tone: profileData?.is_pro ? tone : 'professional',
+            contentType,
+            subreddit,
+            postType
+          },
+          headers: {
+            Authorization: `Bearer ${session.access_token}`
+          }
+        });
 
-      if (!data || !data.thread) {
-        throw new Error('Invalid response from server');
+        if (error || !data?.thread) {
+          throw new Error(error?.message || 'Failed to generate content');
+        }
+
+        content = data.thread;
       }
 
       // Save the generated content
       const { error: saveError } = await supabase
         .from('threads')
         .insert({
-          youtube_url: youtubeLink,
-          content: data.thread.content,
-          title: processData.title || data.thread.title,
+          youtube_url: contentType === 'thread' ? input : null,
+          content: content.content,
+          title: content.title,
           status: 'generated',
           user_id: session.user.id,
           content_type: contentType,
@@ -142,7 +168,7 @@ export const ThreadGenerator = ({ onThreadGenerated, onContentTypeChange }: Thre
         });
       }
 
-      onThreadGenerated(data.thread.content);
+      onThreadGenerated(content.content);
     } catch (error) {
       console.error('Error generating content:', error);
       toast({
@@ -163,6 +189,7 @@ export const ThreadGenerator = ({ onThreadGenerated, onContentTypeChange }: Thre
         isGenerating={isGenerating}
         onGenerate={handleGenerate}
         onContentTypeChange={onContentTypeChange}
+        selectedContentType={selectedContentType}
       />
     </div>
   );
