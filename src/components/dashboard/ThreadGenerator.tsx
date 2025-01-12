@@ -135,7 +135,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
   };
 
   return (
-    <div className="bg-dark p-4 sm:p-6 rounded-lg border border-gray-700 shadow-lg">
+    <div className="bg-background p-4 sm:p-6 rounded-lg border border-gray-700 shadow-lg relative">
       <div className="space-y-4">
         <Input
           type="url"
@@ -179,7 +179,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         <Button
           onClick={handleGenerate}
           disabled={!youtubeLink || isGenerating}
-          className="w-full bg-dark-lighter hover:bg-dark-light text-white font-medium h-12 relative z-10"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium h-12 relative z-10"
         >
           {isGenerating ? 'Generating...' : 'Generate Thread'}
         </Button>
