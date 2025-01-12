@@ -1,31 +1,48 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
 import { ProControls } from "./ProControls";
-import { ContentTypeSelector } from "./ContentTypeSelector";
-import { ContentTypeButtons } from "./ContentTypeButtons";
+import { useToast } from "@/hooks/use-toast";
+import { ThreadFormProps } from "@/types/thread";
 
-interface ThreadFormProps {
-  profileData: any;
-  isGenerating: boolean;
-  onGenerate: (youtubeLink: string, tone: string, threadSize: string, contentType: string) => void;
-  onContentTypeChange: (type: string) => void;
-}
-
-export const ThreadForm = ({ profileData, isGenerating, onGenerate, onContentTypeChange }: ThreadFormProps) => {
+export const ThreadForm = ({ 
+  profileData, 
+  isGenerating, 
+  onGenerate 
+}: ThreadFormProps) => {
   const [youtubeLink, setYoutubeLink] = useState("");
   const [tone, setTone] = useState("professional");
   const [threadSize, setThreadSize] = useState("medium");
-  const [contentType, setContentType] = useState("thread");
+  const { toast } = useToast();
 
-  const handleContentTypeChange = (type: string) => {
-    setContentType(type);
-    onContentTypeChange(type);
-  };
+  const handleSubmit = async () => {
+    try {
+      if (!youtubeLink) {
+        throw new Error('Please enter a YouTube URL');
+      }
 
-  const handleSubmit = () => {
-    onGenerate(youtubeLink, tone, threadSize, contentType);
+      if (!isValidYoutubeUrl(youtubeLink)) {
+        throw new Error('Please enter a valid YouTube URL (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)');
+      }
+
+      // If user has no threads left, show upgrade notification
+      if (!profileData?.is_pro && (profileData?.threads_count || 0) <= 0) {
+        toast({
+          title: "No threads remaining",
+          description: "You've used all your free threads. Upgrade to Pro for unlimited threads!",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      onGenerate(youtubeLink, tone, threadSize);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   const isValidYoutubeUrl = (url: string) => {
@@ -37,16 +54,12 @@ export const ThreadForm = ({ profileData, isGenerating, onGenerate, onContentTyp
     ];
     return patterns.some(pattern => pattern.test(url));
   };
+    
+  // Check if out of threads using the numeric value directly
+  const isOutOfThreads = !profileData?.is_pro && (profileData?.threads_count || 0) <= 0;
 
   return (
     <div className="space-y-4">
-      {profileData?.is_pro && (
-        <ContentTypeButtons
-          selectedType={contentType}
-          onSelect={handleContentTypeChange}
-        />
-      )}
-      
       <Input
         type="url"
         placeholder="Paste YouTube URL here (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)"
@@ -60,24 +73,16 @@ export const ThreadForm = ({ profileData, isGenerating, onGenerate, onContentTyp
           tone={tone} 
           setTone={setTone} 
           threadSize={threadSize} 
-          setThreadSize={setThreadSize}
-          contentType={contentType}
+          setThreadSize={setThreadSize} 
         />
       )}
 
       <Button
         onClick={handleSubmit}
-        disabled={!youtubeLink || isGenerating || !isValidYoutubeUrl(youtubeLink)}
+        disabled={!youtubeLink || isGenerating || isOutOfThreads}
         className="w-full bg-gradient-to-r from-cyber-purple to-cyber-blue hover:opacity-90 transition-opacity h-12 text-white font-medium"
       >
-        {isGenerating ? (
-          <div className="flex items-center">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Generating...
-          </div>
-        ) : (
-          `Generate ${contentType === 'thread' ? 'Thread' : 'Long Tweet'}`
-        )}
+        {isGenerating ? 'Generating...' : 'Generate Thread'}
       </Button>
     </div>
   );

@@ -15,7 +15,6 @@ interface DashboardProps {
 
 export const Dashboard = ({ showSavedThreads = false, showPricing = false }: DashboardProps) => {
   const [generatedThread, setGeneratedThread] = useState<string | null>(null);
-  const [contentType, setContentType] = useState<string>("thread");
 
   const { data: profile } = useQuery({
     queryKey: ['profile'],
@@ -47,14 +46,8 @@ export const Dashboard = ({ showSavedThreads = false, showPricing = false }: Das
             <SavedThreads />
           ) : (
             <div className="space-y-6">
-              <ThreadGenerator 
-                onThreadGenerated={setGeneratedThread} 
-                onContentTypeChange={setContentType}
-              />
-              <ThreadPreview 
-                generatedThread={generatedThread} 
-                contentType={contentType}
-              />
+              <ThreadGenerator onThreadGenerated={setGeneratedThread} />
+              <ThreadPreview generatedThread={generatedThread} />
             </div>
           )}
         </div>

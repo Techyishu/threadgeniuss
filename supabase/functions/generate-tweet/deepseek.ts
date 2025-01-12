@@ -1,30 +1,9 @@
-export async function generateTweet(topic: string, tone: string = 'professional') {
+export async function generateTweet(transcript: string, title: string) {
   try {
     const deepseekApiKey = Deno.env.get('DEEPSEEK_API_KEY');
     if (!deepseekApiKey) {
       throw new Error('DeepSeek API key not configured');
     }
-
-    const systemPrompt = `You are a highly skilled social media content creator specializing in creating engaging, informative, and viral-worthy long-form tweets. Your goal is to create content that educates, entertains, and encourages sharing.
-
-Guidelines for tweet creation:
-- Start with a strong hook that captures attention in the first line
-- Break down complex topics into digestible chunks
-- Use clear, concise language while maintaining depth
-- Include relevant statistics or facts when applicable
-- End with a thought-provoking question or call-to-action
-- Maintain a ${tone} tone throughout
-- Format the content with appropriate line breaks for readability
-- Keep the length between 500-1000 characters
-- Add 2-3 relevant hashtags at the end
-- Avoid clickbait or sensationalism while remaining engaging
-
-Remember to:
-- Focus on providing value to the reader
-- Create a natural flow of information
-- Use storytelling techniques when appropriate
-- Make complex topics accessible
-- Encourage discussion and engagement`;
 
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
@@ -37,15 +16,13 @@ Remember to:
         messages: [
           {
             role: 'system',
-            content: systemPrompt
+            content: 'You are a helpful assistant that creates engaging tweets based on video content. Keep tweets within 280 characters and make them engaging and informative.'
           },
           {
             role: 'user',
-            content: `Create an engaging and informative long-form tweet about: ${topic}`
+            content: `Create a tweet based on this video titled "${title}". Here's the transcript: ${transcript}`
           }
         ],
-        temperature: 0.7, // Add some creativity while maintaining coherence
-        max_tokens: 1000, // Ensure we have enough space for a detailed response
       }),
     });
 

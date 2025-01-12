@@ -9,5 +9,4 @@ export interface ProControlsProps {
   setTone: (value: string) => void;
   threadSize: string;
   setThreadSize: (value: string) => void;
-  contentType: string;
 }
