@@ -34,7 +34,7 @@ export const Hero = () => {
             className="bg-white hover:bg-gray-100 text-gray-900 transition-all duration-300 text-lg py-6 px-8 rounded-lg shadow-lg"
             onClick={() => navigate('/dashboard')}
           >
-            Start Creating For Free <ArrowRight className="ml-2 h-5 w-5" />
+            Start Creating Now <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </div>
 
@@ -43,7 +43,7 @@ export const Hero = () => {
           <FeatureCard
             icon={<Globe2 className="h-6 w-6" />}
             title="AI-Powered Content"
-            description="Automatically generate engaging threads and tweets from any YouTube video."
+            description="Automatically generate engaging threads from any YouTube video."
           />
           <FeatureCard
             icon={<Zap className="h-6 w-6" />}
@@ -53,7 +53,7 @@ export const Hero = () => {
           <FeatureCard
             icon={<Gauge className="h-6 w-6" />}
             title="Multiple Formats"
-            description="Create both Twitter threads and individual tweets from your videos."
+            description="Create Engaging Twitter threads from your videos."
           />
           <FeatureCard
             icon={<Wrench className="h-6 w-6" />}
