@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { generateThread } from "../generate-thread/deepseek.ts";
+import ytdl from 'npm:ytdl-core';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -39,11 +40,25 @@ serve(async (req) => {
       throw new Error('Could not fetch video information');
     }
 
-    // Download audio and convert to base64
-    const audioUrl = `https://www.youtube.com/watch?v=${videoId}`;
-    const audioResponse = await fetch(`https://youtube-mp3-download-api.example.com/download?url=${audioUrl}`);
+    console.log('Downloading audio from YouTube...');
+    
+    // Get audio stream using ytdl-core
+    const info = await ytdl.getInfo(youtubeUrl);
+    const audioFormat = ytdl.chooseFormat(info.formats, { 
+      quality: 'highestaudio',
+      filter: 'audioonly' 
+    });
+    
+    if (!audioFormat) {
+      throw new Error('No audio format available for this video');
+    }
+
+    // Download the audio
+    const audioResponse = await fetch(audioFormat.url);
     const audioBuffer = await audioResponse.arrayBuffer();
     const audioBase64 = btoa(String.fromCharCode(...new Uint8Array(audioBuffer)));
+
+    console.log('Audio downloaded, transcribing...');
 
     // Transcribe audio using Whisper API
     const openAiKey = Deno.env.get('OPENAI_API_KEY');
@@ -66,8 +81,12 @@ serve(async (req) => {
     const transcriptionData = await transcriptionResponse.json();
     const transcript = transcriptionData.text;
 
+    console.log('Transcription complete, generating thread...');
+
     // Generate thread using DeepSeek
     const thread = await generateThread(transcript, videoTitle, tone, threadSize);
+
+    console.log('Thread generation complete');
 
     return new Response(
       JSON.stringify({
