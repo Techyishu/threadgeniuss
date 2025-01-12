@@ -61,7 +61,7 @@ export const SidebarNavigation = ({
 
       if (error) {
         console.error('Subscription error:', error);
-        throw error;
+        throw new Error(error.message || 'Failed to create subscription');
       }
 
       if (!data?.approvalUrl) {
@@ -73,8 +73,8 @@ export const SidebarNavigation = ({
     } catch (error) {
       console.error('Error creating subscription:', error);
       toast({
-        title: "Error",
-        description: "Failed to create subscription. Please try again.",
+        title: "Subscription Error",
+        description: error.message || "Failed to create subscription. Please try again.",
         variant: "destructive",
       });
     } finally {
