@@ -57,50 +57,52 @@ export const RedditPreviewContainer = ({ generatedContent }: RedditPreviewContai
   };
 
   return (
-    <div className="bg-[#222222] p-4 sm:p-6 rounded-lg border border-gray-800">
-      <PreviewHeader 
-        onCopyAll={() => copyToClipboard(content)}
-        hasContent={!!content}
-        title="Reddit Post Preview"
-      />
-      
-      <div className="w-full">
-        {!content ? (
-          <p className="text-gray-400 text-center text-sm sm:text-base">
-            Generated Reddit post will appear here...
-          </p>
-        ) : (
-          <div className="bg-[#1A1F2C] rounded-lg p-6 relative group">
-            {isEditing ? (
-              <ContentEditor
-                content={editedContent}
-                onChange={setEditedContent}
-                onSave={handleSave}
-                onCancel={handleCancel}
-              />
-            ) : (
-              <>
-                <div className="text-white whitespace-pre-line break-words">
-                  {content}
-                </div>
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                  <button
-                    onClick={handleEdit}
-                    className="text-gray-400 hover:text-white hover:bg-gray-700 px-3 py-1.5 rounded text-sm"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => copyToClipboard(content)}
-                    className="text-gray-400 hover:text-white hover:bg-gray-700 px-3 py-1.5 rounded text-sm"
-                  >
-                    Copy
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        )}
+    <div className="w-full max-w-full px-4 sm:px-6 md:px-8">
+      <div className="bg-[#222222] p-4 sm:p-6 rounded-lg border border-gray-800">
+        <PreviewHeader 
+          onCopyAll={() => copyToClipboard(content)}
+          hasContent={!!content}
+          title="Reddit Post Preview"
+        />
+        
+        <div className="w-full">
+          {!content ? (
+            <p className="text-gray-400 text-center text-sm sm:text-base">
+              Generated Reddit post will appear here...
+            </p>
+          ) : (
+            <div className="bg-[#1A1F2C] rounded-lg p-4 sm:p-6 relative group">
+              {isEditing ? (
+                <ContentEditor
+                  content={editedContent}
+                  onChange={setEditedContent}
+                  onSave={handleSave}
+                  onCancel={handleCancel}
+                />
+              ) : (
+                <>
+                  <div className="text-white whitespace-pre-line break-words text-sm sm:text-base">
+                    {content}
+                  </div>
+                  <div className="absolute top-2 right-2 sm:top-4 sm:right-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                    <button
+                      onClick={handleEdit}
+                      className="text-gray-400 hover:text-white hover:bg-gray-700 px-2 py-1 sm:px-3 sm:py-1.5 rounded text-xs sm:text-sm"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => copyToClipboard(content)}
+                      className="text-gray-400 hover:text-white hover:bg-gray-700 px-2 py-1 sm:px-3 sm:py-1.5 rounded text-xs sm:text-sm"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
