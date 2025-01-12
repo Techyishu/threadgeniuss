@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { ProControls } from "./ProControls";
 import { ContentTypeSelector } from "./ContentTypeSelector";
+import { ContentTypeButtons } from "./ContentTypeButtons";
 
 interface ThreadFormProps {
   profileData: any;
@@ -35,6 +36,13 @@ export const ThreadForm = ({ profileData, isGenerating, onGenerate }: ThreadForm
 
   return (
     <div className="space-y-4">
+      {profileData?.is_pro && (
+        <ContentTypeButtons
+          selectedType={contentType}
+          onSelect={setContentType}
+        />
+      )}
+      
       <Input
         type="url"
         placeholder="Paste YouTube URL here (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)"
@@ -45,14 +53,16 @@ export const ThreadForm = ({ profileData, isGenerating, onGenerate }: ThreadForm
       
       {profileData?.is_pro && (
         <>
-          <ContentTypeSelector 
-            contentType={contentType} 
-            setContentType={setContentType}
-            subreddit={subreddit}
-            setSubreddit={setSubreddit}
-            postType={postType}
-            setPostType={setPostType}
-          />
+          {contentType === 'reddit' && (
+            <ContentTypeSelector 
+              contentType={contentType} 
+              setContentType={setContentType}
+              subreddit={subreddit}
+              setSubreddit={setSubreddit}
+              postType={postType}
+              setPostType={setPostType}
+            />
+          )}
           <ProControls 
             tone={tone} 
             setTone={setTone} 

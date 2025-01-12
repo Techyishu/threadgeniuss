@@ -1,25 +1,27 @@
-import { Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Copy } from "lucide-react";
 
 interface PreviewHeaderProps {
   onCopyAll: () => void;
   hasContent: boolean;
+  title?: string;
 }
 
-export const PreviewHeader = ({ onCopyAll, hasContent }: PreviewHeaderProps) => {
+export const PreviewHeader = ({ onCopyAll, hasContent, title = "Preview" }: PreviewHeaderProps) => {
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
-      <h2 className="text-lg sm:text-xl font-semibold text-white">Preview</h2>
-      <Button
-        variant="outline"
-        size="sm"
-        className="flex-1 sm:flex-none border-gray-700 hover:border-gray-600 text-gray-300"
-        onClick={onCopyAll}
-        disabled={!hasContent}
-      >
-        <Copy className="w-4 h-4 mr-2" />
-        Copy All
-      </Button>
+    <div className="flex items-center justify-between mb-4">
+      <h2 className="text-lg font-semibold text-white">{title}</h2>
+      {hasContent && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onCopyAll}
+          className="flex items-center gap-2 bg-[#1A1F2C] text-white border-gray-700 hover:bg-gray-700"
+        >
+          <Copy className="h-4 w-4" />
+          Copy All
+        </Button>
+      )}
     </div>
   );
 };
