@@ -52,24 +52,29 @@ export const AuthPage = () => {
                     brand: '#8B5CF6',
                     brandAccent: '#33C3F0',
                     brandButtonText: "white",
+                    inputBackground: "#1A1F2C",
+                    inputText: "white",
+                    inputPlaceholder: "#9CA3AF",
+                    inputBorder: "#374151",
+                    inputBorderHover: "#4B5563",
+                    inputBorderFocus: "#6366F1",
                   },
                 },
               },
               className: {
                 container: 'flex flex-col gap-4',
                 button: 'bg-gradient-to-r from-cyber-blue to-cyber-purple text-white hover:opacity-90 transition-opacity',
-                anchor: 'hidden',
-                divider: 'hidden',
-                message: 'hidden',
-                label: 'hidden',
-                input: 'hidden'
+                label: 'text-white',
+                input: 'bg-[#1A1F2C] border border-gray-700 text-white placeholder-gray-400 rounded-md',
+                message: 'text-red-400',
+                anchor: 'text-cyber-blue hover:text-cyber-purple',
               }
             }}
             theme="dark"
             providers={["google"]}
             redirectTo={window.location.origin}
-            showLinks={false}
-            onlyThirdPartyProviders={true}
+            showLinks={true}
+            onlyThirdPartyProviders={false}
           />
         </div>
       </div>
