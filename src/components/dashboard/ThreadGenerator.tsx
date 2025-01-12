@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useQuery } from "@tanstack/react-query";
 
 interface ThreadGeneratorProps {
   onThreadGenerated: (thread: string | null) => void;
@@ -21,6 +22,24 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
   const [tone, setTone] = useState("professional");
   const [threadSize, setThreadSize] = useState("medium");
   const { toast } = useToast();
+
+  // Fetch user profile data
+  const { data: profileData } = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return null;
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+        
+      if (error) throw error;
+      return data;
+    }
+  });
 
   const isValidYoutubeUrl = (url: string) => {
     const patterns = [
@@ -43,15 +62,19 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       }
 
       setIsGenerating(true);
-      onThreadGenerated(null); // Clear any previous thread
+      onThreadGenerated(null);
 
-      // First check if we're authenticated
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         throw new Error('Please sign in to generate threads');
       }
 
-      // Check rate limit first
+      // Check if user has threads remaining or is pro
+      if (!profileData?.is_pro && profileData?.threads_count <= 0) {
+        throw new Error('You have used all your free threads. Upgrade to Pro for unlimited threads!');
+      }
+
+      // Check rate limit
       const { error: rateLimitError } = await supabase.functions.invoke('rate-limiter', {
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -62,7 +85,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error(rateLimitError.message || 'Rate limit exceeded');
       }
 
-      // Step 1: Process YouTube video to get audio and transcript
+      // Process YouTube video
       console.log('Processing YouTube video...');
       const { data: processData, error: processError } = await supabase.functions.invoke('process-youtube', {
         body: { youtubeUrl: youtubeLink },
@@ -76,14 +99,14 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error(processError?.message || 'Failed to process video');
       }
 
+      // Generate thread
       console.log('Generating thread from transcript...');
-      // Step 2: Generate thread using the transcript
       const { data, error } = await supabase.functions.invoke('generate-thread', {
         body: { 
           youtubeUrl: youtubeLink,
           transcript: processData.transcript,
-          tone: tone,
-          threadSize: threadSize
+          tone: profileData?.is_pro ? tone : 'professional',
+          threadSize: profileData?.is_pro ? threadSize : 'medium'
         },
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -99,7 +122,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error('Invalid response from server');
       }
 
-      // Save the generated thread to the database
+      // Save thread
       const { error: saveError } = await supabase
         .from('threads')
         .insert({
@@ -145,36 +168,38 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           className="bg-[#0A0F1E] border-cyber-blue/30 text-white placeholder:text-gray-500 h-12"
         />
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Tone</label>
-            <Select value={tone} onValueChange={setTone}>
-              <SelectTrigger className="bg-[#0A0F1E] border-cyber-blue/30 text-white">
-                <SelectValue placeholder="Select tone" />
-              </SelectTrigger>
-              <SelectContent className="bg-[#1A1F2C] border-cyber-blue/30">
-                <SelectItem value="professional">Professional</SelectItem>
-                <SelectItem value="casual">Casual</SelectItem>
-                <SelectItem value="humorous">Humorous</SelectItem>
-                <SelectItem value="educational">Educational</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        {profileData?.is_pro && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300">Tone</label>
+              <Select value={tone} onValueChange={setTone}>
+                <SelectTrigger className="bg-[#0A0F1E] border-cyber-blue/30 text-white">
+                  <SelectValue placeholder="Select tone" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#1A1F2C] border-cyber-blue/30">
+                  <SelectItem value="professional">Professional</SelectItem>
+                  <SelectItem value="casual">Casual</SelectItem>
+                  <SelectItem value="humorous">Humorous</SelectItem>
+                  <SelectItem value="educational">Educational</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Thread Size</label>
-            <Select value={threadSize} onValueChange={setThreadSize}>
-              <SelectTrigger className="bg-[#0A0F1E] border-cyber-blue/30 text-white">
-                <SelectValue placeholder="Select size" />
-              </SelectTrigger>
-              <SelectContent className="bg-[#1A1F2C] border-cyber-blue/30">
-                <SelectItem value="short">Short (5 tweets)</SelectItem>
-                <SelectItem value="medium">Medium (10 tweets)</SelectItem>
-                <SelectItem value="long">Long (15 tweets)</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300">Thread Size</label>
+              <Select value={threadSize} onValueChange={setThreadSize}>
+                <SelectTrigger className="bg-[#0A0F1E] border-cyber-blue/30 text-white">
+                  <SelectValue placeholder="Select size" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#1A1F2C] border-cyber-blue/30">
+                  <SelectItem value="short">Short (5 tweets)</SelectItem>
+                  <SelectItem value="medium">Medium (10 tweets)</SelectItem>
+                  <SelectItem value="long">Long (15 tweets)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </div>
+        )}
 
         <Button
           onClick={handleGenerate}
@@ -183,6 +208,19 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         >
           {isGenerating ? 'Generating...' : 'Generate Thread'}
         </Button>
+
+        {!profileData?.is_pro && (
+          <p className="text-sm text-gray-400 text-center">
+            You have {profileData?.threads_count || 0} free threads remaining.{' '}
+            <Button
+              variant="link"
+              className="text-cyber-blue hover:text-cyber-purple p-0"
+              onClick={() => window.location.href = '/dashboard?showPricing=true'}
+            >
+              Upgrade to Pro
+            </Button>
+          </p>
+        )}
       </div>
     </div>
   );
