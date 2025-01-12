@@ -14,3 +14,6 @@ verify_jwt = true
 
 [rate-limiter]
 verify_jwt = true
+
+[process-youtube]
+verify_jwt = true

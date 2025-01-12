@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -20,6 +20,9 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
   const [isGenerating, setIsGenerating] = useState(false);
   const [tone, setTone] = useState("professional");
   const [threadSize, setThreadSize] = useState("medium");
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const { toast } = useToast();
 
   const isValidYoutubeUrl = (url: string) => {
@@ -39,19 +42,19 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       }
 
       if (!isValidYoutubeUrl(youtubeLink)) {
-        throw new Error('Please enter a valid YouTube URL (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)');
+        throw new Error('Please enter a valid YouTube URL');
       }
 
       setIsGenerating(true);
-      onThreadGenerated(null); // Clear any previous thread
+      setIsProcessing(true);
+      onThreadGenerated(null);
 
-      // First check if we're authenticated
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         throw new Error('Please sign in to generate threads');
       }
 
-      // Check rate limit first
+      // Check rate limit
       const { error: rateLimitError } = await supabase.functions.invoke('rate-limiter', {
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -62,12 +65,12 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error(rateLimitError.message || 'Rate limit exceeded');
       }
 
-      // If rate limit check passes, generate the thread
-      const { data, error } = await supabase.functions.invoke('generate-thread', {
+      // Process YouTube video
+      const { data, error } = await supabase.functions.invoke('process-youtube', {
         body: { 
           youtubeUrl: youtubeLink,
-          tone: tone,
-          threadSize: threadSize
+          tone,
+          threadSize
         },
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -75,15 +78,25 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       });
 
       if (error) {
-        console.error('Error from generate-thread:', error);
-        throw new Error(error.message || 'Failed to generate thread');
+        console.error('Error from process-youtube:', error);
+        throw new Error(error.message || 'Failed to process video');
       }
 
       if (!data || !data.thread) {
         throw new Error('Invalid response from server');
       }
 
-      // Save the generated thread to the database
+      // Create audio URL from base64
+      if (data.audio) {
+        const audioBlob = new Blob(
+          [Uint8Array.from(atob(data.audio), c => c.charCodeAt(0))],
+          { type: 'audio/mp3' }
+        );
+        const url = URL.createObjectURL(audioBlob);
+        setAudioUrl(url);
+      }
+
+      // Save the generated thread
       const { error: saveError } = await supabase
         .from('threads')
         .insert({
@@ -91,7 +104,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           content: data.thread.content,
           title: data.thread.title,
           status: 'generated',
-          user_id: session.user.id // Make sure to include the user_id
+          user_id: session.user.id
         });
 
       if (saveError) {
@@ -102,8 +115,8 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       onThreadGenerated(data.thread.content);
 
       toast({
-        title: "Thread generated and saved successfully!",
-        description: "Your thread is ready to be shared.",
+        title: "Thread generated successfully!",
+        description: "Your thread is ready. You can now listen to the audio and review the generated content.",
       });
     } catch (error) {
       console.error('Error generating thread:', error);
@@ -115,6 +128,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       onThreadGenerated(null);
     } finally {
       setIsGenerating(false);
+      setIsProcessing(false);
     }
   };
 
@@ -160,12 +174,20 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           </div>
         </div>
 
+        {audioUrl && (
+          <div className="mt-4 p-4 bg-[#0A0F1E] rounded-lg border border-cyber-blue/30">
+            <audio ref={audioRef} controls className="w-full" src={audioUrl}>
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        )}
+
         <Button
           onClick={handleGenerate}
           disabled={!youtubeLink || isGenerating}
           className="w-full bg-gradient-to-r from-cyber-purple to-cyber-blue hover:opacity-90 transition-opacity h-12 text-white font-medium"
         >
-          {isGenerating ? 'Generating...' : 'Generate Thread'}
+          {isProcessing ? 'Processing...' : isGenerating ? 'Generating Thread...' : 'Generate Thread'}
         </Button>
       </div>
     </div>
