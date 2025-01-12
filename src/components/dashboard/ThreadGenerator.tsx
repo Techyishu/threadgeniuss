@@ -40,6 +40,11 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error('Please sign in to generate threads');
       }
 
+      // Check if user has threads remaining before proceeding
+      if (!profileData?.is_pro && (profileData?.threads_count || 0) <= 0) {
+        throw new Error('No threads remaining. Please upgrade to Pro for unlimited threads.');
+      }
+
       const { error: rateLimitError } = await supabase.functions.invoke('rate-limiter', {
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -69,7 +74,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           youtubeUrl: youtubeLink,
           transcript: processData.transcript,
           tone: profileData?.is_pro ? tone : 'professional',
-          threadSize: profileData?.is_pro ? threadSize : 'short' // Force 'short' (5 tweets) for free users
+          threadSize: profileData?.is_pro ? threadSize : 'short'
         },
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -85,6 +90,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error('Invalid response from server');
       }
 
+      // Save the generated thread
       const { error: saveError } = await supabase
         .from('threads')
         .insert({
@@ -100,7 +106,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error('Failed to save thread');
       }
 
-      // Invalidate the profile query to refresh the thread count
+      // Force a refresh of the profile data to get the updated thread count
       await queryClient.invalidateQueries({ queryKey: ['profile'] });
 
       onThreadGenerated(data.thread.content);
