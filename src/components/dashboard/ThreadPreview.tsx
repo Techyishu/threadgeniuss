@@ -76,7 +76,7 @@ export const ThreadPreview = ({ generatedThread, contentType = 'thread' }: Threa
           variant="outline"
           size="sm"
           className="flex-1 sm:flex-none border-gray-700 hover:border-gray-600 text-gray-300"
-          onClick={() => tweets.length > 0 && copyToClipboard(contentType === 'thread' ? tweets.join('\n\n') : tweets[0])}
+          onClick={() => tweets.length > 0 && copyToClipboard(tweets.join('\n\n'))}
         >
           <Copy className="w-4 h-4 mr-2" />
           Copy All
@@ -91,56 +91,27 @@ export const ThreadPreview = ({ generatedThread, contentType = 'thread' }: Threa
                 key={index}
                 className="relative bg-[#1A1F2C] rounded-lg border border-gray-800 p-4 group"
               >
-                {editingIndex === index ? (
-                  <div className="space-y-4">
-                    <Textarea
-                      value={editedTweet}
-                      onChange={(e) => setEditedTweet(e.target.value)}
-                      className="w-full min-h-[100px] text-white break-words bg-[#1A1F2C] border-gray-700"
-                    />
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        onClick={() => handleSaveEdit(index)}
-                        className="bg-gray-700 hover:bg-gray-600"
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={handleCancelEdit}
-                        className="border-gray-700 text-white"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="text-white whitespace-pre-line break-words max-w-full">
-                      {tweet}
-                    </div>
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEditClick(index, tweet)}
-                        className="text-gray-400 hover:text-white hover:bg-gray-700"
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => copyToClipboard(tweet)}
-                        className="text-gray-400 hover:text-white hover:bg-gray-700"
-                      >
-                        <Copy className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </>
-                )}
+                <div className="text-white whitespace-pre-line break-words max-w-full">
+                  {tweet}
+                </div>
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleEditClick(index, tweet)}
+                    className="text-gray-400 hover:text-white hover:bg-gray-700"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => copyToClipboard(tweet)}
+                    className="text-gray-400 hover:text-white hover:bg-gray-700"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
             ))
           ) : (
