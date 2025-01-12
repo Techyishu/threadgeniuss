@@ -33,8 +33,14 @@ serve(async (req) => {
     });
 
     // Get best audio format with more specific format filtering
-    const formats = videoInfo.formats.filter(format => format.hasAudio && !format.hasVideo);
-    const audioFormat = formats.sort((a, b) => (b.audioBitrate || 0) - (a.audioBitrate || 0))[0];
+    const formats = videoInfo.formats.filter(format => 
+      format.hasAudio && 
+      !format.hasVideo && 
+      format.audioQuality === 'AUDIO_QUALITY_MEDIUM'
+    );
+
+    // If no medium quality found, try any audio format
+    let audioFormat = formats[0] || videoInfo.formats.find(format => format.hasAudio && !format.hasVideo);
 
     if (!audioFormat) {
       console.error('Available formats:', videoInfo.formats);
@@ -44,15 +50,34 @@ serve(async (req) => {
     console.log('Selected audio format:', audioFormat.mimeType, 'bitrate:', audioFormat.audioBitrate);
     console.log('Downloading audio...');
     
-    // Download audio
-    const audioResponse = await fetch(audioFormat.url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-      }
-    });
+    // Download audio with retries
+    let audioResponse;
+    let retries = 3;
+    
+    while (retries > 0) {
+      try {
+        audioResponse = await fetch(audioFormat.url, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+          }
+        });
 
-    if (!audioResponse.ok) {
-      throw new Error(`Failed to download audio: ${audioResponse.status} ${audioResponse.statusText}`);
+        if (audioResponse.ok) break;
+        
+        retries--;
+        if (retries > 0) {
+          console.log(`Retry attempt ${3 - retries} for audio download...`);
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      } catch (error) {
+        console.error('Error downloading audio:', error);
+        retries--;
+        if (retries === 0) throw error;
+      }
+    }
+
+    if (!audioResponse?.ok) {
+      throw new Error(`Failed to download audio: ${audioResponse?.status} ${audioResponse?.statusText}`);
     }
 
     const audioBuffer = await audioResponse.arrayBuffer();
