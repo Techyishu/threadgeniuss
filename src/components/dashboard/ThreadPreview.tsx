@@ -84,10 +84,10 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
           tweets.map((tweet, index) => (
             <div 
               key={index}
-              className="relative bg-dark-lighter rounded-lg border border-gray-700 p-6 group min-h-[120px]"
+              className="relative bg-dark-lighter rounded-lg border border-gray-700 group min-h-[150px]"
             >
               {editingIndex === index ? (
-                <div className="space-y-4">
+                <div className="p-6 space-y-4">
                   <Textarea
                     value={editedTweet}
                     onChange={(e) => setEditedTweet(e.target.value)}
@@ -111,7 +111,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                 </div>
               ) : (
                 <>
-                  <div className="text-white whitespace-pre-wrap break-words font-sans overflow-hidden">
+                  <div className="p-6 text-white whitespace-pre-wrap break-words font-sans">
                     {tweet}
                   </div>
                   <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
