@@ -24,13 +24,6 @@ export const Hero = () => {
           <div className="absolute inset-2 bg-[#0A0F1E] rounded-lg transform rotate-45" />
         </div>
 
-        {/* Infrastructure Label */}
-        <div className="mb-6">
-          <span className="text-sm font-medium text-blue-400 tracking-wider uppercase">
-            AI-Powered Infrastructure
-          </span>
-        </div>
-
         {/* Main Heading */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-8 text-white leading-[1.1] tracking-tight max-w-4xl mx-auto">
           Build, host, and scale your
