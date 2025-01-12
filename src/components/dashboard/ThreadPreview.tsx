@@ -18,8 +18,23 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
     if (generatedThread) {
       const processedThread = generatedThread.trim();
       if (processedThread) {
-        const tweetPattern = /(?=\d+\/\d+)/;
-        const rawTweets = processedThread.split(tweetPattern).filter(tweet => tweet.trim());
+        // Updated regex pattern to properly capture tweet numbers
+        const tweetPattern = /(\d+\/\d+:?)/;
+        const rawTweets = processedThread
+          .split(tweetPattern)
+          .filter(Boolean)
+          .reduce((acc: string[], part, index, array) => {
+            if (index % 2 === 0) {
+              // If there's a next part (number), combine them
+              if (array[index + 1]) {
+                acc.push(array[index + 1] + part);
+              } else {
+                // If it's the last part without a number, add it as is
+                acc.push(part);
+              }
+            }
+            return acc;
+          }, []);
         setTweets(rawTweets);
         setEditingIndex(null);
       }
