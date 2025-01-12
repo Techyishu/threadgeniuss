@@ -57,8 +57,8 @@ export const LongTweetPreviewContainer = ({ generatedContent }: LongTweetPreview
   };
 
   return (
-    <div className="w-full max-w-full px-4 sm:px-6 md:px-8">
-      <div className="bg-[#222222] p-4 sm:p-6 rounded-lg border border-gray-800">
+    <div className="w-full max-w-full overflow-hidden px-2 sm:px-4 md:px-6">
+      <div className="bg-[#222222] p-3 sm:p-4 md:p-6 rounded-lg border border-gray-800">
         <PreviewHeader 
           onCopyAll={() => copyToClipboard(content)}
           hasContent={!!content}
@@ -71,7 +71,7 @@ export const LongTweetPreviewContainer = ({ generatedContent }: LongTweetPreview
               Generated long tweet will appear here...
             </p>
           ) : (
-            <div className="bg-[#1A1F2C] rounded-lg p-4 sm:p-6 relative group">
+            <div className="bg-[#1A1F2C] rounded-lg p-3 sm:p-4 md:p-6 relative group overflow-x-hidden">
               {isEditing ? (
                 <ContentEditor
                   content={editedContent}
@@ -81,19 +81,19 @@ export const LongTweetPreviewContainer = ({ generatedContent }: LongTweetPreview
                 />
               ) : (
                 <>
-                  <div className="text-white whitespace-pre-line break-words text-sm sm:text-base">
+                  <div className="text-white whitespace-pre-line break-words text-sm sm:text-base max-w-full">
                     {content}
                   </div>
-                  <div className="absolute top-2 right-2 sm:top-4 sm:right-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 flex-wrap">
                     <button
                       onClick={handleEdit}
-                      className="text-gray-400 hover:text-white hover:bg-gray-700 px-2 py-1 sm:px-3 sm:py-1.5 rounded text-xs sm:text-sm"
+                      className="text-gray-400 hover:text-white hover:bg-gray-700 px-2 py-1 rounded text-xs sm:text-sm"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => copyToClipboard(content)}
-                      className="text-gray-400 hover:text-white hover:bg-gray-700 px-2 py-1 sm:px-3 sm:py-1.5 rounded text-xs sm:text-sm"
+                      className="text-gray-400 hover:text-white hover:bg-gray-700 px-2 py-1 rounded text-xs sm:text-sm"
                     >
                       Copy
                     </button>
