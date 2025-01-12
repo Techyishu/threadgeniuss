@@ -59,6 +59,7 @@ export const DashboardPricing = () => {
         return;
       }
 
+      console.log('Creating PayPal subscription...');
       const { data, error } = await supabase.functions.invoke('create-paypal-subscription', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
@@ -68,6 +69,10 @@ export const DashboardPricing = () => {
       if (error) {
         console.error('Subscription error:', error);
         throw error;
+      }
+
+      if (!data?.approvalUrl) {
+        throw new Error('No approval URL received from PayPal');
       }
 
       // Redirect to PayPal approval URL
