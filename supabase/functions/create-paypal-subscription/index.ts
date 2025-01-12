@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
         'PayPal-Request-Id': crypto.randomUUID(),
       },
       body: JSON.stringify({
-        plan_id: 'P-9K972479M6302650RM5VX4OQ',
+        plan_id: 'PROD-72U10680ML002484E',
         subscriber: {
           name: {
             given_name: user.email?.split('@')[0] || 'User',
