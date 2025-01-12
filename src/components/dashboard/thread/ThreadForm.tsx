@@ -45,6 +45,8 @@ export const ThreadForm = ({
     return patterns.some(pattern => pattern.test(url));
   };
 
+  const remainingThreads = profileData?.is_pro ? "Unlimited" : Math.min(profileData?.threads_count || 0, 5);
+
   return (
     <div className="space-y-4">
       <Input
@@ -74,7 +76,7 @@ export const ThreadForm = ({
 
       {!profileData?.is_pro && (
         <p className="text-sm text-gray-400 text-center">
-          You have {Math.min(profileData?.threads_count || 0, 5)} free threads remaining.{' '}
+          You have {remainingThreads} free thread{remainingThreads !== 1 ? 's' : ''} remaining.{' '}
           <Button
             variant="link"
             className="text-cyber-blue hover:text-cyber-purple p-0"

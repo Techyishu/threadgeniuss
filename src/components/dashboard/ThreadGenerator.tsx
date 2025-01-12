@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ThreadForm } from "./thread/ThreadForm";
 
 interface ThreadGeneratorProps {
@@ -11,6 +11,7 @@ interface ThreadGeneratorProps {
 export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: profileData } = useQuery({
     queryKey: ['profile'],
@@ -39,7 +40,8 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error('Please sign in to generate threads');
       }
 
-      if (!profileData?.is_pro && profileData?.threads_count <= 0) {
+      const remainingThreads = profileData?.is_pro ? "Unlimited" : Math.min(profileData?.threads_count || 0, 5);
+      if (!profileData?.is_pro && remainingThreads <= 0) {
         throw new Error('You have used all your free threads. Upgrade to Pro for unlimited threads!');
       }
 
@@ -72,7 +74,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           youtubeUrl: youtubeLink,
           transcript: processData.transcript,
           tone: profileData?.is_pro ? tone : 'professional',
-          threadSize: profileData?.is_pro ? threadSize : 'medium'
+          threadSize: profileData?.is_pro ? threadSize : 'short' // Force 'short' (5 tweets) for free users
         },
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -103,11 +105,14 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error('Failed to save thread');
       }
 
+      // Invalidate the profile query to refresh the thread count
+      await queryClient.invalidateQueries({ queryKey: ['profile'] });
+
       onThreadGenerated(data.thread.content);
 
       toast({
         title: "Thread generated and saved successfully!",
-        description: "Your thread is ready to be shared.",
+        description: `Your thread is ready to be shared. ${!profileData?.is_pro ? `You have ${Math.max(remainingThreads - 1, 0)} threads remaining.` : ''}`,
       });
     } catch (error) {
       console.error('Error generating thread:', error);
