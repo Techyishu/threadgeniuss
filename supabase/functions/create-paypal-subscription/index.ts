@@ -13,7 +13,6 @@ async function getPayPalAccessToken() {
     throw new Error('PayPal credentials not configured')
   }
 
-  console.log('Requesting PayPal access token...')
   const response = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
     method: 'POST',
     headers: {
@@ -28,11 +27,10 @@ async function getPayPalAccessToken() {
   if (!response.ok) {
     const error = await response.text()
     console.error('PayPal token error:', error)
-    throw new Error(`Failed to get PayPal access token: ${error}`)
+    throw new Error('Failed to get PayPal access token')
   }
 
   const data = await response.json()
-  console.log('Successfully obtained PayPal access token')
   return data.access_token
 }
 
@@ -43,7 +41,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    console.log('Starting PayPal subscription creation process...')
+    console.log('Creating PayPal subscription...')
     
     // Initialize Supabase client
     const supabaseClient = createClient(
@@ -70,19 +68,18 @@ Deno.serve(async (req) => {
 
     // Get PayPal access token
     const accessToken = await getPayPalAccessToken()
+    console.log('Got PayPal access token')
 
     // Create subscription
-    console.log('Creating PayPal subscription with plan ID: PROD-72U10680ML002484E')
     const subscriptionResponse = await fetch('https://api-m.paypal.com/v1/billing/subscriptions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`,
         'PayPal-Request-Id': crypto.randomUUID(),
-        'Prefer': 'return=representation',
       },
       body: JSON.stringify({
-        plan_id: 'PROD-72U10680ML002484E',
+        plan_id: 'P-9K972479M6302650RM5VX4OQ',
         subscriber: {
           name: {
             given_name: user.email?.split('@')[0] || 'User',
@@ -97,21 +94,17 @@ Deno.serve(async (req) => {
       }),
     })
 
-    const responseText = await subscriptionResponse.text()
-    console.log('PayPal API Response:', responseText)
-
     if (!subscriptionResponse.ok) {
-      console.error('PayPal subscription error. Status:', subscriptionResponse.status)
-      console.error('Response:', responseText)
-      throw new Error(`PayPal subscription creation failed: ${responseText}`)
+      const errorData = await subscriptionResponse.text()
+      console.error('PayPal subscription error:', errorData)
+      throw new Error('Failed to create PayPal subscription')
     }
 
-    const subscriptionData = JSON.parse(responseText)
+    const subscriptionData = await subscriptionResponse.json()
     console.log('Subscription created:', subscriptionData.id)
 
-    const approvalLink = subscriptionData.links?.find((link: any) => link.rel === 'approve')
+    const approvalLink = subscriptionData.links.find((link: any) => link.rel === 'approve')
     if (!approvalLink) {
-      console.error('No approval URL in response:', subscriptionData)
       throw new Error('No approval URL found in PayPal response')
     }
 

@@ -14,7 +14,7 @@ const plans = [
   },
   {
     name: "Pro",
-    price: "$2",
+    price: "$5",
     features: [
       "Unlimited threads",
       "Custom thread styles",
@@ -68,7 +68,7 @@ export const DashboardPricing = () => {
 
       if (error) {
         console.error('Subscription error:', error);
-        throw new Error(error.message || 'Failed to create subscription');
+        throw error;
       }
 
       if (!data?.approvalUrl) {
@@ -80,8 +80,8 @@ export const DashboardPricing = () => {
     } catch (error) {
       console.error('Error creating subscription:', error);
       toast({
-        title: "Subscription Error",
-        description: error.message || "Failed to create subscription. Please try again.",
+        title: "Error",
+        description: "Failed to create subscription. Please try again.",
         variant: "destructive",
       });
     } finally {
