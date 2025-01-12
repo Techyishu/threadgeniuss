@@ -40,25 +40,44 @@ serve(async (req) => {
       throw new Error('Could not fetch video information');
     }
 
-    console.log('Downloading audio from YouTube...');
+    console.log('Getting video info from YouTube...');
     
-    // Get audio stream using ytdl-core
-    const info = await ytdl.getInfo(youtubeUrl);
+    // Get video info using ytdl-core with additional options
+    const info = await ytdl.getInfo(youtubeUrl, {
+      requestOptions: {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      }
+    });
+
+    // Find the audio-only format with the highest quality
     const audioFormat = ytdl.chooseFormat(info.formats, { 
       quality: 'highestaudio',
-      filter: 'audioonly' 
+      filter: 'audioonly'
     });
     
     if (!audioFormat) {
       throw new Error('No audio format available for this video');
     }
 
-    // Download the audio
-    const audioResponse = await fetch(audioFormat.url);
+    console.log('Downloading audio stream...');
+
+    // Download the audio with proper headers
+    const audioResponse = await fetch(audioFormat.url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      }
+    });
+
+    if (!audioResponse.ok) {
+      throw new Error(`Failed to download audio: ${audioResponse.status} ${audioResponse.statusText}`);
+    }
+
     const audioBuffer = await audioResponse.arrayBuffer();
     const audioBase64 = btoa(String.fromCharCode(...new Uint8Array(audioBuffer)));
 
-    console.log('Audio downloaded, transcribing...');
+    console.log('Audio downloaded successfully, transcribing...');
 
     // Transcribe audio using Whisper API
     const openAiKey = Deno.env.get('OPENAI_API_KEY');
