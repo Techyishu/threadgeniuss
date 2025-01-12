@@ -1,10 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { generateTweet } from "./deepseek.ts";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { getTranscript } from "./youtube.ts";
+import { corsHeaders } from "./cors.ts";
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -12,15 +9,17 @@ serve(async (req) => {
   }
 
   try {
-    const { topic, tone } = await req.json();
+    const { youtubeUrl } = await req.json();
     
-    if (!topic) {
-      throw new Error('No topic provided');
+    // Get video transcript and title
+    const { transcript, title } = await getTranscript(youtubeUrl);
+    
+    if (!transcript) {
+      throw new Error('Failed to get video transcript');
     }
 
-    console.log(`Generating tweet for topic: ${topic} with tone: ${tone}`);
-    
-    const tweet = await generateTweet(topic, tone);
+    // Generate tweet using DeepSeek
+    const tweet = await generateTweet(transcript, title);
 
     return new Response(
       JSON.stringify({ tweet }),

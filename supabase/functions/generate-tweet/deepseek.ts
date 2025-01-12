@@ -1,11 +1,9 @@
-export async function generateTweet(topic: string, tone: string) {
+export async function generateTweet(transcript: string, title: string) {
   try {
     const deepseekApiKey = Deno.env.get('DEEPSEEK_API_KEY');
     if (!deepseekApiKey) {
       throw new Error('DeepSeek API key not configured');
     }
-
-    console.log(`Generating tweet for topic: ${topic} with tone: ${tone}`);
 
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
@@ -18,25 +16,13 @@ export async function generateTweet(topic: string, tone: string) {
         messages: [
           {
             role: 'system',
-            content: `You are a professional content creator specializing in crafting engaging, informative tweets. 
-            Your task is to create a detailed, well-structured tweet about the given topic.
-            
-            Guidelines:
-            - Write in a ${tone} tone
-            - Keep the content within Twitter's character limit
-            - Include relevant hashtags where appropriate
-            - Make it engaging and shareable
-            - Break complex ideas into digestible points
-            - Use clear, concise language
-            - Include a call-to-action when relevant
-            - Avoid clickbait or sensationalism`
+            content: 'You are a helpful assistant that creates engaging tweets based on video content. Keep tweets within 280 characters and make them engaging and informative.'
           },
           {
             role: 'user',
-            content: `Create an engaging tweet about this topic: ${topic}`
+            content: `Create a tweet based on this video titled "${title}". Here's the transcript: ${transcript}`
           }
         ],
-        temperature: 0.7,
       }),
     });
 

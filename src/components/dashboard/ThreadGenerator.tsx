@@ -32,10 +32,12 @@ export const ThreadGenerator = ({ onThreadGenerated, onContentTypeChange }: Thre
   });
 
   const handleGenerate = async (
-    input: string, 
+    youtubeLink: string, 
     tone: string, 
     threadSize: string,
-    contentType: string
+    contentType: string,
+    subreddit?: string,
+    postType?: string
   ) => {
     try {
       setIsGenerating(true);
@@ -66,59 +68,37 @@ export const ThreadGenerator = ({ onThreadGenerated, onContentTypeChange }: Thre
         throw new Error(rateLimitError.message || 'Rate limit exceeded');
       }
 
-      let data;
-      let error;
-      let title = '';
-
-      if (contentType === 'thread') {
-        console.log('Processing YouTube video...');
-        const { data: processData, error: processError } = await supabase.functions.invoke('process-youtube', {
-          body: { youtubeUrl: input },
-          headers: {
-            Authorization: `Bearer ${session.access_token}`
-          }
-        });
-
-        if (processError || !processData?.transcript) {
-          console.error('Error processing video:', processError);
-          throw new Error(processError?.message || 'Failed to process video');
+      console.log('Processing YouTube video...');
+      const { data: processData, error: processError } = await supabase.functions.invoke('process-youtube', {
+        body: { youtubeUrl: youtubeLink },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
         }
+      });
 
-        const response = await supabase.functions.invoke('generate-thread', {
-          body: { 
-            youtubeUrl: input,
-            transcript: processData.transcript,
-            tone: profileData?.is_pro ? tone : 'professional',
-            threadSize: profileData?.is_pro ? threadSize : 'short',
-            contentType
-          },
-          headers: {
-            Authorization: `Bearer ${session.access_token}`
-          }
-        });
-        
-        data = response.data;
-        error = response.error;
-        title = processData.title;
-      } else {
-        // Generate long tweet from topic
-        const response = await supabase.functions.invoke('generate-tweet', {
-          body: { 
-            topic: input,
-            tone: profileData?.is_pro ? tone : 'professional'
-          },
-          headers: {
-            Authorization: `Bearer ${session.access_token}`
-          }
-        });
-        
-        data = { thread: { content: response.data.tweet } };
-        error = response.error;
-        title = input;
+      if (processError || !processData?.transcript) {
+        console.error('Error processing video:', processError);
+        throw new Error(processError?.message || 'Failed to process video');
       }
 
+      console.log('Generating content...');
+      const { data, error } = await supabase.functions.invoke('generate-thread', {
+        body: { 
+          youtubeUrl: youtubeLink,
+          transcript: processData.transcript,
+          tone: profileData?.is_pro ? tone : 'professional',
+          threadSize: profileData?.is_pro ? threadSize : 'short',
+          contentType,
+          subreddit,
+          postType
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
       if (error) {
-        console.error('Error generating content:', error);
+        console.error('Error from generate-thread:', error);
         throw new Error(error.message || 'Failed to generate content');
       }
 
@@ -130,12 +110,14 @@ export const ThreadGenerator = ({ onThreadGenerated, onContentTypeChange }: Thre
       const { error: saveError } = await supabase
         .from('threads')
         .insert({
-          youtube_url: contentType === 'thread' ? input : null,
+          youtube_url: youtubeLink,
           content: data.thread.content,
-          title: title,
+          title: processData.title || data.thread.title,
           status: 'generated',
           user_id: session.user.id,
-          content_type: contentType
+          content_type: contentType,
+          subreddit: subreddit || null,
+          post_type: postType || null
         });
 
       if (saveError) {
