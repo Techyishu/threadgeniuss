@@ -16,10 +16,8 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
 
   useEffect(() => {
     if (generatedThread) {
-      // Process the thread to maintain proper formatting
       const processedThread = generatedThread.trim();
       if (processedThread) {
-        // Split only on double newlines that are followed by a tweet number pattern
         const tweetPattern = /(?=\d+\/\d+)/;
         const rawTweets = processedThread.split(tweetPattern).filter(tweet => tweet.trim());
         setTweets(rawTweets);
@@ -86,7 +84,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
           tweets.map((tweet, index) => (
             <div 
               key={index}
-              className="relative bg-dark-lighter rounded-lg border border-gray-700 p-4 group"
+              className="relative bg-dark-lighter rounded-lg border border-gray-700 p-6 group min-h-[120px]"
             >
               {editingIndex === index ? (
                 <div className="space-y-4">
@@ -113,10 +111,10 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                 </div>
               ) : (
                 <>
-                  <div className="text-white whitespace-pre-wrap break-words font-sans">
+                  <div className="text-white whitespace-pre-wrap break-words font-sans overflow-hidden">
                     {tweet}
                   </div>
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                     <Button
                       variant="ghost"
                       size="sm"
