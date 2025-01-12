@@ -56,9 +56,9 @@ export const ThreadForm = ({
   };
 
   // Calculate remaining threads for display
-  const remainingThreads = profileData?.is_pro ? "Unlimited" : profileData?.threads_count || 0;
+  const remainingThreads = profileData?.is_pro ? "Unlimited" : (profileData?.threads_count ?? 5);
   // Check if out of threads using the numeric value directly
-  const isOutOfThreads = !profileData?.is_pro && profileData?.threads_count === 0;
+  const isOutOfThreads = !profileData?.is_pro && (profileData?.threads_count === 0);
 
   return (
     <div className="space-y-4">
