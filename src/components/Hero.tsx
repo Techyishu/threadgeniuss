@@ -18,12 +18,6 @@ export const Hero = () => {
       </div>
 
       <div className="container relative z-10 max-w-[1200px] mx-auto text-center">
-        {/* Hexagon Icon */}
-        <div className="w-16 h-16 mx-auto mb-6 relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl transform rotate-45" />
-          <div className="absolute inset-2 bg-[#0A0F1E] rounded-lg transform rotate-45" />
-        </div>
-
         {/* Main Heading */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-8 text-white leading-[1.1] tracking-tight max-w-4xl mx-auto">
           Transform YouTube Videos into
