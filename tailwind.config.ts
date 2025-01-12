@@ -24,10 +24,10 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        cyber: {
-          dark: "#0A0F1E",
-          blue: "#33C3F0",
-          purple: "#8B5CF6",
+        dark: {
+          DEFAULT: "#1A1F2C",
+          lighter: "#222222",
+          light: "#333333",
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -67,24 +67,10 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        glow: {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.5" },
-        },
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        glow: "glow 2s ease-in-out infinite",
-        float: "float 3s ease-in-out infinite",
-      },
-      backgroundImage: {
-        "cyber-gradient": "linear-gradient(135deg, #0A0F1E 0%, #33C3F0 100%)",
-        "glow-gradient": "linear-gradient(90deg, #8B5CF6 0%, #33C3F0 100%)",
       },
     },
   },
