@@ -15,7 +15,7 @@ export const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-6">
             <a
-              href="https://twitter.com/threadgeniuss"
+              href="https://x.com/thread_genius"
               target="_blank"
               rel="noopener noreferrer"
               className="text-slate-400 hover:text-cyber-blue transition-colors"
