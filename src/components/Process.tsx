@@ -1,25 +1,25 @@
-import { User2, Sparkles, Mail, CheckCircle } from "lucide-react";
+import { Link2, Sparkles, Share2, CheckCircle } from "lucide-react";
 
 const steps = [
   {
-    icon: <User2 className="w-6 h-6" />,
-    title: "Start",
-    description: "We provide the required customer details to AI",
+    icon: <Link2 className="w-6 h-6" />,
+    title: "Paste YouTube Link",
+    description: "Simply paste the URL of any YouTube video you want to convert",
   },
   {
     icon: <Sparkles className="w-6 h-6" />,
     title: "AI Processing",
-    description: "The AI process the details and writes a testimonial",
+    description: "Our AI analyzes the video content and extracts key points",
   },
   {
-    icon: <Mail className="w-6 h-6" />,
-    title: "Review",
-    description: "The testimonial is sent to the customer for review",
+    icon: <Share2 className="w-6 h-6" />,
+    title: "Generate Thread",
+    description: "Get a perfectly formatted X thread ready to share",
   },
   {
     icon: <CheckCircle className="w-6 h-6" />,
-    title: "Approved",
-    description: "Once Approved, Congratulations you have got a new testimonial",
+    title: "Share & Engage",
+    description: "Post your thread and watch your engagement grow",
   }
 ];
 
