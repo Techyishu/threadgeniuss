@@ -57,7 +57,8 @@ export const ThreadForm = ({ profileData, isGenerating, onGenerate }: ThreadForm
             tone={tone} 
             setTone={setTone} 
             threadSize={threadSize} 
-            setThreadSize={setThreadSize} 
+            setThreadSize={setThreadSize}
+            contentType={contentType}
           />
         </>
       )}
