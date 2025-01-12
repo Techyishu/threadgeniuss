@@ -211,7 +211,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
 
         {!profileData?.is_pro && (
           <p className="text-sm text-gray-400 text-center">
-            You have {profileData?.threads_count || 0} free threads remaining.{' '}
+            You have {Math.min(profileData?.threads_count || 0, 5)} free threads remaining.{' '}
             <Button
               variant="link"
               className="text-cyber-blue hover:text-cyber-purple p-0"
