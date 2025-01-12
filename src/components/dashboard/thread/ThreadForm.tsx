@@ -25,6 +25,16 @@ export const ThreadForm = ({
         throw new Error('Please enter a valid YouTube URL (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)');
       }
 
+      // If user has no threads left, show upgrade notification
+      if (!profileData?.is_pro && (profileData?.threads_count || 0) <= 0) {
+        toast({
+          title: "No threads remaining",
+          description: "You've used all your free threads. Upgrade to Pro for unlimited threads!",
+          variant: "destructive",
+        });
+        return;
+      }
+
       onGenerate(youtubeLink, tone, threadSize);
     } catch (error) {
       toast({
@@ -45,7 +55,9 @@ export const ThreadForm = ({
     return patterns.some(pattern => pattern.test(url));
   };
 
-  const remainingThreads = profileData?.is_pro ? "Unlimited" : Math.min(profileData?.threads_count || 0, 5);
+  // Calculate remaining threads for display
+  const remainingThreads = profileData?.is_pro ? "Unlimited" : Math.max((profileData?.threads_count || 0), 0);
+  const isOutOfThreads = !profileData?.is_pro && remainingThreads <= 0;
 
   return (
     <div className="space-y-4">
@@ -68,23 +80,30 @@ export const ThreadForm = ({
 
       <Button
         onClick={handleSubmit}
-        disabled={!youtubeLink || isGenerating}
+        disabled={!youtubeLink || isGenerating || isOutOfThreads}
         className="w-full bg-gradient-to-r from-cyber-purple to-cyber-blue hover:opacity-90 transition-opacity h-12 text-white font-medium"
       >
         {isGenerating ? 'Generating...' : 'Generate Thread'}
       </Button>
 
       {!profileData?.is_pro && (
-        <p className="text-sm text-gray-400 text-center">
-          You have {remainingThreads} free thread{remainingThreads !== 1 ? 's' : ''} remaining.{' '}
-          <Button
-            variant="link"
-            className="text-cyber-blue hover:text-cyber-purple p-0"
-            onClick={() => window.location.href = '/dashboard?showPricing=true'}
-          >
-            Upgrade to Pro
-          </Button>
-        </p>
+        <div className="text-sm text-gray-400 text-center space-y-2">
+          <p>
+            You have {remainingThreads} thread{remainingThreads !== 1 ? 's' : ''} remaining
+          </p>
+          {isOutOfThreads && (
+            <p className="text-cyber-blue">
+              <Button
+                variant="link"
+                className="text-cyber-blue hover:text-cyber-purple p-0"
+                onClick={() => window.location.href = '/dashboard?showPricing=true'}
+              >
+                Upgrade to Pro
+              </Button>
+              {' '}for unlimited threads
+            </p>
+          )}
+        </div>
       )}
     </div>
   );

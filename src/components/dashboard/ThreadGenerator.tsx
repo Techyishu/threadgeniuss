@@ -40,12 +40,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error('Please sign in to generate threads');
       }
 
-      // Calculate numeric remaining threads before display formatting
-      const numericThreadsRemaining = profileData?.is_pro ? 999999 : Math.min(profileData?.threads_count || 0, 5);
-      if (!profileData?.is_pro && numericThreadsRemaining <= 0) {
-        throw new Error('You have used all your free threads. Upgrade to Pro for unlimited threads!');
-      }
-
       const { error: rateLimitError } = await supabase.functions.invoke('rate-limiter', {
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -111,14 +105,9 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
 
       onThreadGenerated(data.thread.content);
 
-      // Format display message using the numeric value
-      const remainingDisplay = profileData?.is_pro 
-        ? "Unlimited" 
-        : Math.max(numericThreadsRemaining - 1, 0).toString();
-
       toast({
         title: "Thread generated and saved successfully!",
-        description: `Your thread is ready to be shared. ${!profileData?.is_pro ? `You have ${remainingDisplay} threads remaining.` : ''}`,
+        description: "Your thread is ready to be shared.",
       });
     } catch (error) {
       console.error('Error generating thread:', error);
