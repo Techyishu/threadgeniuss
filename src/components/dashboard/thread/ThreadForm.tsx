@@ -54,11 +54,6 @@ export const ThreadForm = ({
     ];
     return patterns.some(pattern => pattern.test(url));
   };
-
-  // Calculate remaining threads for display
-  const remainingThreads = profileData?.is_pro 
-    ? "Unlimited" 
-    : Math.max(0, Math.min(profileData?.threads_count || 5, 5));
     
   // Check if out of threads using the numeric value directly
   const isOutOfThreads = !profileData?.is_pro && (profileData?.threads_count || 0) <= 0;
@@ -89,26 +84,6 @@ export const ThreadForm = ({
       >
         {isGenerating ? 'Generating...' : 'Generate Thread'}
       </Button>
-
-      {!profileData?.is_pro && (
-        <div className="text-sm text-gray-400 text-center space-y-2">
-          <p>
-            {remainingThreads} thread{remainingThreads !== 1 ? 's' : ''} remaining
-          </p>
-          {isOutOfThreads && (
-            <p className="text-cyber-blue">
-              <Button
-                variant="link"
-                className="text-cyber-blue hover:text-cyber-purple p-0"
-                onClick={() => window.location.href = '/dashboard?showPricing=true'}
-              >
-                Upgrade to Pro
-              </Button>
-              {' '}for unlimited threads
-            </p>
-          )}
-        </div>
-      )}
     </div>
   );
 };
