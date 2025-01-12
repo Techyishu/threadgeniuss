@@ -16,30 +16,14 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
 
   useEffect(() => {
     if (generatedThread) {
-      const processedThread = generatedThread.trim();
-      if (processedThread) {
-        // Updated regex pattern to properly capture tweet numbers
-        const tweetPattern = /(\d+\/\d+:?)/;
-        const rawTweets = processedThread
-          .split(tweetPattern)
-          .filter(Boolean)
-          .reduce((acc: string[], part, index, array) => {
-            if (index % 2 === 0) {
-              // If there's a next part (number), combine them
-              if (array[index + 1]) {
-                acc.push(array[index + 1] + part);
-              } else {
-                // If it's the last part without a number, add it as is
-                acc.push(part);
-              }
-            }
-            return acc;
-          }, []);
-        setTweets(rawTweets);
-        setEditingIndex(null);
-      }
+      setTweets(splitIntoTweets(generatedThread));
+      setEditingIndex(null);
     }
   }, [generatedThread]);
+
+  const splitIntoTweets = (thread: string) => {
+    return thread.split('\n\n').filter(tweet => tweet.trim().length > 0);
+  };
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -80,13 +64,13 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
   };
 
   return (
-    <div className="bg-background p-4 sm:p-6 rounded-lg border border-gray-700 shadow-lg">
+    <div className="bg-[#1A1F2C] p-4 sm:p-6 rounded-lg border border-cyber-blue/20 shadow-lg">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
         <h2 className="text-lg sm:text-xl font-semibold text-white">Preview</h2>
         <Button
           variant="outline"
           size="sm"
-          className="flex-1 sm:flex-none"
+          className="flex-1 sm:flex-none border-cyber-blue/30 hover:border-cyber-blue text-cyber-blue"
           onClick={() => tweets.length > 0 && copyToClipboard(tweets.join('\n\n'))}
         >
           <Copy className="w-4 h-4 mr-2" />
@@ -99,19 +83,20 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
           tweets.map((tweet, index) => (
             <div 
               key={index}
-              className="relative bg-dark-lighter rounded-lg border border-gray-700 group min-h-[150px]"
+              className="relative bg-[#0A0F1E] rounded-lg border border-dashed border-cyber-blue/20 p-4 group"
             >
               {editingIndex === index ? (
-                <div className="p-6 space-y-4">
+                <div className="space-y-4">
                   <Textarea
                     value={editedTweet}
                     onChange={(e) => setEditedTweet(e.target.value)}
-                    className="w-full min-h-[100px] text-white break-words bg-dark border-gray-700"
+                    className="w-full min-h-[100px] text-white break-words bg-[#1A1F2C] border-cyber-blue/30"
                   />
                   <div className="flex gap-2">
                     <Button
                       size="sm"
                       onClick={() => handleSaveEdit(index)}
+                      className="bg-cyber-blue hover:bg-cyber-blue/90"
                     >
                       Save
                     </Button>
@@ -119,6 +104,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                       size="sm"
                       variant="outline"
                       onClick={handleCancelEdit}
+                      className="border-cyber-blue/30 text-white"
                     >
                       Cancel
                     </Button>
@@ -126,15 +112,15 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                 </div>
               ) : (
                 <>
-                  <div className="p-6 text-white whitespace-pre-wrap break-words font-sans">
+                  <div className="text-white whitespace-pre-line break-words max-w-full">
                     {tweet}
                   </div>
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => handleEditClick(index, tweet)}
-                      className="text-gray-300 hover:text-white"
+                      className="text-gray-300 hover:text-white hover:bg-cyber-blue/10"
                     >
                       Edit
                     </Button>
@@ -142,7 +128,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => copyToClipboard(tweet)}
-                      className="text-gray-300 hover:text-white"
+                      className="text-gray-300 hover:text-white hover:bg-cyber-blue/10"
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
