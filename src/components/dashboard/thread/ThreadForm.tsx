@@ -1,48 +1,26 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
 import { ProControls } from "./ProControls";
-import { useToast } from "@/hooks/use-toast";
-import { ThreadFormProps } from "@/types/thread";
+import { ContentTypeSelector } from "./ContentTypeSelector";
 
-export const ThreadForm = ({ 
-  profileData, 
-  isGenerating, 
-  onGenerate 
-}: ThreadFormProps) => {
+interface ThreadFormProps {
+  profileData: any;
+  isGenerating: boolean;
+  onGenerate: (youtubeLink: string, tone: string, threadSize: string, contentType: string, subreddit?: string, postType?: string) => void;
+}
+
+export const ThreadForm = ({ profileData, isGenerating, onGenerate }: ThreadFormProps) => {
   const [youtubeLink, setYoutubeLink] = useState("");
   const [tone, setTone] = useState("professional");
   const [threadSize, setThreadSize] = useState("medium");
-  const { toast } = useToast();
+  const [contentType, setContentType] = useState("thread");
+  const [subreddit, setSubreddit] = useState("");
+  const [postType, setPostType] = useState("text");
 
-  const handleSubmit = async () => {
-    try {
-      if (!youtubeLink) {
-        throw new Error('Please enter a YouTube URL');
-      }
-
-      if (!isValidYoutubeUrl(youtubeLink)) {
-        throw new Error('Please enter a valid YouTube URL (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)');
-      }
-
-      // If user has no threads left, show upgrade notification
-      if (!profileData?.is_pro && (profileData?.threads_count || 0) <= 0) {
-        toast({
-          title: "No threads remaining",
-          description: "You've used all your free threads. Upgrade to Pro for unlimited threads!",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      onGenerate(youtubeLink, tone, threadSize);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
+  const handleSubmit = () => {
+    onGenerate(youtubeLink, tone, threadSize, contentType, subreddit, postType);
   };
 
   const isValidYoutubeUrl = (url: string) => {
@@ -54,9 +32,6 @@ export const ThreadForm = ({
     ];
     return patterns.some(pattern => pattern.test(url));
   };
-    
-  // Check if out of threads using the numeric value directly
-  const isOutOfThreads = !profileData?.is_pro && (profileData?.threads_count || 0) <= 0;
 
   return (
     <div className="space-y-4">
@@ -69,20 +44,37 @@ export const ThreadForm = ({
       />
       
       {profileData?.is_pro && (
-        <ProControls 
-          tone={tone} 
-          setTone={setTone} 
-          threadSize={threadSize} 
-          setThreadSize={setThreadSize} 
-        />
+        <>
+          <ContentTypeSelector 
+            contentType={contentType} 
+            setContentType={setContentType}
+            subreddit={subreddit}
+            setSubreddit={setSubreddit}
+            postType={postType}
+            setPostType={setPostType}
+          />
+          <ProControls 
+            tone={tone} 
+            setTone={setTone} 
+            threadSize={threadSize} 
+            setThreadSize={setThreadSize} 
+          />
+        </>
       )}
 
       <Button
         onClick={handleSubmit}
-        disabled={!youtubeLink || isGenerating || isOutOfThreads}
+        disabled={!youtubeLink || isGenerating || !isValidYoutubeUrl(youtubeLink)}
         className="w-full bg-gradient-to-r from-cyber-purple to-cyber-blue hover:opacity-90 transition-opacity h-12 text-white font-medium"
       >
-        {isGenerating ? 'Generating...' : 'Generate Thread'}
+        {isGenerating ? (
+          <div className="flex items-center">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Generating...
+          </div>
+        ) : (
+          `Generate ${contentType === 'thread' ? 'Thread' : contentType === 'reddit' ? 'Reddit Post' : 'Long Tweet'}`
+        )}
       </Button>
     </div>
   );

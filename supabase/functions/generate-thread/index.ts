@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { generateThread } from "./deepseek.ts";
-import { getYouTubeTranscript } from "./youtube.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -8,89 +7,39 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log('Received request to generate thread');
+    const { transcript, tone, threadSize, contentType, subreddit, postType } = await req.json();
     
-    if (req.method !== 'POST') {
-      throw new Error('Method not allowed');
+    if (!transcript) {
+      throw new Error('No transcript provided');
     }
 
-    const { youtubeUrl, transcript, tone, threadSize } = await req.json();
-    console.log('Request parameters:', { youtubeUrl, tone, threadSize });
+    console.log(`Generating ${contentType} with tone: ${tone} and size: ${threadSize}`);
     
-    if (!youtubeUrl) {
-      throw new Error('YouTube URL is required');
-    }
-
-    const youtubeApiKey = Deno.env.get('YOUTUBE_API_KEY');
-    if (!youtubeApiKey) {
-      throw new Error('YouTube API key not configured');
-    }
-
-    let videoTitle;
-    let videoTranscript;
-
-    if (transcript) {
-      // Use provided transcript if available
-      videoTranscript = transcript;
-      // Get only the title from YouTube API
-      const { title } = await getYouTubeTranscript(youtubeUrl, youtubeApiKey);
-      videoTitle = title;
+    let systemPrompt = '';
+    if (contentType === 'reddit') {
+      systemPrompt = `You are a helpful assistant that creates engaging Reddit posts. Create a ${postType} post for r/${subreddit} based on the video transcript. Make it informative and engaging while following the subreddit's typical style.`;
+    } else if (contentType === 'long_tweet') {
+      systemPrompt = `You are a helpful assistant that creates engaging long-form tweets. Create a detailed tweet that fully explores the topic while staying within Twitter's character limit.`;
     } else {
-      // Fallback to getting both title and transcript from YouTube
-      const { transcript: fetchedTranscript, title } = await getYouTubeTranscript(youtubeUrl, youtubeApiKey);
-      videoTranscript = fetchedTranscript;
-      videoTitle = title;
+      systemPrompt = `You are a helpful assistant that creates engaging Twitter threads. Break down the content into digestible tweets that flow naturally.`;
     }
-    
-    if (!videoTranscript) {
-      console.error('No transcript found for video');
-      throw new Error('Failed to get video transcript');
-    }
-    console.log('Successfully got transcript, title:', videoTitle);
 
-    // Generate thread using DeepSeek
-    console.log('Generating thread with DeepSeek');
-    const thread = await generateThread(videoTranscript, videoTitle, tone, threadSize);
-    
-    if (!thread) {
-      console.error('No thread generated from DeepSeek');
-      throw new Error('Failed to generate thread content');
-    }
-    console.log('Thread generated successfully');
+    const thread = await generateThread(transcript, tone, threadSize, systemPrompt);
 
     return new Response(
-      JSON.stringify({ 
-        thread: { 
-          content: thread, 
-          title: videoTitle 
-        }
-      }),
-      { 
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json' 
-        } 
-      }
+      JSON.stringify({ thread }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Error in generate-thread function:', error);
     return new Response(
-      JSON.stringify({ 
-        error: error.message || 'An unexpected error occurred' 
-      }),
-      { 
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json' 
-        },
-        status: error.message === 'Rate limit exceeded' ? 429 : 500
-      }
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });

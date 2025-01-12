@@ -30,17 +30,23 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
     }
   });
 
-  const handleGenerate = async (youtubeLink: string, tone: string, threadSize: string) => {
+  const handleGenerate = async (
+    youtubeLink: string, 
+    tone: string, 
+    threadSize: string,
+    contentType: string,
+    subreddit?: string,
+    postType?: string
+  ) => {
     try {
       setIsGenerating(true);
       onThreadGenerated(null);
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        throw new Error('Please sign in to generate threads');
+        throw new Error('Please sign in to generate content');
       }
 
-      // Check if user has threads remaining before proceeding
       if (!profileData?.is_pro && (profileData?.threads_count || 0) <= 0) {
         toast({
           title: "No threads remaining",
@@ -74,13 +80,16 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error(processError?.message || 'Failed to process video');
       }
 
-      console.log('Generating thread from transcript...');
+      console.log('Generating content...');
       const { data, error } = await supabase.functions.invoke('generate-thread', {
         body: { 
           youtubeUrl: youtubeLink,
           transcript: processData.transcript,
           tone: profileData?.is_pro ? tone : 'professional',
-          threadSize: profileData?.is_pro ? threadSize : 'short'
+          threadSize: profileData?.is_pro ? threadSize : 'short',
+          contentType,
+          subreddit,
+          postType
         },
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -89,14 +98,14 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
 
       if (error) {
         console.error('Error from generate-thread:', error);
-        throw new Error(error.message || 'Failed to generate thread');
+        throw new Error(error.message || 'Failed to generate content');
       }
 
       if (!data || !data.thread) {
         throw new Error('Invalid response from server');
       }
 
-      // Save the generated thread
+      // Save the generated content
       const { error: saveError } = await supabase
         .from('threads')
         .insert({
@@ -104,36 +113,37 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           content: data.thread.content,
           title: processData.title || data.thread.title,
           status: 'generated',
-          user_id: session.user.id
+          user_id: session.user.id,
+          content_type: contentType,
+          subreddit: subreddit || null,
+          post_type: postType || null
         });
 
       if (saveError) {
-        console.error('Error saving thread:', saveError);
-        throw new Error('Failed to save thread');
+        console.error('Error saving content:', saveError);
+        throw new Error('Failed to save content');
       }
 
-      // Force a refresh of the profile data to get the updated thread count
       await queryClient.invalidateQueries({ queryKey: ['profile'] });
 
-      // Show remaining threads notification for free users
       if (!profileData?.is_pro && profileData?.threads_count > 0) {
         const remainingThreads = Math.max(0, (profileData.threads_count - 1));
         toast({
-          title: `Thread generated successfully!`,
+          title: `Content generated successfully!`,
           description: remainingThreads > 0 
             ? `You have ${remainingThreads} thread${remainingThreads !== 1 ? 's' : ''} remaining.`
             : "This was your last free thread. Upgrade to Pro for unlimited threads!",
         });
       } else {
         toast({
-          title: "Thread generated successfully!",
-          description: "Your thread is ready to be shared.",
+          title: "Content generated successfully!",
+          description: "Your content is ready to be shared.",
         });
       }
 
       onThreadGenerated(data.thread.content);
     } catch (error) {
-      console.error('Error generating thread:', error);
+      console.error('Error generating content:', error);
       toast({
         title: "Error",
         description: error.message || 'An unexpected error occurred',
