@@ -9,7 +9,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -22,7 +21,6 @@ serve(async (req) => {
       throw new Error('YouTube URL is required');
     }
 
-    // First, get video info and download audio
     const videoId = extractVideoId(youtubeUrl);
     if (!videoId) {
       throw new Error('Invalid YouTube URL');
@@ -42,42 +40,66 @@ serve(async (req) => {
 
     console.log('Getting video info from YouTube...');
     
-    // Get video info using ytdl-core with additional options
-    const info = await ytdl.getInfo(youtubeUrl, {
-      requestOptions: {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    // Configure ytdl with more options and fallbacks
+    const formats = [];
+    let audioBuffer;
+    
+    try {
+      const info = await ytdl.getInfo(youtubeUrl, {
+        requestOptions: {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+          }
+        }
+      });
+
+      // Get all audio formats and sort by quality
+      formats.push(...info.formats
+        .filter(format => format.hasAudio && !format.hasVideo)
+        .sort((a, b) => Number(b.audioBitrate) - Number(a.audioBitrate))
+      );
+
+      // Also include combined formats as fallback
+      formats.push(...info.formats
+        .filter(format => format.hasAudio)
+        .sort((a, b) => Number(b.audioBitrate) - Number(a.audioBitrate))
+      );
+
+      console.log(`Found ${formats.length} potential formats`);
+
+      // Try formats one by one until we succeed
+      for (const format of formats) {
+        try {
+          console.log(`Attempting format: ${format.itag} (${format.container})`);
+          const response = await fetch(format.url, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            }
+          });
+
+          if (response.ok) {
+            audioBuffer = await response.arrayBuffer();
+            console.log(`Successfully downloaded audio using format ${format.itag}`);
+            break;
+          }
+        } catch (err) {
+          console.log(`Failed to download format ${format.itag}:`, err.message);
+          continue;
         }
       }
-    });
 
-    // Find the audio-only format with the highest quality
-    const audioFormat = ytdl.chooseFormat(info.formats, { 
-      quality: 'highestaudio',
-      filter: 'audioonly'
-    });
-    
-    if (!audioFormat) {
-      throw new Error('No audio format available for this video');
-    }
-
-    console.log('Downloading audio stream...');
-
-    // Download the audio with proper headers
-    const audioResponse = await fetch(audioFormat.url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      if (!audioBuffer) {
+        throw new Error('Could not download audio from any available format');
       }
-    });
 
-    if (!audioResponse.ok) {
-      throw new Error(`Failed to download audio: ${audioResponse.status} ${audioResponse.statusText}`);
+    } catch (error) {
+      console.error('Error downloading video:', error);
+      throw new Error(`Failed to process video: ${error.message}`);
     }
-
-    const audioBuffer = await audioResponse.arrayBuffer();
-    const audioBase64 = btoa(String.fromCharCode(...new Uint8Array(audioBuffer)));
 
     console.log('Audio downloaded successfully, transcribing...');
+
+    const audioBase64 = btoa(String.fromCharCode(...new Uint8Array(audioBuffer)));
 
     // Transcribe audio using Whisper API
     const openAiKey = Deno.env.get('OPENAI_API_KEY');
