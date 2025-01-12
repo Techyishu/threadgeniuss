@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loader2, Volume2, VolumeX } from "lucide-react";
 
 interface ThreadGeneratorProps {
   onThreadGenerated: (thread: string | null) => void;
@@ -22,6 +23,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
   const [threadSize, setThreadSize] = useState("medium");
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const { toast } = useToast();
 
@@ -33,6 +35,17 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       /^(https?:\/\/)?(www\.)?(youtube\.com\/v\/)([a-zA-Z0-9_-]{11})(\?.*)?$/,
     ];
     return patterns.some(pattern => pattern.test(url));
+  };
+
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
   };
 
   const handleGenerate = async () => {
@@ -176,7 +189,18 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
 
         {audioUrl && (
           <div className="mt-4 p-4 bg-[#0A0F1E] rounded-lg border border-cyber-blue/30">
-            <audio ref={audioRef} controls className="w-full" src={audioUrl}>
+            <div className="flex items-center justify-between">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleAudio}
+                className="text-gray-300 hover:text-white hover:bg-cyber-blue/10"
+              >
+                {isPlaying ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                {isPlaying ? 'Pause Audio' : 'Play Audio'}
+              </Button>
+            </div>
+            <audio ref={audioRef} controls className="w-full mt-2" src={audioUrl}>
               Your browser does not support the audio element.
             </audio>
           </div>
