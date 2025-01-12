@@ -33,7 +33,7 @@ export const Dashboard = ({ showSavedThreads = false, showPricing = false }: Das
     }
   });
 
-  const remainingThreads = profile?.is_pro ? "Unlimited" : Math.min(profile?.threads_count || 0, 5);
+  const remainingThreads = profile?.is_pro ? "Unlimited" : Math.max(0, Math.min(profile?.threads_count || 5, 5));
 
   return (
     <>

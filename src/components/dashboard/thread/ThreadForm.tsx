@@ -26,7 +26,7 @@ export const ThreadForm = ({
       }
 
       // If user has no threads left, show upgrade notification
-      if (!profileData?.is_pro && profileData?.threads_count === 0) {
+      if (!profileData?.is_pro && (profileData?.threads_count || 0) <= 0) {
         toast({
           title: "No threads remaining",
           description: "You've used all your free threads. Upgrade to Pro for unlimited threads!",
@@ -56,9 +56,12 @@ export const ThreadForm = ({
   };
 
   // Calculate remaining threads for display
-  const remainingThreads = profileData?.is_pro ? "Unlimited" : (profileData?.threads_count ?? 5);
+  const remainingThreads = profileData?.is_pro 
+    ? "Unlimited" 
+    : Math.max(0, Math.min(profileData?.threads_count || 5, 5));
+    
   // Check if out of threads using the numeric value directly
-  const isOutOfThreads = !profileData?.is_pro && (profileData?.threads_count === 0);
+  const isOutOfThreads = !profileData?.is_pro && (profileData?.threads_count || 0) <= 0;
 
   return (
     <div className="space-y-4">
