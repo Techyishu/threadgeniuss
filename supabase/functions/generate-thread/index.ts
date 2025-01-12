@@ -5,7 +5,6 @@ import { getYouTubeTranscript } from "./youtube.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
 serve(async (req) => {
@@ -21,7 +20,7 @@ serve(async (req) => {
       throw new Error('Method not allowed');
     }
 
-    const { youtubeUrl, tone, threadSize } = await req.json();
+    const { youtubeUrl, transcript, tone, threadSize } = await req.json();
     console.log('Request parameters:', { youtubeUrl, tone, threadSize });
     
     if (!youtubeUrl) {
@@ -33,19 +32,31 @@ serve(async (req) => {
       throw new Error('YouTube API key not configured');
     }
 
-    // Get video transcript and title
-    console.log('Fetching transcript for:', youtubeUrl);
-    const { transcript, title } = await getYouTubeTranscript(youtubeUrl, youtubeApiKey);
+    let videoTitle;
+    let videoTranscript;
+
+    if (transcript) {
+      // Use provided transcript if available
+      videoTranscript = transcript;
+      // Get only the title from YouTube API
+      const { title } = await getYouTubeTranscript(youtubeUrl, youtubeApiKey);
+      videoTitle = title;
+    } else {
+      // Fallback to getting both title and transcript from YouTube
+      const { transcript: fetchedTranscript, title } = await getYouTubeTranscript(youtubeUrl, youtubeApiKey);
+      videoTranscript = fetchedTranscript;
+      videoTitle = title;
+    }
     
-    if (!transcript) {
+    if (!videoTranscript) {
       console.error('No transcript found for video');
       throw new Error('Failed to get video transcript');
     }
-    console.log('Successfully got transcript, title:', title);
+    console.log('Successfully got transcript, title:', videoTitle);
 
     // Generate thread using DeepSeek
     console.log('Generating thread with DeepSeek');
-    const thread = await generateThread(transcript, title, tone, threadSize);
+    const thread = await generateThread(videoTranscript, videoTitle, tone, threadSize);
     
     if (!thread) {
       console.error('No thread generated from DeepSeek');
@@ -57,7 +68,7 @@ serve(async (req) => {
       JSON.stringify({ 
         thread: { 
           content: thread, 
-          title 
+          title: videoTitle 
         }
       }),
       { 

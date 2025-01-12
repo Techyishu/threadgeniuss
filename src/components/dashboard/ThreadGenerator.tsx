@@ -62,10 +62,26 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error(rateLimitError.message || 'Rate limit exceeded');
       }
 
-      // If rate limit check passes, generate the thread
+      // Process YouTube video and get transcript
+      console.log('Processing YouTube video...');
+      const { data: processData, error: processError } = await supabase.functions.invoke('process-youtube', {
+        body: { youtubeUrl: youtubeLink },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (processError || !processData?.transcript) {
+        console.error('Error processing video:', processError);
+        throw new Error(processError?.message || 'Failed to process video');
+      }
+
+      console.log('Generating thread from transcript...');
+      // Generate thread using the transcript
       const { data, error } = await supabase.functions.invoke('generate-thread', {
         body: { 
           youtubeUrl: youtubeLink,
+          transcript: processData.transcript,
           tone: tone,
           threadSize: threadSize
         },
@@ -91,7 +107,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           content: data.thread.content,
           title: data.thread.title,
           status: 'generated',
-          user_id: session.user.id // Make sure to include the user_id
+          user_id: session.user.id
         });
 
       if (saveError) {
