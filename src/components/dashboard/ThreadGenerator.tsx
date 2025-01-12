@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -10,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Volume2, VolumeX } from "lucide-react";
 
 interface ThreadGeneratorProps {
   onThreadGenerated: (thread: string | null) => void;
@@ -21,10 +20,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
   const [isGenerating, setIsGenerating] = useState(false);
   const [tone, setTone] = useState("professional");
   const [threadSize, setThreadSize] = useState("medium");
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
   const { toast } = useToast();
 
   const isValidYoutubeUrl = (url: string) => {
@@ -37,17 +32,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
     return patterns.some(pattern => pattern.test(url));
   };
 
-  const toggleAudio = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
   const handleGenerate = async () => {
     try {
       if (!youtubeLink) {
@@ -55,19 +39,19 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       }
 
       if (!isValidYoutubeUrl(youtubeLink)) {
-        throw new Error('Please enter a valid YouTube URL');
+        throw new Error('Please enter a valid YouTube URL (e.g., youtube.com/watch?v=xxxxx or youtu.be/xxxxx)');
       }
 
       setIsGenerating(true);
-      setIsProcessing(true);
-      onThreadGenerated(null);
+      onThreadGenerated(null); // Clear any previous thread
 
+      // First check if we're authenticated
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         throw new Error('Please sign in to generate threads');
       }
 
-      // Check rate limit
+      // Check rate limit first
       const { error: rateLimitError } = await supabase.functions.invoke('rate-limiter', {
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -78,12 +62,12 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error(rateLimitError.message || 'Rate limit exceeded');
       }
 
-      // Process YouTube video
-      const { data, error } = await supabase.functions.invoke('process-youtube', {
+      // If rate limit check passes, generate the thread
+      const { data, error } = await supabase.functions.invoke('generate-thread', {
         body: { 
           youtubeUrl: youtubeLink,
-          tone,
-          threadSize
+          tone: tone,
+          threadSize: threadSize
         },
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -91,25 +75,15 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       });
 
       if (error) {
-        console.error('Error from process-youtube:', error);
-        throw new Error(error.message || 'Failed to process video');
+        console.error('Error from generate-thread:', error);
+        throw new Error(error.message || 'Failed to generate thread');
       }
 
       if (!data || !data.thread) {
         throw new Error('Invalid response from server');
       }
 
-      // Create audio URL from base64
-      if (data.audio) {
-        const audioBlob = new Blob(
-          [Uint8Array.from(atob(data.audio), c => c.charCodeAt(0))],
-          { type: 'audio/mp3' }
-        );
-        const url = URL.createObjectURL(audioBlob);
-        setAudioUrl(url);
-      }
-
-      // Save the generated thread
+      // Save the generated thread to the database
       const { error: saveError } = await supabase
         .from('threads')
         .insert({
@@ -117,7 +91,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           content: data.thread.content,
           title: data.thread.title,
           status: 'generated',
-          user_id: session.user.id
+          user_id: session.user.id // Make sure to include the user_id
         });
 
       if (saveError) {
@@ -128,8 +102,8 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       onThreadGenerated(data.thread.content);
 
       toast({
-        title: "Thread generated successfully!",
-        description: "Your thread is ready. You can now listen to the audio and review the generated content.",
+        title: "Thread generated and saved successfully!",
+        description: "Your thread is ready to be shared.",
       });
     } catch (error) {
       console.error('Error generating thread:', error);
@@ -141,7 +115,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       onThreadGenerated(null);
     } finally {
       setIsGenerating(false);
-      setIsProcessing(false);
     }
   };
 
@@ -187,31 +160,12 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           </div>
         </div>
 
-        {audioUrl && (
-          <div className="mt-4 p-4 bg-[#0A0F1E] rounded-lg border border-cyber-blue/30">
-            <div className="flex items-center justify-between">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleAudio}
-                className="text-gray-300 hover:text-white hover:bg-cyber-blue/10"
-              >
-                {isPlaying ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                {isPlaying ? 'Pause Audio' : 'Play Audio'}
-              </Button>
-            </div>
-            <audio ref={audioRef} controls className="w-full mt-2" src={audioUrl}>
-              Your browser does not support the audio element.
-            </audio>
-          </div>
-        )}
-
         <Button
           onClick={handleGenerate}
           disabled={!youtubeLink || isGenerating}
           className="w-full bg-gradient-to-r from-cyber-purple to-cyber-blue hover:opacity-90 transition-opacity h-12 text-white font-medium"
         >
-          {isProcessing ? 'Processing...' : isGenerating ? 'Generating Thread...' : 'Generate Thread'}
+          {isGenerating ? 'Generating...' : 'Generate Thread'}
         </Button>
       </div>
     </div>
