@@ -93,7 +93,7 @@ export const ThreadForm = ({
       {!profileData?.is_pro && (
         <div className="text-sm text-gray-400 text-center space-y-2">
           <p>
-            You have {remainingThreads} thread{remainingThreads !== 1 ? 's' : ''} remaining
+            {remainingThreads} thread{remainingThreads !== 1 ? 's' : ''} remaining
           </p>
           {isOutOfThreads && (
             <p className="text-cyber-blue">
