@@ -23,39 +23,55 @@ serve(async (req) => {
 
     console.log('Extracting audio from:', youtubeUrl);
 
-    // Get video info and best audio format
+    // Get video info with updated options
     const videoInfo = await ytdl.getInfo(youtubeUrl, {
       requestOptions: {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+          // Updated user agent
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          // Add cookie header to bypass age restriction
+          'Cookie': 'CONSENT=YES+1'
         }
       }
     });
 
-    // Get best audio format
+    // Get best audio format with more specific format filtering
     const audioFormat = ytdl.chooseFormat(videoInfo.formats, { 
       quality: 'highestaudio',
-      filter: 'audioonly' 
+      filter: format => format.hasAudio && !format.hasVideo
     });
 
     if (!audioFormat) {
+      console.error('No suitable audio format found. Available formats:', videoInfo.formats);
       throw new Error('No suitable audio format found');
     }
 
+    console.log('Selected audio format:', audioFormat.mimeType);
     console.log('Downloading audio...');
     
-    // Download audio
-    const audioResponse = await fetch(audioFormat.url);
-    const audioBuffer = await audioResponse.arrayBuffer();
-    
-    // Convert audio to base64
-    const audioBase64 = btoa(String.fromCharCode(...new Uint8Array(audioBuffer)));
+    // Download audio with timeout and retry logic
+    const audioResponse = await fetch(audioFormat.url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    });
 
-    console.log('Audio downloaded, transcribing...');
+    if (!audioResponse.ok) {
+      throw new Error(`Failed to download audio: ${audioResponse.status} ${audioResponse.statusText}`);
+    }
+
+    const audioBuffer = await audioResponse.arrayBuffer();
+    console.log('Audio downloaded successfully, size:', audioBuffer.byteLength);
+    
+    // Create audio blob with explicit mime type
+    const audioBlob = new Blob([new Uint8Array(audioBuffer)], { 
+      type: audioFormat.mimeType || 'audio/mp4' 
+    });
+
+    console.log('Transcribing audio...');
 
     // Use OpenAI's Whisper API for transcription
     const formData = new FormData();
-    const audioBlob = new Blob([new Uint8Array(audioBuffer)], { type: 'audio/mp4' });
     formData.append('file', audioBlob, 'audio.mp4');
     formData.append('model', 'whisper-1');
 
@@ -68,7 +84,9 @@ serve(async (req) => {
     });
 
     if (!transcriptionResponse.ok) {
-      throw new Error(`OpenAI API error: ${await transcriptionResponse.text()}`);
+      const errorText = await transcriptionResponse.text();
+      console.error('Transcription API error:', errorText);
+      throw new Error(`OpenAI API error: ${errorText}`);
     }
 
     const transcriptionResult = await transcriptionResponse.json();
