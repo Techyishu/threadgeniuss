@@ -27,29 +27,24 @@ serve(async (req) => {
     const videoInfo = await ytdl.getInfo(youtubeUrl, {
       requestOptions: {
         headers: {
-          // Updated user agent
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          // Add cookie header to bypass age restriction
-          'Cookie': 'CONSENT=YES+1'
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         }
       }
     });
 
     // Get best audio format with more specific format filtering
-    const audioFormat = ytdl.chooseFormat(videoInfo.formats, { 
-      quality: 'highestaudio',
-      filter: format => format.hasAudio && !format.hasVideo
-    });
+    const formats = videoInfo.formats.filter(format => format.hasAudio && !format.hasVideo);
+    const audioFormat = formats.sort((a, b) => (b.audioBitrate || 0) - (a.audioBitrate || 0))[0];
 
     if (!audioFormat) {
-      console.error('No suitable audio format found. Available formats:', videoInfo.formats);
+      console.error('Available formats:', videoInfo.formats);
       throw new Error('No suitable audio format found');
     }
 
-    console.log('Selected audio format:', audioFormat.mimeType);
+    console.log('Selected audio format:', audioFormat.mimeType, 'bitrate:', audioFormat.audioBitrate);
     console.log('Downloading audio...');
     
-    // Download audio with timeout and retry logic
+    // Download audio
     const audioResponse = await fetch(audioFormat.url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
