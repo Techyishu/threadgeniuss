@@ -113,9 +113,9 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                 </div>
               ) : (
                 <>
-                  <pre className="text-white whitespace-pre-wrap break-words font-sans">
+                  <div className="text-white whitespace-pre-wrap break-words font-sans">
                     {tweet}
-                  </pre>
+                  </div>
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                     <Button
                       variant="ghost"
