@@ -23,31 +23,6 @@ function extractVideoId(url: string): string | null {
   return null;
 }
 
-async function downloadAudio(videoId: string): Promise<string> {
-  const ytDlpCommand = new Deno.Command("yt-dlp", {
-    args: [
-      "--extract-audio",
-      "--audio-format", "mp3",
-      "--audio-quality", "192K",
-      `https://www.youtube.com/watch?v=${videoId}`,
-      "-o", "%(id)s.%(ext)s"
-    ]
-  });
-
-  try {
-    const { success, stdout, stderr } = await ytDlpCommand.output();
-    if (!success) {
-      console.error("yt-dlp error:", new TextDecoder().decode(stderr));
-      throw new Error("Failed to download audio");
-    }
-    console.log("yt-dlp output:", new TextDecoder().decode(stdout));
-    return `${videoId}.mp3`;
-  } catch (error) {
-    console.error("Error executing yt-dlp:", error);
-    throw error;
-  }
-}
-
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -86,11 +61,6 @@ serve(async (req) => {
 
     const videoTitle = videoData.items[0].snippet.title;
     console.log('Got video title:', videoTitle);
-
-    // Download audio using yt-dlp
-    console.log('Downloading audio...');
-    const audioFile = await downloadAudio(videoId);
-    console.log('Audio downloaded:', audioFile);
 
     // Get transcript using youtube-transcript
     console.log('Fetching transcript...');
