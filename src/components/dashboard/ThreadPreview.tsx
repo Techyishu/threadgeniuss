@@ -64,13 +64,13 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
   };
 
   return (
-    <div className="bg-[#1A1F2C] p-4 sm:p-6 rounded-lg border border-cyber-blue/20 shadow-lg">
+    <div className="bg-[#222222] p-4 sm:p-6 rounded-lg border border-gray-800">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
         <h2 className="text-lg sm:text-xl font-semibold text-white">Preview</h2>
         <Button
           variant="outline"
           size="sm"
-          className="flex-1 sm:flex-none border-cyber-blue/30 hover:border-cyber-blue text-cyber-blue"
+          className="flex-1 sm:flex-none border-gray-700 hover:border-gray-600 text-gray-300"
           onClick={() => tweets.length > 0 && copyToClipboard(tweets.join('\n\n'))}
         >
           <Copy className="w-4 h-4 mr-2" />
@@ -83,20 +83,20 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
           tweets.map((tweet, index) => (
             <div 
               key={index}
-              className="relative bg-[#0A0F1E] rounded-lg border border-dashed border-cyber-blue/20 p-4 group"
+              className="relative bg-[#1A1F2C] rounded-lg border border-gray-800 p-4 group"
             >
               {editingIndex === index ? (
                 <div className="space-y-4">
                   <Textarea
                     value={editedTweet}
                     onChange={(e) => setEditedTweet(e.target.value)}
-                    className="w-full min-h-[100px] text-white break-words bg-[#1A1F2C] border-cyber-blue/30"
+                    className="w-full min-h-[100px] text-white break-words bg-[#1A1F2C] border-gray-700"
                   />
                   <div className="flex gap-2">
                     <Button
                       size="sm"
                       onClick={() => handleSaveEdit(index)}
-                      className="bg-cyber-blue hover:bg-cyber-blue/90"
+                      className="bg-gray-700 hover:bg-gray-600"
                     >
                       Save
                     </Button>
@@ -104,7 +104,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                       size="sm"
                       variant="outline"
                       onClick={handleCancelEdit}
-                      className="border-cyber-blue/30 text-white"
+                      className="border-gray-700 text-white"
                     >
                       Cancel
                     </Button>
@@ -120,7 +120,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleEditClick(index, tweet)}
-                      className="text-gray-300 hover:text-white hover:bg-cyber-blue/10"
+                      className="text-gray-400 hover:text-white hover:bg-gray-700"
                     >
                       Edit
                     </Button>
@@ -128,7 +128,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => copyToClipboard(tweet)}
-                      className="text-gray-300 hover:text-white hover:bg-cyber-blue/10"
+                      className="text-gray-400 hover:text-white hover:bg-gray-700"
                     >
                       <Copy className="w-4 h-4" />
                     </Button>

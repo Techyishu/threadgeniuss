@@ -65,16 +65,16 @@ export const SavedThreads = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
+      <div className="min-h-screen bg-[#1A1F2C] p-4 sm:p-6 md:p-8">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[#1A1F2C]">Loading saved threads...</p>
+          <p className="text-gray-400">Loading saved threads...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0F1E] p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen bg-[#1A1F2C] p-4 sm:p-6 md:p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold text-white mb-6">Saved Threads</h1>
         {threads.length > 0 ? (
@@ -83,9 +83,9 @@ export const SavedThreads = () => {
               <AccordionItem
                 key={thread.id}
                 value={thread.id}
-                className="bg-[#1A1F2C] border border-cyber-blue/20 rounded-lg overflow-hidden"
+                className="bg-[#222222] border border-gray-800 rounded-lg overflow-hidden"
               >
-                <AccordionTrigger className="px-4 py-2 text-white hover:no-underline hover:bg-cyber-blue/10">
+                <AccordionTrigger className="px-4 py-2 text-white hover:no-underline hover:bg-gray-800/50">
                   <div className="flex items-center justify-between w-full">
                     <span>{thread.title || 'Untitled Thread'}</span>
                     <span className="text-sm text-gray-400">
@@ -101,7 +101,7 @@ export const SavedThreads = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() => copyToClipboard(thread.content)}
-                        className="text-gray-300 hover:text-white hover:bg-cyber-blue/10"
+                        className="text-gray-400 hover:text-white hover:bg-gray-700"
                       >
                         <Copy className="w-4 h-4" />
                       </Button>

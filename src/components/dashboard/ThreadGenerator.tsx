@@ -146,7 +146,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
   };
 
   return (
-    <div className="bg-[#1A1F2C] p-4 sm:p-6 rounded-lg border border-cyber-blue/20 shadow-lg">
+    <div className="bg-[#222222] p-4 sm:p-6 rounded-lg border border-gray-800">
       <ThreadForm 
         profileData={profileData}
         isGenerating={isGenerating}
