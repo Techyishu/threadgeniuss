@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Globe2, Zap, Gauge, Tool } from "lucide-react";
+import { ArrowRight, Globe2, Zap, Gauge, Wrench } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const Hero = () => {
@@ -69,7 +69,7 @@ export const Hero = () => {
             description="Built to handle your growing content needs efficiently."
           />
           <FeatureCard
-            icon={<Tool className="h-6 w-6" />}
+            icon={<Wrench className="h-6 w-6" />}
             title="No maintenance"
             description="Focus on creating content, not managing infrastructure."
           />
