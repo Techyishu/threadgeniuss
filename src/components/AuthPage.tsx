@@ -43,7 +43,6 @@ export const AuthPage = () => {
           <h2 className="text-3xl font-bold text-white mb-8 text-center">Welcome Back</h2>
           <Auth
             supabaseClient={supabase}
-            view="sign_in"
             appearance={{
               theme: ThemeSupa,
               variables: {
@@ -73,8 +72,7 @@ export const AuthPage = () => {
             theme="dark"
             providers={["google"]}
             redirectTo={window.location.origin}
-            showLinks={true}
-            onlyThirdPartyProviders={false}
+            onlyThirdPartyProviders={true}
           />
         </div>
       </div>
