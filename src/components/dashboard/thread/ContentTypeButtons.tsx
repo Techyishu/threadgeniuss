@@ -16,13 +16,6 @@ export const ContentTypeButtons = ({ selectedType, onSelect }: ContentTypeButton
         Twitter Thread
       </Button>
       <Button
-        variant={selectedType === 'reddit' ? 'default' : 'outline'}
-        onClick={() => onSelect('reddit')}
-        className="flex-1 min-w-[120px]"
-      >
-        Reddit Post
-      </Button>
-      <Button
         variant={selectedType === 'long_tweet' ? 'default' : 'outline'}
         onClick={() => onSelect('long_tweet')}
         className="flex-1 min-w-[120px]"

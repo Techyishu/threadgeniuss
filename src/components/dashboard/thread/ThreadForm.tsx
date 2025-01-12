@@ -9,7 +9,7 @@ import { ContentTypeButtons } from "./ContentTypeButtons";
 interface ThreadFormProps {
   profileData: any;
   isGenerating: boolean;
-  onGenerate: (youtubeLink: string, tone: string, threadSize: string, contentType: string, subreddit?: string, postType?: string) => void;
+  onGenerate: (youtubeLink: string, tone: string, threadSize: string, contentType: string) => void;
   onContentTypeChange: (type: string) => void;
 }
 
@@ -18,8 +18,6 @@ export const ThreadForm = ({ profileData, isGenerating, onGenerate, onContentTyp
   const [tone, setTone] = useState("professional");
   const [threadSize, setThreadSize] = useState("medium");
   const [contentType, setContentType] = useState("thread");
-  const [subreddit, setSubreddit] = useState("");
-  const [postType, setPostType] = useState("text");
 
   const handleContentTypeChange = (type: string) => {
     setContentType(type);
@@ -27,7 +25,7 @@ export const ThreadForm = ({ profileData, isGenerating, onGenerate, onContentTyp
   };
 
   const handleSubmit = () => {
-    onGenerate(youtubeLink, tone, threadSize, contentType, subreddit, postType);
+    onGenerate(youtubeLink, tone, threadSize, contentType);
   };
 
   const isValidYoutubeUrl = (url: string) => {
@@ -58,25 +56,13 @@ export const ThreadForm = ({ profileData, isGenerating, onGenerate, onContentTyp
       />
       
       {profileData?.is_pro && (
-        <>
-          {contentType === 'reddit' && (
-            <ContentTypeSelector 
-              contentType={contentType} 
-              setContentType={handleContentTypeChange}
-              subreddit={subreddit}
-              setSubreddit={setSubreddit}
-              postType={postType}
-              setPostType={setPostType}
-            />
-          )}
-          <ProControls 
-            tone={tone} 
-            setTone={setTone} 
-            threadSize={threadSize} 
-            setThreadSize={setThreadSize}
-            contentType={contentType}
-          />
-        </>
+        <ProControls 
+          tone={tone} 
+          setTone={setTone} 
+          threadSize={threadSize} 
+          setThreadSize={setThreadSize}
+          contentType={contentType}
+        />
       )}
 
       <Button
@@ -90,7 +76,7 @@ export const ThreadForm = ({ profileData, isGenerating, onGenerate, onContentTyp
             Generating...
           </div>
         ) : (
-          `Generate ${contentType === 'thread' ? 'Thread' : contentType === 'reddit' ? 'Reddit Post' : 'Long Tweet'}`
+          `Generate ${contentType === 'thread' ? 'Thread' : 'Long Tweet'}`
         )}
       </Button>
     </div>
