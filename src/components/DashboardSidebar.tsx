@@ -43,6 +43,7 @@ export const DashboardSidebar = ({
           onClose={onClose} 
           onShowSavedThreads={onShowSavedThreads}
           onNavigateHome={onNavigateHome}
+          isPro={profile?.is_pro}
         />
 
         <div className="mt-6 space-y-4">
