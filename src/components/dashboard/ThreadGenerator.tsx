@@ -179,7 +179,9 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         <Button
           onClick={handleGenerate}
           disabled={!youtubeLink || isGenerating}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium h-12 relative z-10"
+          variant="default"
+          size="lg"
+          className="w-full font-medium"
         >
           {isGenerating ? 'Generating...' : 'Generate Thread'}
         </Button>
