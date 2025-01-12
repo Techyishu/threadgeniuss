@@ -48,27 +48,36 @@ export type Database = {
       threads: {
         Row: {
           content: string
+          content_type: string | null
           created_at: string | null
           id: string
+          post_type: string | null
           status: string | null
+          subreddit: string | null
           title: string | null
           user_id: string | null
           youtube_url: string
         }
         Insert: {
           content: string
+          content_type?: string | null
           created_at?: string | null
           id?: string
+          post_type?: string | null
           status?: string | null
+          subreddit?: string | null
           title?: string | null
           user_id?: string | null
           youtube_url: string
         }
         Update: {
           content?: string
+          content_type?: string | null
           created_at?: string | null
           id?: string
+          post_type?: string | null
           status?: string | null
+          subreddit?: string | null
           title?: string | null
           user_id?: string | null
           youtube_url?: string
