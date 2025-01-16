@@ -70,9 +70,9 @@ export const AuthPage = () => {
               }
             }}
             theme="dark"
-            providers={["google"]}
+            providers={["google", "email"]}
             redirectTo={window.location.origin}
-            onlyThirdPartyProviders={true}
+            onlyThirdPartyProviders={false}
           />
         </div>
       </div>
