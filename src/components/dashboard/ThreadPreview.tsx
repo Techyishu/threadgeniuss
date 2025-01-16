@@ -16,14 +16,15 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
 
   useEffect(() => {
     if (generatedThread) {
-      setTweets(splitIntoTweets(generatedThread));
+      // Split by numbered tweet pattern (e.g., "1/5", "2/5") and filter empty strings
+      const tweetArray = generatedThread
+        .split(/\d+\/\d+\s*/)
+        .filter(tweet => tweet.trim().length > 0)
+        .map(tweet => tweet.trim());
+      setTweets(tweetArray);
       setEditingIndex(null);
     }
   }, [generatedThread]);
-
-  const splitIntoTweets = (thread: string) => {
-    return thread.split('\n\n').filter(tweet => tweet.trim().length > 0);
-  };
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -85,6 +86,9 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
               key={index}
               className="relative bg-[#1A1F2C] rounded-lg border border-gray-800 p-4 group"
             >
+              <div className="text-sm text-gray-400 mb-2">
+                Tweet {index + 1}/{tweets.length}
+              </div>
               {editingIndex === index ? (
                 <div className="space-y-4">
                   <Textarea
