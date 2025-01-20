@@ -4,6 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ThreadGeneratorProps {
   onThreadGenerated: (thread: string | null) => void;
@@ -12,6 +19,8 @@ interface ThreadGeneratorProps {
 export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => {
   const [youtubeLink, setYoutubeLink] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [tone, setTone] = useState("professional");
+  const [threadSize, setThreadSize] = useState("medium");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -51,7 +60,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error('Please sign in to generate threads');
       }
 
-      // Check if user has threads remaining before proceeding
       if (!profileData?.is_pro && (profileData?.threads_count || 0) <= 0) {
         toast({
           title: "No threads remaining",
@@ -90,8 +98,8 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         body: { 
           youtubeUrl: youtubeLink,
           transcript: processData.transcript,
-          tone: profileData?.is_pro ? 'professional' : 'professional',
-          threadSize: profileData?.is_pro ? 'short' : 'short'
+          tone: tone,
+          threadSize: threadSize
         },
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -107,7 +115,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error('Invalid response from server');
       }
 
-      // Save the generated thread
       const { error: saveError } = await supabase
         .from('threads')
         .insert({
@@ -123,10 +130,8 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         throw new Error('Failed to save thread');
       }
 
-      // Force a refresh of the profile data to get the updated thread count
       await queryClient.invalidateQueries({ queryKey: ['profile'] });
 
-      // Show remaining threads notification for free users
       if (!profileData?.is_pro && profileData?.threads_count > 0) {
         const remainingThreads = Math.max(0, (profileData.threads_count - 1));
         toast({
@@ -143,8 +148,6 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       }
 
       onThreadGenerated(data.thread.content);
-      
-      // Refresh the threads list
       queryClient.invalidateQueries({ queryKey: ['threads'] });
     } catch (error) {
       console.error('Error generating thread:', error);
@@ -160,21 +163,48 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
   };
 
   return (
-    <div className="flex gap-4">
-      <Input
-        type="text"
-        placeholder="Enter YouTube video URL"
-        value={youtubeLink}
-        onChange={(e) => setYoutubeLink(e.target.value)}
-        className="flex-1 bg-white text-gray-900"
-      />
-      <Button
-        onClick={handleGenerate}
-        disabled={isGenerating}
-        className="bg-black hover:bg-gray-800 text-white"
-      >
-        {isGenerating ? "Generating..." : "Generate Thread"}
-      </Button>
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex-1">
+          <Input
+            type="text"
+            placeholder="Enter YouTube video URL"
+            value={youtubeLink}
+            onChange={(e) => setYoutubeLink(e.target.value)}
+            className="w-full bg-white text-gray-900"
+          />
+        </div>
+        <div className="flex gap-2">
+          <Select value={tone} onValueChange={setTone}>
+            <SelectTrigger className="w-[140px] bg-white text-gray-900">
+              <SelectValue placeholder="Select tone" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="professional">Professional</SelectItem>
+              <SelectItem value="casual">Casual</SelectItem>
+              <SelectItem value="humorous">Humorous</SelectItem>
+              <SelectItem value="educational">Educational</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={threadSize} onValueChange={setThreadSize}>
+            <SelectTrigger className="w-[140px] bg-white text-gray-900">
+              <SelectValue placeholder="Select size" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="short">Short (5)</SelectItem>
+              <SelectItem value="medium">Medium (10)</SelectItem>
+              <SelectItem value="long">Long (15)</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button
+            onClick={handleGenerate}
+            disabled={isGenerating}
+            className="bg-black hover:bg-gray-800 text-white whitespace-nowrap"
+          >
+            {isGenerating ? "Generating..." : "Generate Thread"}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
