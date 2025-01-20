@@ -67,7 +67,7 @@ export const Hero = () => {
 
           {/* Right Column - Image */}
           <div className="relative hidden md:block">
-            <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden">
+            <div className="relative w-full aspect-square rounded-lg overflow-hidden">
               <img
                 src="/lovable-uploads/0251e147-8985-4239-81ea-09df6aa078c7.png"
                 alt="Dashboard Preview"
