@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ThreadGenerator } from "./dashboard/ThreadGenerator";
 import { ThreadPreview } from "./dashboard/ThreadPreview";
 import { SavedThreads } from "./dashboard/SavedThreads";
-import { DashboardHeader } from "./dashboard/DashboardHeader";
 import { DashboardPricing } from "./dashboard/DashboardPricing";
 import { Toaster } from "@/components/ui/toaster";
 import { useQuery } from "@tanstack/react-query";
@@ -16,39 +15,62 @@ interface DashboardProps {
 export const Dashboard = ({ showSavedThreads = false, showPricing = false }: DashboardProps) => {
   const [generatedThread, setGeneratedThread] = useState<string | null>(null);
 
-  const { data: profile } = useQuery({
-    queryKey: ['profile'],
+  const { data: threads } = useQuery({
+    queryKey: ['threads'],
     queryFn: async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return null;
-      
       const { data, error } = await supabase
-        .from('profiles')
+        .from('threads')
         .select('*')
-        .eq('id', session.user.id)
-        .single();
-        
+        .order('created_at', { ascending: false })
+        .limit(3);
+      
       if (error) throw error;
       return data;
     }
   });
 
-  const remainingThreads = profile?.is_pro ? "Unlimited" : Math.max(0, Math.min(profile?.threads_count || 5, 5));
-
   return (
     <>
-      <div className="min-h-screen bg-[#1A1F2C]">
-        <div className="max-w-4xl mx-auto p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
-          <DashboardHeader />
+      <div className="min-h-screen bg-[#1A1F2C] p-6">
+        <div className="max-w-4xl mx-auto space-y-8">
+          <h1 className="text-2xl font-semibold text-white">Dashboard</h1>
+          
           {showPricing ? (
             <DashboardPricing />
           ) : showSavedThreads ? (
             <SavedThreads />
           ) : (
-            <div className="space-y-6">
-              <ThreadGenerator onThreadGenerated={setGeneratedThread} />
-              <ThreadPreview generatedThread={generatedThread} />
-            </div>
+            <>
+              <div className="space-y-6">
+                <div className="bg-[#222222] rounded-lg p-6 space-y-4">
+                  <h2 className="text-xl font-medium text-white">Generate New Thread</h2>
+                  <ThreadGenerator onThreadGenerated={setGeneratedThread} />
+                </div>
+
+                {generatedThread && (
+                  <div className="bg-[#222222] rounded-lg p-6">
+                    <ThreadPreview generatedThread={generatedThread} />
+                  </div>
+                )}
+
+                <div className="space-y-4">
+                  <h2 className="text-xl font-medium text-white">Recent Threads</h2>
+                  <div className="space-y-4">
+                    {threads?.map((thread) => (
+                      <div 
+                        key={thread.id} 
+                        className="bg-white rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer"
+                      >
+                        <h3 className="text-gray-900 font-medium">{thread.title || 'Untitled Thread'}</h3>
+                        <p className="text-gray-500 text-sm mt-1">
+                          {thread.content?.split('\n').length || 0} tweets
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>

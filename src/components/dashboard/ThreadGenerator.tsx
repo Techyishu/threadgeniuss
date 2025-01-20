@@ -2,13 +2,15 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ThreadForm } from "./thread/ThreadForm";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface ThreadGeneratorProps {
   onThreadGenerated: (thread: string | null) => void;
 }
 
 export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => {
+  const [youtubeLink, setYoutubeLink] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -30,7 +32,16 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
     }
   });
 
-  const handleGenerate = async (youtubeLink: string, tone: string, threadSize: string) => {
+  const handleGenerate = async () => {
+    if (!youtubeLink) {
+      toast({
+        title: "Error",
+        description: "Please enter a YouTube URL",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setIsGenerating(true);
       onThreadGenerated(null);
@@ -79,8 +90,8 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
         body: { 
           youtubeUrl: youtubeLink,
           transcript: processData.transcript,
-          tone: profileData?.is_pro ? tone : 'professional',
-          threadSize: profileData?.is_pro ? threadSize : 'short'
+          tone: profileData?.is_pro ? 'professional' : 'professional',
+          threadSize: profileData?.is_pro ? 'short' : 'short'
         },
         headers: {
           Authorization: `Bearer ${session.access_token}`
@@ -132,6 +143,9 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
       }
 
       onThreadGenerated(data.thread.content);
+      
+      // Refresh the threads list
+      queryClient.invalidateQueries({ queryKey: ['threads'] });
     } catch (error) {
       console.error('Error generating thread:', error);
       toast({
@@ -146,12 +160,21 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
   };
 
   return (
-    <div className="bg-[#222222] p-4 sm:p-6 rounded-lg border border-gray-800">
-      <ThreadForm 
-        profileData={profileData}
-        isGenerating={isGenerating}
-        onGenerate={handleGenerate}
+    <div className="flex gap-4">
+      <Input
+        type="text"
+        placeholder="Enter YouTube video URL"
+        value={youtubeLink}
+        onChange={(e) => setYoutubeLink(e.target.value)}
+        className="flex-1 bg-white text-gray-900"
       />
+      <Button
+        onClick={handleGenerate}
+        disabled={isGenerating}
+        className="bg-black hover:bg-gray-800 text-white"
+      >
+        {isGenerating ? "Generating..." : "Generate Thread"}
+      </Button>
     </div>
   );
 };
