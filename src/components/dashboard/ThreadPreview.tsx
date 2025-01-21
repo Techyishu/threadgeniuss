@@ -16,7 +16,6 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
 
   useEffect(() => {
     if (generatedThread) {
-      // Split by numbered tweet pattern (e.g., "1/5", "2/5") and filter empty strings
       const tweetArray = generatedThread
         .split(/\d+\/\d+\s*/)
         .filter(tweet => tweet.trim().length > 0)
@@ -66,12 +65,12 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
 
   return (
     <div className="bg-[#222222] p-4 sm:p-6 rounded-lg border border-gray-800">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
         <h2 className="text-lg sm:text-xl font-semibold text-white">Preview</h2>
         <Button
           variant="outline"
           size="sm"
-          className="flex-1 sm:flex-none border-gray-700 hover:border-gray-600 text-gray-300"
+          className="w-full sm:w-auto border-gray-700 hover:border-gray-600 text-gray-300"
           onClick={() => tweets.length > 0 && copyToClipboard(tweets.join('\n\n'))}
         >
           <Copy className="w-4 h-4 mr-2" />
@@ -96,7 +95,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                     onChange={(e) => setEditedTweet(e.target.value)}
                     className="w-full min-h-[100px] text-white break-words bg-[#1A1F2C] border-gray-700"
                   />
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <Button
                       size="sm"
                       onClick={() => handleSaveEdit(index)}
@@ -119,7 +118,7 @@ export const ThreadPreview = ({ generatedThread }: ThreadPreviewProps) => {
                   <div className="text-white whitespace-pre-line break-words max-w-full">
                     {tweet}
                   </div>
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                  <div className="absolute top-2 right-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                     <Button
                       variant="ghost"
                       size="sm"

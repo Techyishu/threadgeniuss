@@ -164,8 +164,8 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1">
+      <div className="flex flex-col gap-4">
+        <div className="w-full">
           <Input
             type="text"
             placeholder="Enter YouTube video URL"
@@ -174,9 +174,9 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
             className="w-full bg-white text-gray-900"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Select value={tone} onValueChange={setTone}>
-            <SelectTrigger className="w-[140px] bg-white text-gray-900">
+            <SelectTrigger className="w-full sm:w-[140px] bg-white text-gray-900">
               <SelectValue placeholder="Select tone" />
             </SelectTrigger>
             <SelectContent>
@@ -187,7 +187,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
             </SelectContent>
           </Select>
           <Select value={threadSize} onValueChange={setThreadSize}>
-            <SelectTrigger className="w-[140px] bg-white text-gray-900">
+            <SelectTrigger className="w-full sm:w-[140px] bg-white text-gray-900">
               <SelectValue placeholder="Select size" />
             </SelectTrigger>
             <SelectContent>
@@ -199,7 +199,7 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           <Button
             onClick={handleGenerate}
             disabled={isGenerating}
-            className="bg-black hover:bg-gray-800 text-white whitespace-nowrap"
+            className="w-full sm:w-auto bg-black hover:bg-gray-800 text-white whitespace-nowrap"
           >
             {isGenerating ? "Generating..." : "Generate Thread"}
           </Button>
