@@ -175,27 +175,31 @@ export const ThreadGenerator = ({ onThreadGenerated }: ThreadGeneratorProps) => 
           />
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
-          <Select value={tone} onValueChange={setTone}>
-            <SelectTrigger className="w-full sm:w-[140px] bg-white text-gray-900">
-              <SelectValue placeholder="Select tone" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="professional">Professional</SelectItem>
-              <SelectItem value="casual">Casual</SelectItem>
-              <SelectItem value="humorous">Humorous</SelectItem>
-              <SelectItem value="educational">Educational</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={threadSize} onValueChange={setThreadSize}>
-            <SelectTrigger className="w-full sm:w-[140px] bg-white text-gray-900">
-              <SelectValue placeholder="Select size" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="short">Short (5)</SelectItem>
-              <SelectItem value="medium">Medium (10)</SelectItem>
-              <SelectItem value="long">Long (15)</SelectItem>
-            </SelectContent>
-          </Select>
+          {profileData?.is_pro && (
+            <>
+              <Select value={tone} onValueChange={setTone}>
+                <SelectTrigger className="w-full sm:w-[140px] bg-white text-gray-900">
+                  <SelectValue placeholder="Select tone" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="professional">Professional</SelectItem>
+                  <SelectItem value="casual">Casual</SelectItem>
+                  <SelectItem value="humorous">Humorous</SelectItem>
+                  <SelectItem value="educational">Educational</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={threadSize} onValueChange={setThreadSize}>
+                <SelectTrigger className="w-full sm:w-[140px] bg-white text-gray-900">
+                  <SelectValue placeholder="Select size" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="short">Short (5)</SelectItem>
+                  <SelectItem value="medium">Medium (10)</SelectItem>
+                  <SelectItem value="long">Long (15)</SelectItem>
+                </SelectContent>
+              </Select>
+            </>
+          )}
           <Button
             onClick={handleGenerate}
             disabled={isGenerating}
