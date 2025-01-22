@@ -1,4 +1,8 @@
 import { Link } from "react-router-dom";
+import { Menu } from "lucide-react";
+import { Button } from "./ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { DashboardSidebar } from "./DashboardSidebar";
 
 export const Header = () => {
   return (
@@ -10,6 +14,18 @@ export const Header = () => {
             <span className="text-cyber-purple">Genius</span>
           </h1>
         </Link>
+
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="text-white">
+              <Menu className="h-6 w-6" />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="p-0 bg-cyber-dark border-cyber-blue/20">
+            <DashboardSidebar />
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );
