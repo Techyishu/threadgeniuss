@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { generateThread } from "./deepseek.ts";
+import { generateThread } from "./openai.ts";
 import { getYouTubeTranscript } from "./youtube.ts";
 
 const corsHeaders = {
@@ -54,12 +54,12 @@ serve(async (req) => {
     }
     console.log('Successfully got transcript, title:', videoTitle);
 
-    // Generate thread using DeepSeek
-    console.log('Generating thread with DeepSeek');
+    // Generate thread using OpenAI
+    console.log('Generating thread with OpenAI');
     const thread = await generateThread(videoTranscript, videoTitle, tone, threadSize);
     
     if (!thread) {
-      console.error('No thread generated from DeepSeek');
+      console.error('No thread generated from OpenAI');
       throw new Error('Failed to generate thread content');
     }
     console.log('Thread generated successfully');
