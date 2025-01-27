@@ -40,7 +40,7 @@ export const Dashboard = ({ showSavedThreads = false, showPricing = false }: Das
           ) : (
             <>
               <div className="space-y-4 sm:space-y-6">
-                <div className="bg-[#222222] rounded-lg p-4 sm:p-6 space-y-4">
+                <div className="bg-[#222222] rounded-lg p-4 sm:p-6 space-y-4 mt-8">
                   <h2 className="text-lg sm:text-xl font-medium text-white">Generate New Thread</h2>
                   <ThreadGenerator onThreadGenerated={setGeneratedThread} />
                 </div>
