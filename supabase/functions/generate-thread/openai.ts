@@ -35,6 +35,8 @@ export async function generateThread(transcript: string, title: string, tone = '
 
     ${tweetCount}/${tweetCount}
     [Final tweet content with call-to-action]
+
+    Use this tone: ${tone}
   `;
 
   const prompt = `
