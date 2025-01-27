@@ -53,21 +53,19 @@ export const Dashboard = ({ showSavedThreads = false, showPricing = false }: Das
                   </div>
                 )}
 
-                <div className="space-y-4">
-                  <h2 className="text-lg sm:text-xl font-medium text-white">Recent Threads</h2>
-                  <div className="space-y-3">
-                    {threads?.map((thread) => (
-                      <div 
-                        key={thread.id} 
-                        className="bg-white rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer"
-                      >
-                        <h3 className="text-gray-900 font-medium line-clamp-1">{thread.title || 'Untitled Thread'}</h3>
-                        <p className="text-gray-500 text-sm mt-1">
-                          {thread.content?.split('\n').length || 0} tweets
-                        </p>
-                      </div>
-                    ))}
-                  </div>
+                <h2 className="text-lg sm:text-xl font-medium text-white">Recent Threads</h2>
+                <div className="space-y-3">
+                  {threads?.map((thread) => (
+                    <div 
+                      key={thread.id} 
+                      className="bg-white rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer"
+                    >
+                      <h3 className="text-gray-900 font-medium line-clamp-1">{thread.title || 'Untitled Thread'}</h3>
+                      <p className="text-gray-500 text-sm mt-1">
+                        {thread.content?.split('\n').length || 0} tweets
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </>
