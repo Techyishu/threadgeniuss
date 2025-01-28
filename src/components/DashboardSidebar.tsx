@@ -2,6 +2,7 @@ import { DashboardSidebarProps } from "@/types/dashboard";
 import { SidebarNavigation } from "./dashboard/SidebarNavigation";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ProfileMenu } from "./dashboard/ProfileMenu";
 
 export const DashboardSidebar = ({ 
   userName, 
@@ -52,6 +53,10 @@ export const DashboardSidebar = ({
           </div>
         </div>
       </nav>
+
+      <div className="p-4 border-t border-cyber-blue/20">
+        <ProfileMenu />
+      </div>
     </div>
   );
 };

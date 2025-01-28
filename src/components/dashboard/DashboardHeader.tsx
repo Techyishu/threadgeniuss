@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import { ProfileMenu } from "./ProfileMenu";
 
 interface DashboardHeaderProps {
   onOpenSidebar: () => void;
@@ -21,9 +20,6 @@ export const DashboardHeader = ({ onOpenSidebar }: DashboardHeaderProps) => {
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
           </div>
-          <nav className="flex items-center">
-            <ProfileMenu />
-          </nav>
         </div>
       </div>
     </header>
