@@ -56,32 +56,12 @@ const DashboardPage = () => {
 
   return (
     <AuthGuard>
-      <div className="flex min-h-screen w-full bg-[#0A0F1E]">
-        {/* Mobile Sidebar */}
-        <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-          <SheetTrigger asChild className="fixed top-4 left-4 z-50 md:hidden">
-            <Button variant="ghost" size="icon">
-              <Menu className="h-6 w-6 text-white" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent 
-            side="left" 
-            className="w-[240px] p-0 border-cyber-blue/20 bg-[#1A1F2C] text-white"
-          >
-            <DashboardSidebar 
-              userName={userName} 
-              onClose={() => setIsSidebarOpen(false)} 
-              onShowSavedThreads={handleShowSavedThreads}
-              onNavigateHome={handleNavigateHome}
-            />
-          </SheetContent>
-        </Sheet>
-
-        {/* Desktop Sidebar */}
-        <div className="hidden md:block">
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full bg-[#0A0F1E]">
+          {/* Mobile Sidebar */}
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="fixed top-4 left-4 z-50">
+            <SheetTrigger asChild className="fixed top-4 left-4 z-50 md:hidden">
+              <Button variant="ghost" size="icon">
                 <Menu className="h-6 w-6 text-white" />
               </Button>
             </SheetTrigger>
@@ -97,15 +77,37 @@ const DashboardPage = () => {
               />
             </SheetContent>
           </Sheet>
-        </div>
 
-        <main className="flex-1">
-          <Dashboard 
-            showSavedThreads={showSavedThreads} 
-            showPricing={showPricing}
-          />
-        </main>
-      </div>
+          {/* Desktop Sidebar */}
+          <div className="hidden md:block">
+            <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="fixed top-4 left-4 z-50">
+                  <Menu className="h-6 w-6 text-white" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent 
+                side="left" 
+                className="w-[240px] p-0 border-cyber-blue/20 bg-[#1A1F2C] text-white"
+              >
+                <DashboardSidebar 
+                  userName={userName} 
+                  onClose={() => setIsSidebarOpen(false)} 
+                  onShowSavedThreads={handleShowSavedThreads}
+                  onNavigateHome={handleNavigateHome}
+                />
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          <main className="flex-1">
+            <Dashboard 
+              showSavedThreads={showSavedThreads} 
+              showPricing={showPricing}
+            />
+          </main>
+        </div>
+      </SidebarProvider>
     </AuthGuard>
   );
 };
